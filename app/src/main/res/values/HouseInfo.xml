@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="chembur_hc">1</integer>
+    
+    <string-array name="chembur1">
+        <item>201-A Orchid</item>
+        <item>Akshay</item>
+        <item>Govandi</item>
+    </string-array>
+
+    <integer name="vashi_hc">1</integer>
+    
+    <string-array name="vashi1">
+        <item>A-14 Lil Coop Housing Society</item>
+        <item>Akshay</item>
+        <item>Sector 14</item>
+    </string-array>
+
+    <integer name="panvel_hc">1</integer>
+
+    <string-array name="panvel1">
+        <item>A-12</item>
+        <item>Akshay</item>
+        <item>Kholke Village</item>
+    </string-array>
+
+    <integer name="tambaram_hc">1</integer>
+
+    <string-array name="tambaram1">
+        <item>F-7 Ruby Manor Apts</item>
+        <item>Akshay</item>
+        <item>Selaiyur</item>
+    </string-array>
+
+    <integer name="annanagar_hc">1</integer>
+
+    <string-array name="annanagar1">
+        <item>AnnaNagarPlaceholder</item>
+        <item>Akshay</item>
+        <item>Placeholder</item>
+    </string-array>
+
+    <integer name="ulsoor_hc">1</integer>
+
+    <string-array name="ulsoor1">
+        <item>UlsoorPlaceholder</item>
+        <item>Akshay</item>
+        <item>Placeholder</item>
+    </string-array>
+
+    <integer name="jpnagar_hc">1</integer>
+
+    <string-array name="jpnagar1">
+        <item>JPNagarPlaceholder</item>
+        <item>Akshay</item>
+        <item>Placeholder</item>
+    </string-array>
+
+    <array name="chembur">
+        <item>@array/chembur1</item>
+    </array>
+
+    <array name="vashi">
+        <item>@array/vashi1</item>
+    </array>
+
+    <array name="panvel">
+        <item>@array/panvel1</item>
+    </array>
+
+    <array name="tambaram">
+        <item>@array/tambaram1</item>
+    </array>
+
+    <array name="annanagar">
+        <item>@array/annanagar1</item>
+    </array>
+
+    <array name="ulsoor">
+        <item>@array/ulsoor1</item>
+    </array>
+
+    <array name="jpnagar">
+        <item>@array/jpnagar1</item>
+    </array>
+
+    <array name="mumbai">
+        <item>@array/chembur</item>
+        <item>@array/vashi</item>
+        <item>@array/panvel</item>
+    </array>
+
+    <array name="chennai">
+        <item>@array/tambaram</item>
+        <item>@array/annanagar</item>
+    </array>
+
+    <array name="blore">
+        <item>@array/ulsoor</item>
+        <item>@array/jpnagar</item>
+    </array>
+
+    <array name="housing">
+        <item>@array/mumbai</item>
+        <item>@array/chennai</item>
+        <item>@array/blore</item>
+    </array>
+
+    <array name="mumbaicount">
+        <item>@integer/chembur_hc</item>
+        <item>@integer/vashi_hc</item>
+        <item>@integer/panvel_hc</item>
+    </array>
+
+    <array name="chennaicount">
+        <item>@integer/tambaram_hc</item>
+        <item>@integer/annanagar_hc</item>
+    </array>
+
+    <array name="blorecount">
+        <item>@integer/ulsoor_hc</item>
+        <item>@integer/jpnagar_hc</item>
+    </array>
+
+    <array name="housecount">
+        <item>@array/mumbaicount</item>
+        <item>@array/chennaicount</item>
+        <item>@array/blorecount</item>
+    </array>
+
+</resources>

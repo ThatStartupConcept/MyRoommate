@@ -1,7 +1,7 @@
 package com.myroommate.myroommate;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,10 +11,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.myroommate.myroommate.R.id.parent;
 
 public class FindAPlace extends AppCompatActivity {
 
@@ -35,6 +34,7 @@ public class FindAPlace extends AppCompatActivity {
 
         final int listsize1 = list1.size() - 1;
 
+
         final Spinner spinner1 = (Spinner) findViewById(R.id.spinner1);
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list1) {
@@ -52,7 +52,7 @@ public class FindAPlace extends AppCompatActivity {
         list2.add("Chembur");
         list2.add("Vashi");
         list2.add("Panvel");
-        list1.add("Select One");
+        list2.add("Select One");
 
         final int listsize2 = list2.size() - 1;
 
@@ -77,13 +77,14 @@ public class FindAPlace extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
 
-
                 final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list0) {
 
                     @Override
                     public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
                         View v = null;
+
+
 
                         if (position2 == 0) {
                             ArrayAdapter dataAdapter3 = new ArrayAdapter(FindAPlace.this, android.R.layout.simple_spinner_item, list2) {
@@ -96,6 +97,7 @@ public class FindAPlace extends AppCompatActivity {
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
 
+
                         } else if (position2 == 1) {
                             ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list3) {
                                 @Override
@@ -106,6 +108,8 @@ public class FindAPlace extends AppCompatActivity {
                             spinner2.setSelection(listsize3);
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
+
+
                         } else if (position2 == 2) {
                             ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list4) {
                                 @Override
@@ -116,6 +120,8 @@ public class FindAPlace extends AppCompatActivity {
                             spinner2.setSelection(listsize4);
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
+
+
                         } else {
                             ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list0) {
 
@@ -123,6 +129,7 @@ public class FindAPlace extends AppCompatActivity {
                             spinner2.setSelection(0);
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
+
                         }
 
                         return v;
@@ -135,6 +142,48 @@ public class FindAPlace extends AppCompatActivity {
 
                 dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner2.setAdapter(dataAdapter2);
+
+                spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
+
+                        TextView text2 = (TextView) findViewById(R.id.textView2);
+
+                        Resources res = getResources();
+
+
+                        if((position2!=0 && position2!=3 && position3<=1) || (position2==0 && position3<=2)) {
+
+                            TypedArray housing = res.obtainTypedArray(R.array.housing);
+
+                            TypedArray location = res.obtainTypedArray(housing.getResourceId(position2, 0));
+
+                            TypedArray locality = res.obtainTypedArray(location.getResourceId(position3,0));
+
+                            String[] listing = res.getStringArray(locality.getResourceId(0,0));
+
+                            String text = "";
+                            for (String details : listing) {
+                                text = text + details + "\n";
+                            }
+
+                            text2.setText(text);
+
+                            findViewById(R.id.linearLayout2).setVisibility(View.VISIBLE);
+
+                        }
+
+
+                    }
+
+                    public void onNothingSelected(AdapterView<?> parentView2)
+                    {
+
+                    }
+
+                });
+
+
             }
 
             public void onNothingSelected(AdapterView<?> parentView)
@@ -142,6 +191,12 @@ public class FindAPlace extends AppCompatActivity {
 
             }
         });
+
+
+
+
+
+
 
     }
 
