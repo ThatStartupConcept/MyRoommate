@@ -169,7 +169,7 @@ public class FindAPlace extends AppCompatActivity {
 
                             text2.setText(text);
 
-                            findViewById(R.id.linearLayout2).setVisibility(View.VISIBLE);
+                            findViewById(R.id.nestedscrollview).setVisibility(View.VISIBLE);
 
                         }
 
