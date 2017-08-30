@@ -10,9 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FindAPlace extends AppCompatActivity {
@@ -26,11 +26,7 @@ public class FindAPlace extends AppCompatActivity {
         final List<String> list0 = new ArrayList<String>();
         list0.add("Select One");
 
-        List<String> list1 = new ArrayList<String>();
-        list1.add("Mumbai");
-        list1.add("Chennai");
-        list1.add("Bangalore");
-        list1.add("Select One");
+        List list1 = Arrays.asList(getResources().getStringArray(R.array.locationlist));
 
         final int listsize1 = list1.size() - 1;
 

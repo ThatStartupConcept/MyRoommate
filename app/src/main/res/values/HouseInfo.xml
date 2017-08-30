@@ -129,4 +129,11 @@
         <item>@array/blorecount</item>
     </array>
 
+    <string-array name="locationlist">
+        <item>Mumbai</item>
+        <item>Chennai</item>
+        <item>Bangalore</item>
+        <item>Select One</item>
+    </string-array>
+
 </resources>
