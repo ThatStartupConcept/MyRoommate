@@ -147,7 +147,7 @@ public class FindAPlace extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
 
-                        TextView text2 = (TextView) findViewById(R.id.textView2);
+                        // TextView text2 = (TextView) findViewById(R.id.textView2);
 
                         Resources res = getResources();
 
@@ -167,7 +167,7 @@ public class FindAPlace extends AppCompatActivity {
                                 text = text + details + "\n";
                             }
 
-                            text2.setText(text);
+                           // text2.setText(text);
 
                             findViewById(R.id.nestedscrollview).setVisibility(View.VISIBLE);
 
