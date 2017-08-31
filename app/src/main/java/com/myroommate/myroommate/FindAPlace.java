@@ -9,10 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.AdapterView;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +26,6 @@ public class FindAPlace extends AppCompatActivity {
         list0.add("Select One");
 
         List<String> list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
-
         final int listsize1 = list1.size() - 1;
 
 
@@ -47,16 +43,8 @@ public class FindAPlace extends AppCompatActivity {
         spinner1.setSelection(listsize1);
 
         final List<String> list2 = Arrays.asList(getResources().getStringArray(R.array.mumbainames));
-
-        final int listsize2 = list2.size() - 1;
-
         final List<String> list3 = Arrays.asList(getResources().getStringArray(R.array.chnnames));
-
-        final int listsize3 = list3.size() - 1;
-
         final List<String> list4 = Arrays.asList(getResources().getStringArray(R.array.blorenames));
-
-        final int listsize4 = list4.size() - 1;
 
 
         final Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
@@ -70,54 +58,57 @@ public class FindAPlace extends AppCompatActivity {
                     @Override
                     public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
-                        View v = null;
-
+                        View v;
 
 
                         if (position2 == 0) {
+                            final int temp=list2.size()-1;
                             ArrayAdapter dataAdapter3 = new ArrayAdapter(FindAPlace.this, android.R.layout.simple_spinner_item, list2) {
                                 @Override
                                 public int getCount() {
-                                    return (listsize2); // Truncate the list
+                                    return (temp); // Truncate the list
                                 }
                             };
-                            spinner2.setSelection(listsize2);
+
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
+                            spinner2.setSelection(temp);
 
 
                         } else if (position2 == 1) {
+                            final int temp=list3.size()-1;
                             ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list3) {
                                 @Override
                                 public int getCount() {
-                                    return (listsize3); // Truncate the list
+                                    return (temp);
                                 }
                             };
-                            spinner2.setSelection(listsize3);
+
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
+                            spinner2.setSelection(temp);
 
 
                         } else if (position2 == 2) {
+                            final int temp=list4.size()-1;
                             ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list4) {
                                 @Override
                                 public int getCount() {
-                                    return (listsize4); // Truncate the list
+                                    return (temp); // Truncate the list
                                 }
                             };
-                            spinner2.setSelection(listsize4);
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
+                            spinner2.setSelection(temp);
 
 
                         } else {
                             ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list0) {
 
                             };
-                            spinner2.setSelection(0);
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
-
+                            spinner2.setSelection(0);
                         }
 
                         return v;

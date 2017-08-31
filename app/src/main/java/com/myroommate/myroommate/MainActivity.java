@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        List list1 = Arrays.asList(getResources().getStringArray(R.array.locationlist));
+        List list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
 
         final int listsize1 = list1.size() - 1;
 
