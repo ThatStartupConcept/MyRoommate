@@ -129,4 +129,30 @@
         <item>@array/blorecount</item>
     </array>
 
+    <string-array name="locationnames">
+        <item>Mumbai</item>
+        <item>Chennai</item>
+        <item>Bangalore</item>
+        <item>Select One</item>
+    </string-array>
+
+    <string-array name="mumbainames">
+        <item>Chembur</item>
+        <item>Vashi</item>
+        <item>Panvel</item>
+        <item>Select One</item>
+    </string-array>
+
+    <string-array name="chnnames">
+        <item>Tambaram</item>
+        <item>Anna Nagar</item>
+        <item>Select One</item>
+    </string-array>
+
+    <string-array name="blorenames">
+        <item>Ulsoor</item>
+        <item>J P Nagar</item>
+        <item>Select One</item>
+    </string-array>
+
 </resources>

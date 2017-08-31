@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FindAPlace extends AppCompatActivity {
@@ -26,11 +28,7 @@ public class FindAPlace extends AppCompatActivity {
         final List<String> list0 = new ArrayList<String>();
         list0.add("Select One");
 
-        List<String> list1 = new ArrayList<String>();
-        list1.add("Mumbai");
-        list1.add("Chennai");
-        list1.add("Bangalore");
-        list1.add("Select One");
+        List<String> list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
 
         final int listsize1 = list1.size() - 1;
 
@@ -48,25 +46,15 @@ public class FindAPlace extends AppCompatActivity {
         spinner1.setAdapter(dataAdapter);
         spinner1.setSelection(listsize1);
 
-        final List<String> list2 = new ArrayList<String>();
-        list2.add("Chembur");
-        list2.add("Vashi");
-        list2.add("Panvel");
-        list2.add("Select One");
+        final List<String> list2 = Arrays.asList(getResources().getStringArray(R.array.mumbainames));
 
         final int listsize2 = list2.size() - 1;
 
-        final List<String> list3 = new ArrayList<String>();
-        list3.add("Tambaram");
-        list3.add("Anna Nagar");
-        list3.add("Select One");
+        final List<String> list3 = Arrays.asList(getResources().getStringArray(R.array.chnnames));
 
         final int listsize3 = list3.size() - 1;
 
-        final List<String> list4 = new ArrayList<String>();
-        list4.add("Ulsoor");
-        list4.add("J P Nagar");
-        list4.add("Select One");
+        final List<String> list4 = Arrays.asList(getResources().getStringArray(R.array.blorenames));
 
         final int listsize4 = list4.size() - 1;
 
@@ -160,16 +148,31 @@ public class FindAPlace extends AppCompatActivity {
 
                             TypedArray locality = res.obtainTypedArray(location.getResourceId(position3,0));
 
-                            String[] listing = res.getStringArray(locality.getResourceId(0,0));
+                            String[] listing;
 
-                            String text = "";
-                            for (String details : listing) {
-                                text = text + details + "\n";
+                            String text;
+
+                            CardView[] cv;
+
+                            for(int i=0;i<locality.getIndexCount();i++){
+                                listing = res.getStringArray(locality.getResourceId(i,0));
+
+                                text = "";
+                                for (String details : listing) {
+                                    text = text + details + "\n";
+                                }
+
+                                // cv[i].setBackground();
+
                             }
+
+
 
                            // text2.setText(text);
 
                             findViewById(R.id.nestedscrollview).setVisibility(View.VISIBLE);
+
+
 
                         }
 
