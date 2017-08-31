@@ -12,7 +12,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/main.appbar"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="99dp"
         android:layout_gravity="top"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -25,14 +25,13 @@
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="left"
-                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|left"
                 android:padding="8dp"
                 android:text="Your Location: "
                 android:textSize="18sp"
@@ -40,10 +39,10 @@
 
             <Spinner
                 android:id="@+id/locationSpinner"
-                android:layout_width="219dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:gravity="center_vertical" />
+                android:layout_width="146dp"
+                android:layout_height="38dp"
+                android:layout_gravity="bottom|right"
+                android:padding="8dp" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
