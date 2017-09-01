@@ -5,23 +5,37 @@ import android.content.res.TypedArray;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.AdapterView;
-import android.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class FindAPlace extends AppCompatActivity {
 
+    private RecyclerView mRecyclerView;
+    private RVAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private List<Listing> listings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_a_place);
+
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+
 
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
@@ -145,33 +159,22 @@ public class FindAPlace extends AppCompatActivity {
 
                             String[] listing;
 
-                            String text;
+                            listings = new ArrayList<>();
 
-                            CardView[] cv;
+                            // specify an adapter (see also next example)
+                            mAdapter = new RVAdapter(listings);
+                            mRecyclerView.setAdapter(mAdapter);
+                            initializeAdapter();
 
                             for(int i=0;i<locality.getIndexCount();i++){
                                 listing = res.getStringArray(locality.getResourceId(i,0));
-
-                                text = "";
-                                for (String details : listing) {
-                                    text = text + details + "\n";
-                                }
-
-                                // cv[i].setBackground();
-
+                                listings.add(new Listing(R.mipmap.listing_image,listing[0],listing[1],listing[2]));
                             }
 
 
 
-                           // text2.setText(text);
-
-                            findViewById(R.id.nestedscrollview).setVisibility(View.VISIBLE);
-
-
-
+                            findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
                         }
-
-
                     }
 
                     public void onNothingSelected(AdapterView<?> parentView2)
@@ -188,5 +191,16 @@ public class FindAPlace extends AppCompatActivity {
             {
             }
         });
+
+
+
+    }
+
+
+
+    private void initializeAdapter(){
+        RVAdapter adapter = new RVAdapter(listings);
+        mRecyclerView.setAdapter(adapter);
     }
 }
+

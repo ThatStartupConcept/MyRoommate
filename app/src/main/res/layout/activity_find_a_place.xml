@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_light"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".FindAPlace">
 
 
     <android.support.v7.widget.Toolbar
@@ -75,26 +76,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nestedscrollview"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
-            android:id="@+id/cardholder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/holo_green_dark"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="0dp" />
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </android.support.v7.widget.RecyclerView>
 
 </android.support.design.widget.CoordinatorLayout>
