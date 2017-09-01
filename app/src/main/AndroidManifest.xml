@@ -21,7 +21,11 @@
         <activity
             android:name=".FindAPlace"
             android:label="Find a Place"
+            android:parentActivityName="com.myroommate.myroommate.MainActivity"
             android:exported="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myroommate.myroommate.MainActivity"/>
         </activity>
     </application>
 

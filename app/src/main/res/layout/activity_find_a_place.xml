@@ -9,50 +9,69 @@
     android:fitsSystemWindows="true">
 
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarFind"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="top"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/main.appbar"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_gravity="top"
+        android:layout_height="158dp"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <android.support.design.widget.CollapsingToolbarLayout
-        android:id="@+id/main.collapsing"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        app:contentScrim="?attr/colorPrimary"
-        app:expandedTitleMarginEnd="64dp"
-        app:expandedTitleMarginStart="48dp"
-        app:layout_scrollFlags="scroll|enterAlways">
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/main.collapsing"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="top"
-            android:orientation="vertical">
+            android:layout_weight="1"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|enterAlways">
 
-            <Spinner
-                android:id="@+id/spinner1"
-                style="@style/Platform.Widget.AppCompat.Spinner"
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="top"
+                android:layout_weight="1" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dropDownWidth="match_parent"
-                tools:layout_editor_absoluteX="122dp"
-                tools:layout_editor_absoluteY="68dp" />
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:weightSum="1">
 
-            <Spinner
-                android:id="@+id/spinner2"
-                style="@style/Platform.Widget.AppCompat.Spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                tools:layout_editor_absoluteX="194dp" />
+                <Spinner
+                    android:id="@+id/spinner1"
+                    style="@style/Platform.Widget.AppCompat.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:dropDownWidth="match_parent"
+                    tools:layout_editor_absoluteX="122dp"
+                    tools:layout_editor_absoluteY="68dp" />
 
-        </LinearLayout>
-    </android.support.design.widget.CollapsingToolbarLayout>
+                <Spinner
+                    android:id="@+id/spinner2"
+                    style="@style/Platform.Widget.AppCompat.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_weight="0.5"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                    tools:layout_editor_absoluteX="194dp" />
+
+            </LinearLayout>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
