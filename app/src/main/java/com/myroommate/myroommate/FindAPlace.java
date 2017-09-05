@@ -26,7 +26,7 @@ public class FindAPlace extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_find_a_place);
+        setContentView(R.layout.app_bar_find_a_place);
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -70,6 +70,7 @@ public class FindAPlace extends AppCompatActivity {
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
+                findViewById(R.id.recyclerView).setVisibility(View.GONE);
 
                 final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list0) {
 
@@ -141,8 +142,6 @@ public class FindAPlace extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
 
-                        // TextView text2 = (TextView) findViewById(R.id.textView2);
-
                         Resources res = getResources();
 
 
@@ -157,12 +156,6 @@ public class FindAPlace extends AppCompatActivity {
                             String[] listing;
 
                             listings = new ArrayList<>();
-
-
-                            /*delete this
-                            listing = res.getStringArray(locality.getResourceId(0,0));
-                            listings.add(new Listing(R.mipmap.listing_image,listing[0],listing[1],listing[2]));*/
-
 
                             for(int i=0;i<locality.length();i++){
                                 listing = res.getStringArray(locality.getResourceId(i,0));

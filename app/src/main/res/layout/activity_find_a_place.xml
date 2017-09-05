@@ -1,28 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_light"
+    android:background="@color/blue_background"
     android:fitsSystemWindows="true"
     tools:context=".FindAPlace">
 
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbarFind"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="top"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/main.appbar"
         android:layout_width="match_parent"
-        android:layout_height="158dp"
+        android:layout_height="159dp"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -37,11 +27,6 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|enterAlways">
 
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="top"
-                android:layout_weight="1" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -55,20 +40,16 @@
                     style="@style/Platform.Widget.AppCompat.Spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:dropDownWidth="match_parent"
-                    tools:layout_editor_absoluteX="122dp"
-                    tools:layout_editor_absoluteY="68dp" />
+                    android:layout_weight="0.5" />
 
                 <Spinner
                     android:id="@+id/spinner2"
                     style="@style/Platform.Widget.AppCompat.Spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_weight="0.5"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                    tools:layout_editor_absoluteX="194dp" />
+                    android:layout_gravity="bottom"
+                    android:layout_weight="0.5" />
+
 
             </LinearLayout>
 
@@ -80,8 +61,9 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="bottom"
+        android:layout_below="@id/main.collapsing"
         android:background="@color/blue_background"
+        android:paddingTop="16dp"
         android:scrollbars="vertical"
         android:visibility="invisible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
