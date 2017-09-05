@@ -9,6 +9,12 @@
         <item>Govandi</item>
     </string-array>
 
+    <string-array name="chembur2">
+        <item>201-A Orchid</item>
+        <item>Ganesh</item>
+        <item>Govandi</item>
+    </string-array>
+
     <integer name="vashi_hc">1</integer>
     
     <string-array name="vashi1">
@@ -59,6 +65,7 @@
 
     <array name="chembur">
         <item>@array/chembur1</item>
+        <item>@array/chembur2</item>
     </array>
 
     <array name="vashi">

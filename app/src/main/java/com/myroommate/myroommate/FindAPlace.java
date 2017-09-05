@@ -90,7 +90,7 @@ public class FindAPlace extends AppCompatActivity {
 
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
-                            spinner2.setSelection(temp);
+
 
 
                         } else if (position2 == 1) {
@@ -104,7 +104,6 @@ public class FindAPlace extends AppCompatActivity {
 
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
-                            spinner2.setSelection(temp);
 
 
                         } else if (position2 == 2) {
@@ -117,7 +116,6 @@ public class FindAPlace extends AppCompatActivity {
                             };
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
-                            spinner2.setSelection(temp);
 
 
                         } else {
@@ -126,7 +124,6 @@ public class FindAPlace extends AppCompatActivity {
                             };
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
-                            spinner2.setSelection(0);
                         }
 
                         return v;
@@ -149,7 +146,7 @@ public class FindAPlace extends AppCompatActivity {
                         Resources res = getResources();
 
 
-                        if((position2!=0 && position2!=3 && position3<=1) || (position2==0 && position3<=2)) {
+                        if(spinner1.getSelectedItem().toString()!="Select One" && spinner2.getSelectedItem().toString()!="Select One") {
 
                             TypedArray housing = res.obtainTypedArray(R.array.housing);
 
@@ -161,17 +158,18 @@ public class FindAPlace extends AppCompatActivity {
 
                             listings = new ArrayList<>();
 
-                            // specify an adapter (see also next example)
-                            mAdapter = new RVAdapter(listings);
-                            mRecyclerView.setAdapter(mAdapter);
-                            initializeAdapter();
 
-                            for(int i=0;i<locality.getIndexCount();i++){
+                            /*delete this
+                            listing = res.getStringArray(locality.getResourceId(0,0));
+                            listings.add(new Listing(R.mipmap.listing_image,listing[0],listing[1],listing[2]));*/
+
+
+                            for(int i=0;i<locality.length();i++){
                                 listing = res.getStringArray(locality.getResourceId(i,0));
                                 listings.add(new Listing(R.mipmap.listing_image,listing[0],listing[1],listing[2]));
                             }
 
-
+                            initializeAdapter();
 
                             findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
                         }
