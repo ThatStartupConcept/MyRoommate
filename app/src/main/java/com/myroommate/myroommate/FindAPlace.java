@@ -190,8 +190,8 @@ public class FindAPlace extends AppCompatActivity {
 
 
     private void initializeAdapter(){
-        RVAdapter adapter = new RVAdapter(listings);
-        mRecyclerView.setAdapter(adapter);
+        mAdapter = new RVAdapter(listings);
+        mRecyclerView.setAdapter(mAdapter);
     }
 }
 

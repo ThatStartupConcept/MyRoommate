@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_background"
+    android:background="@color/window_background"
     android:fitsSystemWindows="true"
     tools:context=".FindAPlace">
 
@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/main.collapsing"
-        android:background="@color/blue_background"
+        android:background="@color/colorAccent"
         android:paddingTop="16dp"
         android:scrollbars="vertical"
         android:visibility="invisible"

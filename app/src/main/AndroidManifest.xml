@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.myroommate.myroommate">
 
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/listing_image"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -20,12 +21,20 @@
         </activity>
         <activity
             android:name=".FindAPlace"
+            android:exported="true"
             android:label="Find a Place"
-            android:parentActivityName="com.myroommate.myroommate.MainActivity"
-            android:exported="true">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.myroommate.myroommate.MainActivity"/>
+                android:value="com.myroommate.myroommate.MainActivity" />
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myroommate.myroommate.MainActivity" />
         </activity>
     </application>
 

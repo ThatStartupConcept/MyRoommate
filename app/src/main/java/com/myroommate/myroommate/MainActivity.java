@@ -104,7 +104,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
+            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+            MainActivity.this.startActivity(intent);
 
+        }else if (id==R.id.nav_login) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            MainActivity.this.startActivity(intent);
         } else if (id == R.id.nav_find) {
             Intent intent = new Intent(MainActivity.this, FindAPlace.class);
             MainActivity.this.startActivity(intent);
@@ -115,6 +120,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_feedback) {
 
         } else if (id == R.id.nav_about) {
+
 
         }
 

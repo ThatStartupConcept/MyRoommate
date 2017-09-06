@@ -58,7 +58,7 @@
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/blue_background"
+            android:background="@color/window_background"
             android:text="@string/blah_blah" />
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>
