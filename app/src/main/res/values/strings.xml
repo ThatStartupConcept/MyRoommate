@@ -3,6 +3,32 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="blah_blah">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur porttitor sem eros, ac gravida dui ornare id. Maecenas condimentum ultricies arcu, eu pretium augue tristique id. Praesent vulputate molestie ante et porta. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam vehicula luctus nisl, et mattis nibh blandit a. Nam mattis tempus ipsum, sit amet sagittis diam feugiat quis. Nulla facilisi. Nullam consectetur mattis eros. Proin vitae risus a justo placerat tristique. Nam sed augue sit amet tellus dictum tristique. Nullam eu turpis fermentum, mattis turpis eu, bibendum lectus. Mauris accumsan elementum eros, quis porttitor dui malesuada a. Phasellus purus ex, cursus scelerisque scelerisque et, venenatis id est.
 
+                                Donec placerat tempor sapien, et aliquet lorem pellentesque at. Fusce consequat dolor quis maximus pellentesque. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque libero diam, facilisis fermentum faucibus id, viverra vitae tortor. In laoreet magna at quam tempor fermentum. Cras elementum, massa vitae ullamcorper pharetra, est velit dapibus ipsum, eu suscipit nibh nisl sit amet augue. Nullam justo lorem, accumsan vel orci sit amet, pharetra congue diam. Mauris a cursus tellus. Nam at purus nibh. Morbi odio augue, condimentum id congue at, ultricies sit amet lectus. Proin libero urna, rutrum nec mi eget, consectetur mattis velit.
+
+                                Cras ac mauris a risus varius congue et in leo. Curabitur massa orci, iaculis eget tincidunt id, hendrerit ac tortor. Donec varius luctus sem, ut condimentum nisl fermentum vel. Maecenas a ligula odio. Pellentesque eget nisl ut nibh dignissim pellentesque et eu orci. Vestibulum urna magna, tincidunt in aliquam eget, laoreet vitae ante. Mauris sed orci ut neque pellentesque placerat non id nulla. Curabitur accumsan leo ultrices varius fermentum. Mauris nec ullamcorper quam, ut tincidunt tortor. Donec a dictum lectus. Etiam ligula mi, rhoncus vulputate dapibus in, ornare vel mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus luctus sapien non suscipit rhoncus. Phasellus non dolor ex.
+
+                                Praesent lacus metus, pharetra vel lectus in, sagittis efficitur massa. Cras sapien nunc, fringilla nec mauris vel, tincidunt ullamcorper ex. Sed euismod posuere sapien, id scelerisque ligula suscipit at. Morbi massa lectus, consequat sed nulla in, pulvinar sagittis risus. Suspendisse egestas, orci eu faucibus gravida, dolor metus mollis risus, venenatis sodales lectus lorem a turpis. Duis pharetra imperdiet turpis a sagittis. Fusce pulvinar semper laoreet. Maecenas euismod aliquam libero quis auctor. Maecenas nec pretium eros. Aliquam et mauris eget turpis ultricies vestibulum. Etiam nec dapibus nulla. Phasellus ac nisl vitae ex molestie euismod nec sed elit. Nulla ut dui fermentum, pellentesque purus sit amet, elementum nibh. Vestibulum fermentum euismod erat vitae mattis. Nam congue augue a gravida scelerisque.
+
+                                Vivamus a pulvinar justo. Integer eget ultrices lorem. Sed sed ligula elit. Mauris hendrerit vestibulum odio. Proin sed dapibus ante. Aenean fermentum sit amet tortor vel tempor. Proin non pulvinar quam. Etiam interdum elit eget ullamcorper dignissim.</string>
     <string name="action_settings">Settings</string>
+
+
+    <!-- Strings related to login and register -->
+    <string name="title_activity_login">Log in or Register</string>
+    <string name="prompt_firstname">First Name</string>
+    <string name="prompt_lastname">Last Name</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_log_in">Log in</string>
+    <string name="action_register">Register</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
 </resources>

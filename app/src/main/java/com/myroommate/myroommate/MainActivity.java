@@ -12,6 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.content.Intent;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import java.util.Arrays;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,8 +41,25 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        List list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
+
+        final int listsize1 = list1.size() - 1;
+
+        final Spinner spinner1 = (Spinner) findViewById(R.id.locationSpinner);
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list1) {
+            @Override
+            public int getCount() {
+                return (listsize1); // Truncate the list
+            }
+        };
+
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner1.setAdapter(dataAdapter);
+        spinner1.setSelection(listsize1);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -80,17 +103,24 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_home) {
+            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+            MainActivity.this.startActivity(intent);
 
-        } else if (id == R.id.nav_slideshow) {
+        }else if (id==R.id.nav_login) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            MainActivity.this.startActivity(intent);
+        } else if (id == R.id.nav_find) {
+            Intent intent = new Intent(MainActivity.this, FindAPlace.class);
+            MainActivity.this.startActivity(intent);
+        } else if (id == R.id.nav_list) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_policies) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_feedback) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_about) {
+
 
         }
 
