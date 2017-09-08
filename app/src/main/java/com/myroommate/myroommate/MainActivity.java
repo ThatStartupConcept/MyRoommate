@@ -1,9 +1,8 @@
 package com.myroommate.myroommate;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,12 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Intent;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import java.util.Arrays;
-import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,45 +22,25 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        assert drawer != null;
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        List list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
-
-        final int listsize1 = list1.size() - 1;
-
-        final Spinner spinner1 = (Spinner) findViewById(R.id.locationSpinner);
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list1) {
-            @Override
-            public int getCount() {
-                return (listsize1); // Truncate the list
-            }
-        };
-
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(dataAdapter);
-        spinner1.setSelection(listsize1);
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
+
+        displaySelectedScreen(R.id.nav_home);
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -101,31 +74,37 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        displaySelectedScreen(item.getItemId());
+        return true;
+    }
 
-        if (id == R.id.nav_home) {
-            Intent intent = new Intent(MainActivity.this, MainActivity.class);
-            MainActivity.this.startActivity(intent);
+    private void displaySelectedScreen(int itemId) {
 
-        }else if (id==R.id.nav_login) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            MainActivity.this.startActivity(intent);
-        } else if (id == R.id.nav_find) {
-            Intent intent = new Intent(MainActivity.this, FindAPlace.class);
-            MainActivity.this.startActivity(intent);
-        } else if (id == R.id.nav_list) {
+        //creating fragment object
+        Fragment fragment = null;
 
-        } else if (id == R.id.nav_policies) {
+        //initializing the fragment object which is selected
+        switch (itemId) {
+            case R.id.nav_home:
+                fragment=new HomeScreenFragment();
+                break;
+            case R.id.nav_login:
+                fragment=new LoginActivity();
+                break;
+            case R.id.nav_find:
+                fragment = new FindAPlace();
+                break;
+        }
 
-        } else if (id == R.id.nav_feedback) {
-
-        } else if (id == R.id.nav_about) {
-
-
+        //replacing the fragment
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 }

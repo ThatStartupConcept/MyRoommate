@@ -2,11 +2,14 @@ package com.myroommate.myroommate;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,29 +19,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FindAPlace extends AppCompatActivity {
+public class FindAPlace extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RVAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Listing> listings;
 
+    public static FindAPlace newInstance() {
+
+        return new FindAPlace();
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_bar_find_a_place);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.activity_find_a_place, container, false);
+    }
 
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-
-
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
 
         final List<String> list0 = new ArrayList<String>();
         list0.add("Select One");
@@ -47,9 +52,9 @@ public class FindAPlace extends AppCompatActivity {
         final int listsize1 = list1.size() - 1;
 
 
-        final Spinner spinner1 = (Spinner) findViewById(R.id.spinner1);
+        final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.spinner1);
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list1) {
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list1) {
             @Override
             public int getCount() {
                 return (listsize1); // Truncate the list
@@ -65,14 +70,14 @@ public class FindAPlace extends AppCompatActivity {
         final List<String> list4 = Arrays.asList(getResources().getStringArray(R.array.blorenames));
 
 
-        final Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
+        final Spinner spinner2 = (Spinner)getActivity().findViewById(R.id.spinner2);
 
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
-                findViewById(R.id.recyclerView).setVisibility(View.GONE);
+                getActivity().findViewById(R.id.recyclerView).setVisibility(View.GONE);
 
-                final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list0) {
+                final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
 
                     @Override
                     public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -82,7 +87,7 @@ public class FindAPlace extends AppCompatActivity {
 
                         if (position2 == 0) {
                             final int temp=list2.size()-1;
-                            ArrayAdapter dataAdapter3 = new ArrayAdapter(FindAPlace.this, android.R.layout.simple_spinner_item, list2) {
+                            ArrayAdapter dataAdapter3 = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, list2) {
                                 @Override
                                 public int getCount() {
                                     return (temp); // Truncate the list
@@ -96,7 +101,7 @@ public class FindAPlace extends AppCompatActivity {
 
                         } else if (position2 == 1) {
                             final int temp=list3.size()-1;
-                            ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list3) {
+                            ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list3) {
                                 @Override
                                 public int getCount() {
                                     return (temp);
@@ -109,7 +114,7 @@ public class FindAPlace extends AppCompatActivity {
 
                         } else if (position2 == 2) {
                             final int temp=list4.size()-1;
-                            ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list4) {
+                            ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list4) {
                                 @Override
                                 public int getCount() {
                                     return (temp); // Truncate the list
@@ -120,7 +125,7 @@ public class FindAPlace extends AppCompatActivity {
 
 
                         } else {
-                            ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(FindAPlace.this, android.R.layout.simple_spinner_item, list0) {
+                            ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
 
                             };
                             spinner2.setAdapter(dataAdapter3);
@@ -145,7 +150,7 @@ public class FindAPlace extends AppCompatActivity {
                         Resources res = getResources();
 
 
-                        if(spinner1.getSelectedItem().toString()!="Select One" && spinner2.getSelectedItem().toString()!="Select One") {
+                        if(!spinner1.getSelectedItem().toString().equals("Select One") && !spinner2.getSelectedItem().toString().equals("Select One")) {
 
                             TypedArray housing = res.obtainTypedArray(R.array.housing);
 
@@ -164,7 +169,7 @@ public class FindAPlace extends AppCompatActivity {
 
                             initializeAdapter();
 
-                            findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
+                            getActivity().findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -182,11 +187,14 @@ public class FindAPlace extends AppCompatActivity {
             {
             }
         });
-
-
-
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //you can set the title for your toolbar here for different fragments different titles
+        getActivity().setTitle("Find A Place");
+    }
 
 
     private void initializeAdapter(){
