@@ -75,7 +75,7 @@ public class HttpParse {
             else {
 
 
-                FinalHttpData = "Something Went Wrong";
+                FinalHttpData = "Please check your internet connection.";
             }
         } catch (Exception e) {
             e.printStackTrace();
