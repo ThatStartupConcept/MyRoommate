@@ -37,7 +37,7 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        View RootView = inflater.inflate(R.layout.login_fragment, container, false);
+        View RootView = inflater.inflate(R.layout.fragment_login, container, false);
 
         //Assign Id'S
         Email = (EditText)RootView.findViewById(R.id.login_email);
@@ -112,6 +112,7 @@ public class LoginFragment extends Fragment {
 
                 Toast.makeText(getActivity(),httpResponseMsg, Toast.LENGTH_LONG).show();
 
+                if(httpResponseMsg.equals("S"));
             }
 
             @Override
@@ -131,6 +132,6 @@ public class LoginFragment extends Fragment {
 
         userLoginFunctionClass.execute(email,password);
     }
-
+    
 
 }

@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class LoginActivity extends Fragment {
+public class LoginRegisterFragment extends Fragment {
 
     private ViewPager mViewPager;
     private ViewPagerAdapter mViewPagerAdapter;
@@ -17,7 +17,7 @@ public class LoginActivity extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.activity_login, container, false);
+    return inflater.inflate(R.layout.fragment_login_register, container, false);
     }
 
     @Override

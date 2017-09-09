@@ -1,6 +1,7 @@
 package com.myroommate.myroommate;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
@@ -11,9 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +31,28 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                Button  navHeaderButton = (Button) findViewById(R.id.nav_header_button);
+                navHeaderButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Fragment fragment=new LoginRegisterFragment();
+                        //replacing the fragment
+                        if (fragment != null) {
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.content_frame, fragment);
+                            ft.commit();
+                        }
+
+                        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                        assert drawer != null;
+                        drawer.closeDrawer(GravityCompat.START);
+                    }
+                });
+            }
+        };
         assert drawer != null;
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -43,7 +70,10 @@ public class MainActivity extends AppCompatActivity
         assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if (!this.getTitle().equals("My Roommate")){
+            displaySelectedScreen(R.id.nav_home);
+        }
+        else {
             super.onBackPressed();
         }
     }
@@ -73,6 +103,10 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
+
+
+
         // Handle navigation view item clicks here.
         displaySelectedScreen(item.getItemId());
         return true;
@@ -83,16 +117,15 @@ public class MainActivity extends AppCompatActivity
         //creating fragment object
         Fragment fragment = null;
 
+
+
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_home:
                 fragment=new HomeScreenFragment();
                 break;
-            case R.id.nav_login:
-                fragment=new LoginActivity();
-                break;
             case R.id.nav_find:
-                fragment = new FindAPlace();
+                fragment = new FindAPlaceFragment();
                 break;
         }
 

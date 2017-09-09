@@ -4,8 +4,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,21 +17,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FindAPlace extends Fragment {
+public class FindAPlaceFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RVAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Listing> listings;
 
-    public static FindAPlace newInstance() {
+    public static FindAPlaceFragment newInstance() {
 
-        return new FindAPlace();
+        return new FindAPlaceFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.activity_find_a_place, container, false);
+    return inflater.inflate(R.layout.fragment_find_a_place, container, false);
     }
 
     @Override
