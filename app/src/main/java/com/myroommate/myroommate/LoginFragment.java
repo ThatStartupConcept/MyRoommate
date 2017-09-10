@@ -73,7 +73,7 @@ public class LoginFragment extends Fragment {
         return RootView;
     }
 
-    public void CheckEditTextIsEmptyOrNot(){
+    protected void CheckEditTextIsEmptyOrNot(){
 
         EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
@@ -132,6 +132,6 @@ public class LoginFragment extends Fragment {
 
         userLoginFunctionClass.execute(email,password);
     }
-    
+
 
 }

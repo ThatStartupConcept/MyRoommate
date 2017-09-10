@@ -1,42 +1,48 @@
 package com.myroommate.myroommate;
 
+import android.app.ProgressDialog;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
-public class FindAPlaceFragment extends Fragment {
+public class ListYourPlaceFragment extends Fragment {
 
-    private RecyclerView mRecyclerView;
-    private RVAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private List<Listing> listings;
+    Button Submit;
+    EditText ListingName, Address, SubLocality, Pincode, Rent;
+    String ListingNameHolder, AddressHolder, SubLocalityHolder, PincodeHolder;
+    String LocationHolder, LocalityHolder;
+    Integer RentHolder;
+    String finalResult ;
+    String HttpURL = "https://myroommate.000webhostapp.com/UserLogin.php";
+    Boolean CheckEditText ;
+    ProgressDialog progressDialog;
+    HashMap<String,String> hashMap = new HashMap<>();
+    HttpParse httpParse = new HttpParse();
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.fragment_find_a_place, container, false);
-    }
+    public static final String TITLE = "List Your Place";
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
 
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
 
         final List<String> list0 = new ArrayList<String>();
         list0.add("Select One");
@@ -45,7 +51,7 @@ public class FindAPlaceFragment extends Fragment {
         final int listsize1 = list1.size() - 1;
 
 
-        final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.spinner1);
+        final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.lyp_location);
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list1) {
             @Override
@@ -63,12 +69,11 @@ public class FindAPlaceFragment extends Fragment {
         final List<String> list4 = Arrays.asList(getResources().getStringArray(R.array.blorenames));
 
 
-        final Spinner spinner2 = (Spinner)getActivity().findViewById(R.id.spinner2);
+        final Spinner spinner2 = (Spinner)getActivity().findViewById(R.id.lyp_locality);
 
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
-                getActivity().findViewById(R.id.recyclerView).setVisibility(View.GONE);
 
                 final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
 
@@ -141,28 +146,11 @@ public class FindAPlaceFragment extends Fragment {
                     public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
 
                         Resources res = getResources();
-
-
                         if(!spinner1.getSelectedItem().toString().equals("Select One") && !spinner2.getSelectedItem().toString().equals("Select One")) {
 
-                            TypedArray housing = res.obtainTypedArray(R.array.housing);
+                            LocationHolder=spinner1.getSelectedItem().toString();
+                            LocalityHolder=spinner2.getSelectedItem().toString();
 
-                            TypedArray location = res.obtainTypedArray(housing.getResourceId(position2, 0));
-
-                            TypedArray locality = res.obtainTypedArray(location.getResourceId(position3,0));
-
-                            String[] listing;
-
-                            listings = new ArrayList<>();
-
-                            for(int i=0;i<locality.length();i++){
-                                listing = res.getStringArray(locality.getResourceId(i,0));
-                                listings.add(new Listing(R.mipmap.listing_image,listing[0],listing[1],listing[2]));
-                            }
-
-                            initializeAdapter();
-
-                            getActivity().findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -180,19 +168,75 @@ public class FindAPlaceFragment extends Fragment {
             {
             }
         });
+
+
     }
+
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        //you can set the title for your toolbar here for different fragments different titles
-        getActivity().setTitle("Find A Place");
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+
+        View RootView = inflater.inflate(R.layout.fragment_list_your_place, container, false);
+
+        //Assign Id'S
+        ListingName = (EditText)RootView.findViewById(R.id.lyp_listing_name);
+        Address = (EditText)RootView.findViewById(R.id.lyp_address);
+        SubLocality = (EditText)RootView.findViewById(R.id.lyp_sub_locality);
+        Pincode = (EditText)RootView.findViewById(R.id.lyp_pincode);
+        Rent = (EditText)RootView.findViewById(R.id.lyp_rent);
+        Submit = (Button)RootView.findViewById(R.id.lyp_submit);
+
+        //Adding Click Listener on button.
+        Submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Checking whether EditText is Empty or Not
+                CheckEditTextIsEmptyOrNot();
+
+                if(CheckEditText){
+                    // If EditText is not empty and CheckEditText = True then this block will execute.
+                    Toast.makeText(getActivity(), "Submitted!", Toast.LENGTH_LONG).show();
+                }
+                else {
+
+                    // If EditText is empty then this block will execute .
+                    Toast.makeText(getActivity(), "Please fill all the form fields.", Toast.LENGTH_LONG).show();
+
+                }
+
+
+            }
+        });
+
+        return RootView;
     }
 
+    protected void CheckEditTextIsEmptyOrNot(){
 
-    private void initializeAdapter(){
-        mAdapter = new RVAdapter(listings);
-        mRecyclerView.setAdapter(mAdapter);
+        ListingNameHolder=ListingName.getText().toString();
+        AddressHolder=Address.getText().toString();
+        SubLocalityHolder=SubLocality.getText().toString();
+        PincodeHolder = Pincode.getText().toString();
+
+        try {
+            RentHolder = Integer.valueOf(Rent.getText().toString());
+        }
+        catch (NumberFormatException e){
+            RentHolder=0;
+        }
+
+
+        if(TextUtils.isEmpty(LocationHolder) || TextUtils.isEmpty(LocalityHolder) || TextUtils.isEmpty(ListingNameHolder) || TextUtils.isEmpty(AddressHolder) || TextUtils.isEmpty(PincodeHolder) || RentHolder==0)
+        {
+
+            CheckEditText = false;
+
+        }
+        else {
+
+            CheckEditText = true ;
+        }
+
     }
 }
-

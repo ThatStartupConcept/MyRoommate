@@ -1,7 +1,6 @@
 package com.myroommate.myroommate;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
@@ -27,6 +26,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Boolean isLoggedIn = false;
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -126,6 +126,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_find:
                 fragment = new FindAPlaceFragment();
+                break;
+            case R.id.nav_list:
+                fragment = new ListYourPlaceInfoFragment();
                 break;
         }
 

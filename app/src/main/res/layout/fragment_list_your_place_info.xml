@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.15"
+        android:gravity="center"
+        android:text="@string/app_name"
+        android:textSize="26sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.04"
+        android:gravity="center"
+        android:text="@string/slogan"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.19"
+        android:gravity="center"
+        android:text="@string/list_your_place_short_info" />
+
+    <Button
+        android:id="@+id/list_now_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorAccent"
+        android:padding="8dp"
+        android:text="LIST YOUR HOUSE NOW"
+        android:textColor="@android:color/white"
+        android:layout_weight="0.04" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.27" />
+
+    <Spinner
+        android:id="@+id/spinner3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.27" />
+
+    <Button
+        android:id="@+id/faq_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.03"
+        android:background="@color/colorAccent"
+        android:text="F.A.Q."
+        android:textColor="@android:color/white" />
+</LinearLayout>
