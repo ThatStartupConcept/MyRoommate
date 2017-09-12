@@ -27,7 +27,7 @@
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="605dp"
+        android:layout_height="566dp"
         android:layout_gravity="bottom"
         android:fitsSystemWindows="false"
         tools:context="com.myroommate.myroommate.MainActivity" />

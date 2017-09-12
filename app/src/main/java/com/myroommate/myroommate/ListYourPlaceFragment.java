@@ -43,13 +43,11 @@ public class ListYourPlaceFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
         final List<String> list0 = new ArrayList<String>();
         list0.add("Select One");
 
         List<String> list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
         final int listsize1 = list1.size() - 1;
-
 
         final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.lyp_location);
 
@@ -68,36 +66,28 @@ public class ListYourPlaceFragment extends Fragment {
         final List<String> list3 = Arrays.asList(getResources().getStringArray(R.array.chnnames));
         final List<String> list4 = Arrays.asList(getResources().getStringArray(R.array.blorenames));
 
-
         final Spinner spinner2 = (Spinner)getActivity().findViewById(R.id.lyp_locality);
 
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
-
+                LocalityHolder=null;
                 final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
-
                     @Override
                     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-
                         View v;
-
-
                         if (position2 == 0) {
                             final int temp=list2.size()-1;
-                            ArrayAdapter dataAdapter3 = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, list2) {
+                            ArrayAdapter<String> dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list2) {
                                 @Override
                                 public int getCount() {
                                     return (temp); // Truncate the list
                                 }
                             };
-
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
-
-
-
-                        } else if (position2 == 1) {
+                        }
+                        else if (position2 == 1) {
                             final int temp=list3.size()-1;
                             ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list3) {
                                 @Override
@@ -105,12 +95,10 @@ public class ListYourPlaceFragment extends Fragment {
                                     return (temp);
                                 }
                             };
-
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
-
-
-                        } else if (position2 == 2) {
+                        }
+                        else if (position2 == 2) {
                             final int temp=list4.size()-1;
                             ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list4) {
                                 @Override
@@ -120,48 +108,33 @@ public class ListYourPlaceFragment extends Fragment {
                             };
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
-
-
-                        } else {
+                        }
+                        else {
                             ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
-
                             };
                             spinner2.setAdapter(dataAdapter3);
                             v = dataAdapter3.getDropDownView(position, convertView, parent);
                         }
-
                         return v;
-
                     }
-
-
                 };
-
 
                 dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner2.setAdapter(dataAdapter2);
-
                 spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
-
                         Resources res = getResources();
                         if(!spinner1.getSelectedItem().toString().equals("Select One") && !spinner2.getSelectedItem().toString().equals("Select One")) {
-
                             LocationHolder=spinner1.getSelectedItem().toString();
                             LocalityHolder=spinner2.getSelectedItem().toString();
-
                         }
                     }
 
                     public void onNothingSelected(AdapterView<?> parentView2)
                     {
-
                     }
-
                 });
-
-
             }
 
             public void onNothingSelected(AdapterView<?> parentView)

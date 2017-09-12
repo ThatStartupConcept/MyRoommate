@@ -20,8 +20,6 @@ import java.util.List;
 public class FindAPlaceFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private RVAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private List<Listing> listings;
 
     @Override
@@ -35,7 +33,7 @@ public class FindAPlaceFragment extends Fragment {
         mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         final List<String> list0 = new ArrayList<String>();
@@ -191,7 +189,7 @@ public class FindAPlaceFragment extends Fragment {
 
 
     private void initializeAdapter(){
-        mAdapter = new RVAdapter(listings);
+        RVAdapter mAdapter = new RVAdapter(listings);
         mRecyclerView.setAdapter(mAdapter);
     }
 }
