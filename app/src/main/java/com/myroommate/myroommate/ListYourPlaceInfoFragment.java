@@ -22,8 +22,7 @@ public class ListYourPlaceInfoFragment extends Fragment {
         listNowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment;
-                fragment=new ListYourPlaceFragment();
+                Fragment fragment = new ListYourPlaceFragment();
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, fragment);
                 ft.commit();
@@ -35,7 +34,6 @@ public class ListYourPlaceInfoFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override

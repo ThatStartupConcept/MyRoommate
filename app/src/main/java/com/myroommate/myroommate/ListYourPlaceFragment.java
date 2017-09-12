@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,8 +35,6 @@ public class ListYourPlaceFragment extends Fragment {
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();
     HttpParse httpParse = new HttpParse();
-
-    public static final String TITLE = "List Your Place";
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -177,8 +174,6 @@ public class ListYourPlaceFragment extends Fragment {
                     Toast.makeText(getActivity(), "Please fill all the form fields.", Toast.LENGTH_LONG).show();
 
                 }
-
-
             }
         });
 
@@ -199,17 +194,13 @@ public class ListYourPlaceFragment extends Fragment {
             RentHolder=0;
         }
 
-
         if(TextUtils.isEmpty(LocationHolder) || TextUtils.isEmpty(LocalityHolder) || TextUtils.isEmpty(ListingNameHolder) || TextUtils.isEmpty(AddressHolder) || TextUtils.isEmpty(PincodeHolder) || RentHolder==0)
         {
-
             CheckEditText = false;
-
         }
         else {
 
             CheckEditText = true ;
         }
-
     }
 }

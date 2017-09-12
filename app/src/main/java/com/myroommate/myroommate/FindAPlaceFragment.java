@@ -30,18 +30,14 @@ public class FindAPlaceFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
 
-        // use a linear layout manager
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+
 
         final List<String> list0 = new ArrayList<String>();
         list0.add("Select One");
 
         List<String> list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
         final int listsize1 = list1.size() - 1;
-
 
         final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.spinner1);
 
@@ -75,10 +71,9 @@ public class FindAPlaceFragment extends Fragment {
 
                         View v;
 
-
                         if (position2 == 0) {
                             final int temp=list2.size()-1;
-                            ArrayAdapter dataAdapter3 = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, list2) {
+                            ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list2) {
                                 @Override
                                 public int getCount() {
                                     return (temp); // Truncate the list
@@ -158,24 +153,22 @@ public class FindAPlaceFragment extends Fragment {
                                 listings.add(new Listing(R.mipmap.listing_image,listing[0],listing[1],listing[2]));
                             }
 
+                            mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
                             initializeAdapter();
+                            // use a linear layout manager
+                            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                            mRecyclerView.setLayoutManager(mLayoutManager);
 
                             getActivity().findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
                         }
                     }
 
-                    public void onNothingSelected(AdapterView<?> parentView2)
-                    {
-
+                    public void onNothingSelected(AdapterView<?> parentView2) {
                     }
-
                 });
-
-
             }
 
-            public void onNothingSelected(AdapterView<?> parentView)
-            {
+            public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
     }

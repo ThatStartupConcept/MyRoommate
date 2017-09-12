@@ -35,16 +35,14 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 Button  navHeaderButton = (Button) findViewById(R.id.nav_header_button);
+                assert navHeaderButton!=null;
                 navHeaderButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Fragment fragment=new LoginRegisterFragment();
-                        //replacing the fragment
-                        if (fragment != null) {
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.content_frame, fragment);
-                            ft.commit();
-                        }
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.content_frame, fragment);
+                        ft.commit();
 
                         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                         assert drawer != null;

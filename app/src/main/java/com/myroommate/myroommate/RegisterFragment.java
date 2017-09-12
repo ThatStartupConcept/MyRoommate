@@ -82,17 +82,12 @@ public class RegisterFragment extends Fragment {
         PasswordHolder = Password.getText().toString();
 
 
-        if(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder))
-        {
-
+        if(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder)) {
             CheckEditText = false;
-
         }
         else {
-
             CheckEditText = true ;
         }
-
     }
 
     public void UserRegisterFunction(final String F_Name, final String L_Name, final String email, final String password){
