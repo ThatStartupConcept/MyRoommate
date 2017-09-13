@@ -33,7 +33,7 @@ public class ListYourPlaceFragment extends Fragment {
     String HttpURL = "https://myroommate.000webhostapp.com/UserLogin.php";
     Boolean CheckEditText ;
     ProgressDialog progressDialog;
-    HashMap<String,String> hashMap = new HashMap<>();
+    HashMap<String, String> hashMap = new HashMap<>();
     HttpParse httpParse = new HttpParse();
 
     @Override
@@ -72,47 +72,35 @@ public class ListYourPlaceFragment extends Fragment {
                 final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
                     @Override
                     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                        View v;
-                        if (position2 == 0) {
-                            final int temp=list2.size()-1;
-                            ArrayAdapter<String> dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list2) {
-                                @Override
-                                public int getCount() {
-                                    return (temp); // Truncate the list
-                                }
-                            };
-                            spinner2.setAdapter(dataAdapter3);
-                            v = dataAdapter3.getDropDownView(position, convertView, parent);
+                        final List<String> tempList;
+                        final int tempSize;
+
+                        switch (position2){
+                            case 0:
+                                tempSize=list2.size()-1;
+                                tempList=list2;
+                                break;
+                            case 1:
+                                tempSize=list3.size()-1;
+                                tempList=list3;
+                                break;
+                            case 2:
+                                tempSize=list4.size()-1;
+                                tempList=list4;
+                                break;
+                            default:
+                                tempSize=list0.size();
+                                tempList=list0;
+                                break;
                         }
-                        else if (position2 == 1) {
-                            final int temp=list3.size()-1;
-                            ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list3) {
-                                @Override
-                                public int getCount() {
-                                    return (temp);
-                                }
-                            };
-                            spinner2.setAdapter(dataAdapter3);
-                            v = dataAdapter3.getDropDownView(position, convertView, parent);
-                        }
-                        else if (position2 == 2) {
-                            final int temp=list4.size()-1;
-                            ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list4) {
-                                @Override
-                                public int getCount() {
-                                    return (temp); // Truncate the list
-                                }
-                            };
-                            spinner2.setAdapter(dataAdapter3);
-                            v = dataAdapter3.getDropDownView(position, convertView, parent);
-                        }
-                        else {
-                            ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
-                            };
-                            spinner2.setAdapter(dataAdapter3);
-                            v = dataAdapter3.getDropDownView(position, convertView, parent);
-                        }
-                        return v;
+                        ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, tempList) {
+                            @Override
+                            public int getCount() {
+                                return (tempSize); // Truncate the list
+                            }
+                        };
+                        spinner2.setAdapter(dataAdapter3);
+                        return dataAdapter3.getDropDownView(position, convertView, parent);
                     }
                 };
 
@@ -166,6 +154,7 @@ public class ListYourPlaceFragment extends Fragment {
 
                 if(CheckEditText){
                     // If EditText is not empty and CheckEditText = True then this block will execute.
+                    UserListingFunction(LocationHolder,LocalityHolder,ListingNameHolder,AddressHolder,SubLocalityHolder,PincodeHolder,RentHolder.toString());
                     Toast.makeText(getActivity(), "Submitted!", Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -202,5 +191,57 @@ public class ListYourPlaceFragment extends Fragment {
 
             CheckEditText = true ;
         }
+    }
+
+    public void UserListingFunction(final String location, final String locality, final String listingname, final String address, final String sublocality, final String pincode, final String rent){
+
+        class UserLoginFunctionClass extends AsyncTask<String,Void,String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                progressDialog = ProgressDialog.show(getActivity(),"Loading Data",null,true,true);
+            }
+
+            @Override
+            protected void onPostExecute(String httpResponseMsg) {
+
+                super.onPostExecute(httpResponseMsg);
+
+                progressDialog.dismiss();
+
+                Toast.makeText(getActivity(),httpResponseMsg, Toast.LENGTH_LONG).show();
+
+                if(httpResponseMsg.equals("S"));
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                hashMap.put("location",params[0]);
+
+                hashMap.put("locality",params[1]);
+
+                hashMap.put("listingname",params[2]);
+
+                hashMap.put("address",params[3]);
+
+                hashMap.put("sublocality",params[4]);
+
+                hashMap.put("pincode",params[5]);
+
+                hashMap.put("rent",params[6]);
+
+                finalResult = httpParse.postRequest(hashMap, HttpURL);
+
+                return finalResult;
+            }
+        }
+
+        UserLoginFunctionClass userLoginFunctionClass = new UserLoginFunctionClass();
+
+
+        userLoginFunctionClass.execute(location, locality, listingname, address, sublocality, pincode, rent);
     }
 }
