@@ -30,7 +30,7 @@ public class ListYourPlaceFragment extends Fragment {
     String LocationHolder, LocalityHolder;
     Integer RentHolder;
     String finalResult ;
-    String HttpURL = "https://myroommate.000webhostapp.com/UserLogin.php";
+    String HttpURL = "https://myroommate.000webhostapp.com/AddListing.php";
     Boolean CheckEditText ;
     ProgressDialog progressDialog;
     HashMap<String, String> hashMap = new HashMap<>();
@@ -155,7 +155,6 @@ public class ListYourPlaceFragment extends Fragment {
                 if(CheckEditText){
                     // If EditText is not empty and CheckEditText = True then this block will execute.
                     UserListingFunction(LocationHolder,LocalityHolder,ListingNameHolder,AddressHolder,SubLocalityHolder,PincodeHolder,RentHolder.toString());
-                    Toast.makeText(getActivity(), "Submitted!", Toast.LENGTH_LONG).show();
                 }
                 else {
 
@@ -201,7 +200,7 @@ public class ListYourPlaceFragment extends Fragment {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-                progressDialog = ProgressDialog.show(getActivity(),"Loading Data",null,true,true);
+                progressDialog = ProgressDialog.show(getActivity(),"Loading...",null,true,true);
             }
 
             @Override
