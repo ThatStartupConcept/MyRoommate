@@ -40,7 +40,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder>
 
     @Override
     public ListingViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_layout, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listing_card_layout, viewGroup, false);
         ListingViewHolder lvh = new ListingViewHolder(v);
         return lvh;
     }

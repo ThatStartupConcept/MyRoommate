@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import java.util.HashMap;
@@ -38,7 +36,7 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        View RootView = inflater.inflate(R.layout.register_fragment, container, false);
+        View RootView = inflater.inflate(R.layout.fragment_register, container, false);
 
         //Assign Id'S
         First_Name = (EditText)RootView.findViewById(R.id.register_firstname);
@@ -84,17 +82,12 @@ public class RegisterFragment extends Fragment {
         PasswordHolder = Password.getText().toString();
 
 
-        if(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder))
-        {
-
+        if(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder)) {
             CheckEditText = false;
-
         }
         else {
-
             CheckEditText = true ;
         }
-
     }
 
     public void UserRegisterFunction(final String F_Name, final String L_Name, final String email, final String password){

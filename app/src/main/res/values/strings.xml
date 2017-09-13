@@ -31,4 +31,15 @@
         completions."
     </string>
 
+    <!-- Strings related to List Your Place Info-->
+    <string name="slogan">List. Rent. Relax.</string>
+    <string name="list_your_place_short_info">We help you find verified tenants for your listed property, earn more rent and manage it, without any hassles</string>
+
+    <!-- Strings related to List Your Place Form-->
+    <string name="prompt_listing_name">Listing Name</string>
+    <string name="prompt_address">Address</string>
+    <string name="prompt_sub_locality">Sub-Locality</string>
+    <string name="prompt_pincode">Pincode</string>
+    <string name="prompt_rent">Asking Rent</string>
+
 </resources>

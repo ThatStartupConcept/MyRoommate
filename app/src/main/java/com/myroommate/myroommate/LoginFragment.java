@@ -37,7 +37,7 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        View RootView = inflater.inflate(R.layout.login_fragment, container, false);
+        View RootView = inflater.inflate(R.layout.fragment_login, container, false);
 
         //Assign Id'S
         Email = (EditText)RootView.findViewById(R.id.login_email);
@@ -73,7 +73,7 @@ public class LoginFragment extends Fragment {
         return RootView;
     }
 
-    public void CheckEditTextIsEmptyOrNot(){
+    protected void CheckEditTextIsEmptyOrNot(){
 
         EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
@@ -112,6 +112,7 @@ public class LoginFragment extends Fragment {
 
                 Toast.makeText(getActivity(),httpResponseMsg, Toast.LENGTH_LONG).show();
 
+                if(httpResponseMsg.equals("S"));
             }
 
             @Override
