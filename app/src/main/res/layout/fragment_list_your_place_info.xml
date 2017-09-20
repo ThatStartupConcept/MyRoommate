@@ -36,10 +36,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="@color/colorAccent"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:theme="@style/BlueButton"
         android:padding="8dp"
-        android:text="LIST YOUR HOUSE NOW"
-        android:textColor="@android:color/white"
+        android:text="LIST YOUR PLACE NOW"
         android:layout_weight="0.04" />
 
     <Spinner
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.03"
-        android:background="@color/colorAccent"
-        android:text="F.A.Q."
-        android:textColor="@android:color/white" />
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:theme="@style/BlueButton"
+        android:text="F.A.Q." />
 </LinearLayout>

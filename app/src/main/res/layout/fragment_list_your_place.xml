@@ -111,15 +111,14 @@
 
     <Button
         android:id="@+id/lyp_submit"
-        style="?android:textAppearanceSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:layout_weight="1"
-        android:background="@color/colorAccent"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:theme="@style/BlueButton"
         android:text="SUBMIT"
-        android:textColor="@android:color/white"
         android:textStyle="bold" />
 
 </LinearLayout>

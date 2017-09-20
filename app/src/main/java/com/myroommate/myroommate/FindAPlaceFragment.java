@@ -123,7 +123,7 @@ public class FindAPlaceFragment extends Fragment {
 
                             for(int i=0;i<locality.length();i++){
                                 listing = res.getStringArray(locality.getResourceId(i,0));
-                                listings.add(new Listing(R.mipmap.listing_image,listing[0],listing[1],listing[2]));
+                                listings.add(new Listing(R.mipmap.ic_launcher,listing[0],listing[1],listing[2]));
                             }
 
                             mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);

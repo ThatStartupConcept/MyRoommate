@@ -43,14 +43,13 @@
 
     <Button
         android:id="@+id/email_login_button"
-        style="?android:textAppearanceSmall"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:theme="@style/BlueButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:background="@color/colorAccent"
         android:text="@string/action_log_in"
-        android:textColor="@android:color/white"
         android:textStyle="bold" />
 
 </LinearLayout>
