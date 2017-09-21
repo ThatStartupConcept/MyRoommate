@@ -149,22 +149,27 @@ public class FindAPlaceFragment extends Fragment {
                             StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
                                 @Override
                                 public void onResponse(String stringResponse){
-                                    try{
-                                        JSONObject jsonResponse= new JSONObject(stringResponse);
-                                        JSONArray jListings = jsonResponse.getJSONArray("listings");
-                                        for(int i=0; i<jListings.length();i++){
-                                            JSONObject listing = jListings.getJSONObject(i);
-                                            String listingname = listing.getString("listingname");
-                                            String address = listing.getString("address");
-                                            String sublocality = listing.getString("sublocality");
-                                            listings.add(new Listing(R.mipmap.ic_launcher,listingname,address,sublocality));
-                                        }
 
-                                        mAdapter.notifyDataSetChanged();
-
+                                    if(stringResponse.equals("No listings available in this locality")) {
+                                        Toast.makeText(getActivity(), stringResponse, Toast.LENGTH_LONG).show();
                                     }
-                                    catch (JSONException e){
-                                        e.printStackTrace();
+                                    else {
+                                        try {
+                                            JSONObject jsonResponse = new JSONObject(stringResponse);
+                                            JSONArray jListings = jsonResponse.getJSONArray("listings");
+                                            for (int i = 0; i < jListings.length(); i++) {
+                                                JSONObject listing = jListings.getJSONObject(i);
+                                                String listingname = listing.getString("listingname");
+                                                String address = listing.getString("address");
+                                                String sublocality = listing.getString("sublocality");
+                                                listings.add(new Listing(R.mipmap.ic_launcher, listingname, address, sublocality));
+                                            }
+
+                                            mAdapter.notifyDataSetChanged();
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
 
                                 }
