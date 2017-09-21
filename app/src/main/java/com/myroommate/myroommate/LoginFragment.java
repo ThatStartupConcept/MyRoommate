@@ -112,7 +112,6 @@ public class LoginFragment extends Fragment {
 
                 Toast.makeText(getActivity(),httpResponseMsg, Toast.LENGTH_LONG).show();
 
-                if(httpResponseMsg.equals("S"));
             }
 
             @Override
