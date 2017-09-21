@@ -24,6 +24,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -45,12 +46,10 @@ import static com.android.volley.VolleyLog.TAG;
 public class FindAPlaceFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
+    RVAdapter mAdapter;
     ProgressDialog progressDialog;
-    HashMap<String,String> hashMap = new HashMap<>();
     private List<Listing> listings;
     RequestQueue requestqueue;
-    String finalResult ;
-    HttpParse httpParse= new HttpParse();
     String HttpURL = "https://myroommate.000webhostapp.com/GetListing.php";
 
     @Override
@@ -61,8 +60,6 @@ public class FindAPlaceFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
 
         final List<String> list0 = new ArrayList<String>();
         list0.add("Select One");
@@ -91,6 +88,7 @@ public class FindAPlaceFragment extends Fragment {
         final Spinner spinner2 = (Spinner)getActivity().findViewById(R.id.spinner2);
 
         requestqueue = Volley.newRequestQueue(getContext());
+        mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
 
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -141,46 +139,29 @@ public class FindAPlaceFragment extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
 
-                        //Resources res = getResources();
-
-
                         if(!spinner1.getSelectedItem().toString().equals("Select One") && !spinner2.getSelectedItem().toString().equals("Select One")) {
 
                             final String locality = spinner2.getSelectedItem().toString();
-                            /*StringRequest request = new StringRequest(Request.Method.POST,HttpURL,new Response.Listener<String>(){
-                                @Override
-                                public void onResponse(String response) {
 
-                                }
-                            }, new Response.ErrorListener(){
-                                @Override
-                                public void onErrorResponse(VolleyError error){
-                                    Toast.makeText(getContext(), "Volley Error 1", Toast.LENGTH_LONG).show();
-                                }
-                            }){
-                                @Override
-                                protected Map<String, String> getParams() throws AuthFailureError {
-                                    Map<String,String> parameters = new HashMap<String, String>();
-                                    parameters.put("locality",locality);
-                                    return parameters;
-                                }
-                            };
-                            requestqueue.add(request);*/
+                            listings = new ArrayList<Listing>();
 
-                            listings = new ArrayList<>();
-                            JsonObjectRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.POST, HttpURL, null, new Response.Listener<JSONObject>(){
+
+                            StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
                                 @Override
-                                public void onResponse(JSONObject response){
+                                public void onResponse(String stringResponse){
                                     try{
-                                        JSONArray jListings = response.getJSONArray("listings");
+                                        JSONObject jsonResponse= new JSONObject(stringResponse);
+                                        JSONArray jListings = jsonResponse.getJSONArray("listings");
                                         for(int i=0; i<jListings.length();i++){
                                             JSONObject listing = jListings.getJSONObject(i);
-
                                             String listingname = listing.getString("listingname");
                                             String address = listing.getString("address");
                                             String sublocality = listing.getString("sublocality");
                                             listings.add(new Listing(R.mipmap.ic_launcher,listingname,address,sublocality));
                                         }
+
+                                        mAdapter.notifyDataSetChanged();
+
                                     }
                                     catch (JSONException e){
                                         e.printStackTrace();
@@ -192,20 +173,20 @@ public class FindAPlaceFragment extends Fragment {
 
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(getContext(), "Volley Error 2", Toast.LENGTH_LONG).show();
+                                    VolleyLog.e("Error: ", error.toString());
                                 }
                             }){
                                 @Override
                                 protected Map<String, String> getParams() throws AuthFailureError {
-                                    Map<String,String> parameters = new HashMap<String, String>();
+                                    Map<String,String> parameters = new HashMap<String,String>();
                                     parameters.put("locality",locality);
                                     return parameters;
                                 }
+
                             };
 
-                            requestqueue.add(jsonObjectRequest);
+                            requestqueue.add(stringRequest);
 
-                            mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
                             initializeAdapter();
 
                             // use a linear layout manager
@@ -236,7 +217,7 @@ public class FindAPlaceFragment extends Fragment {
 
 
     private void initializeAdapter(){
-        RVAdapter mAdapter = new RVAdapter(listings);
+        mAdapter = new RVAdapter(listings);
         mRecyclerView.setAdapter(mAdapter);
     }
 }
