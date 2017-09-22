@@ -56,28 +56,28 @@ public class FindAPlaceFragment extends Fragment {
         mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
 
         final String[] locationArray =getResources().getStringArray(R.array.locationnames);
-        final Spinner spinner1 = (MaterialSpinner)getActivity().findViewById(R.id.spinner1);
+        final Spinner locationSpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_location);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
         dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
-        spinner1.setAdapter(dataAdapter);
+        locationSpinner.setAdapter(dataAdapter);
 
         final String[] emptyArray = getResources().getStringArray(R.array.empty);
         final String[] mumbaiArray = getResources().getStringArray(R.array.mumbainames);
         final String[] chennaiArray = getResources().getStringArray(R.array.chnnames);
         final String[] bangaloreArray = getResources().getStringArray(R.array.blorenames);
 
-        final Spinner spinner2 = (MaterialSpinner)getActivity().findViewById(R.id.spinner2);
+        final Spinner localitySpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_locality);
         final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,emptyArray);
         emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
-        spinner2.setAdapter(emptyAdapter);
+        localitySpinner.setAdapter(emptyAdapter);
 
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int positionLocation, long id) {
                 getActivity().findViewById(R.id.recyclerView).setVisibility(View.GONE);
 
                 final String[] tempList;
-                switch (position2){
+                switch (positionLocation){
                     case 0:
                         tempList=mumbaiArray;
                         break;
@@ -93,16 +93,15 @@ public class FindAPlaceFragment extends Fragment {
                 }
                 ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,tempList);
                 dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
-                spinner2.setAdapter(dataAdapter2);
+                localitySpinner.setAdapter(dataAdapter2);
 
-                spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                localitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
+                    public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int positionLocality, long id2) {
 
-                        if(!spinner1.getSelectedItem().toString().equals("Select City") && !spinner2.getSelectedItem().toString().equals("Select Locality")) {
+                        if(!locationSpinner.getSelectedItem().toString().equals("Select City") && !localitySpinner.getSelectedItem().toString().equals("Select Locality")) {
 
-                            final String locality = spinner2.getSelectedItem().toString();
-
+                            final String locality = localitySpinner.getSelectedItem().toString();
                             listings = new ArrayList<Listing>();
 
                             StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
@@ -112,6 +111,7 @@ public class FindAPlaceFragment extends Fragment {
                                     if(stringResponse.equals("No listings available in this locality")) {
                                         Toast.makeText(getActivity(), stringResponse, Toast.LENGTH_LONG).show();
                                     }
+
                                     else {
                                         try {
                                             JSONObject jsonResponse = new JSONObject(stringResponse);
@@ -125,8 +125,8 @@ public class FindAPlaceFragment extends Fragment {
                                             }
 
                                             mAdapter.notifyDataSetChanged();
-
-                                        } catch (JSONException e) {
+                                        }
+                                        catch (JSONException e) {
                                             e.printStackTrace();
                                         }
                                     }
