@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
+
 import static com.android.volley.VolleyLog.TAG;
 
 public class FindAPlaceFragment extends Fragment {
@@ -61,77 +63,46 @@ public class FindAPlaceFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final List<String> list0 = new ArrayList<String>();
-        list0.add("Select One");
-
-        List<String> list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
-        final int listsize1 = list1.size() - 1;
-
-        final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.spinner1);
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list1) {
-            @Override
-            public int getCount() {
-                return (listsize1); // Truncate the list
-            }
-        };
-
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(dataAdapter);
-        spinner1.setSelection(listsize1);
-
-        final List<String> list2 = Arrays.asList(getResources().getStringArray(R.array.mumbainames));
-        final List<String> list3 = Arrays.asList(getResources().getStringArray(R.array.chnnames));
-        final List<String> list4 = Arrays.asList(getResources().getStringArray(R.array.blorenames));
-
-
-        final Spinner spinner2 = (Spinner)getActivity().findViewById(R.id.spinner2);
-
         requestqueue = Volley.newRequestQueue(getContext());
         mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
+
+        final String[] locationArray =getResources().getStringArray(R.array.locationnames);
+        final Spinner spinner1 = (MaterialSpinner)getActivity().findViewById(R.id.spinner1);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner1.setAdapter(dataAdapter);
+
+        final String[] emptyArray = getResources().getStringArray(R.array.empty);
+        final String[] mumbaiArray = getResources().getStringArray(R.array.mumbainames);
+        final String[] chennaiArray = getResources().getStringArray(R.array.chnnames);
+        final String[] bangaloreArray = getResources().getStringArray(R.array.blorenames);
+
+        final Spinner spinner2 = (MaterialSpinner)getActivity().findViewById(R.id.spinner2);
+        final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,emptyArray);
+        emptyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner2.setAdapter(emptyAdapter);
 
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
                 getActivity().findViewById(R.id.recyclerView).setVisibility(View.GONE);
 
-                final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
-
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-
-                        final List<String> tempList;
-                        final int tempSize;
-
-                        switch (position2){
-                            case 0:
-                                tempSize=list2.size()-1;
-                                tempList=list2;
-                                break;
-                            case 1:
-                                tempSize=list3.size()-1;
-                                tempList=list3;
-                                break;
-                            case 2:
-                                tempSize=list4.size()-1;
-                                tempList=list4;
-                                break;
-                            default:
-                                tempSize=list0.size();
-                                tempList=list0;
-                                break;
-                        }
-                        ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, tempList) {
-                            @Override
-                            public int getCount() {
-                                return (tempSize); // Truncate the list
-                            }
-                        };
-                        spinner2.setAdapter(dataAdapter3);
-                        return dataAdapter3.getDropDownView(position, convertView, parent);
-                    }
-                };
-
+                final String[] tempList;
+                switch (position2){
+                    case 0:
+                        tempList=mumbaiArray;
+                        break;
+                    case 1:
+                        tempList=chennaiArray;
+                        break;
+                    case 2:
+                        tempList=bangaloreArray;
+                        break;
+                    default:
+                        tempList=emptyArray;
+                        break;
+                }
+                ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,tempList);
                 dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner2.setAdapter(dataAdapter2);
 
@@ -139,12 +110,11 @@ public class FindAPlaceFragment extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
 
-                        if(!spinner1.getSelectedItem().toString().equals("Select One") && !spinner2.getSelectedItem().toString().equals("Select One")) {
+                        if(!spinner1.getSelectedItem().toString().equals("Select City") && !spinner2.getSelectedItem().toString().equals("Select Locality")) {
 
                             final String locality = spinner2.getSelectedItem().toString();
 
                             listings = new ArrayList<Listing>();
-
 
                             StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
                                 @Override

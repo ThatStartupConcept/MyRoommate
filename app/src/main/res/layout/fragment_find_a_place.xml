@@ -37,22 +37,50 @@
                 android:orientation="vertical"
                 android:weightSum="1">
 
-                <Spinner
+                <fr.ganfra.materialspinner.MaterialSpinner
                     android:id="@+id/spinner1"
-                    style="@style/Platform.Widget.AppCompat.Spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:fitsSystemWindows="false" />
+                    android:popupBackground="@color/colorPrimaryDark"
+                    app:ms_multiline="false"
+                    app:ms_hint="Select City"
+                    app:ms_enableFloatingLabel="true"
+                    app:ms_enableErrorLabel="false"
+                    app:ms_floatingLabelText="City:"
+                    app:ms_baseColor="@color/colorPrimaryDark"
+                    app:ms_highlightColor="@color/colorAccent"
+                    app:ms_errorColor="@color/colorError"
 
-                <Spinner
+                    app:ms_thickness="2dp"
+                    app:ms_hintColor="@color/colorAccent"
+                    app:ms_arrowColor="@color/colorAccent"
+                    app:ms_arrowSize="16dp"
+                    app:ms_alignLabels="true"
+                    app:ms_floatingLabelColor="@color/colorAccent"/>
+
+                <fr.ganfra.materialspinner.MaterialSpinner
                     android:id="@+id/spinner2"
-                    style="@style/Platform.Widget.AppCompat.Spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
                     android:layout_weight="0.5"
-                    android:fitsSystemWindows="false" />
+                    android:popupBackground="@color/colorPrimaryDark"
+                    android:layout_gravity="bottom"
+                    app:ms_multiline="false"
+                    app:ms_hint="Select Locality"
+                    app:ms_enableFloatingLabel="true"
+                    app:ms_enableErrorLabel="false"
+                    app:ms_floatingLabelText="Locality:"
+                    app:ms_baseColor="@color/colorPrimaryDark"
+                    app:ms_highlightColor="@color/colorAccent"
+                    app:ms_errorColor="@color/colorError"
+
+                    app:ms_thickness="2dp"
+                    app:ms_hintColor="@color/colorAccent"
+                    app:ms_arrowColor="@color/colorAccent"
+                    app:ms_arrowSize="16dp"
+                    app:ms_alignLabels="true"
+                    app:ms_floatingLabelColor="@color/colorAccent"/>
 
 
             </LinearLayout>

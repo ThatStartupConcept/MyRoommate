@@ -41,7 +41,7 @@ public class ListYourPlaceFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         final List<String> list0 = new ArrayList<String>();
-        list0.add("Select One");
+        list0.add("Select Locality");
 
         List<String> list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
         final int listsize1 = list1.size() - 1;
@@ -110,7 +110,7 @@ public class ListYourPlaceFragment extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
                         Resources res = getResources();
-                        if(!spinner1.getSelectedItem().toString().equals("Select One") && !spinner2.getSelectedItem().toString().equals("Select One")) {
+                        if(!spinner1.getSelectedItem().toString().equals("Select City") && !spinner2.getSelectedItem().toString().equals("Select Locality")) {
                             LocationHolder=spinner1.getSelectedItem().toString();
                             LocalityHolder=spinner2.getSelectedItem().toString();
                         }
