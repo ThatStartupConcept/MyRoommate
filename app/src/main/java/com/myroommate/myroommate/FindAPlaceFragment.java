@@ -1,15 +1,11 @@
 package com.myroommate.myroommate;
 
 import android.app.ProgressDialog;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +15,11 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -34,16 +27,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
-
-import static com.android.volley.VolleyLog.TAG;
 
 public class FindAPlaceFragment extends Fragment {
 
@@ -69,7 +58,7 @@ public class FindAPlaceFragment extends Fragment {
         final String[] locationArray =getResources().getStringArray(R.array.locationnames);
         final Spinner spinner1 = (MaterialSpinner)getActivity().findViewById(R.id.spinner1);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
-        dataAdapter.setDropDownViewResource(R.layout.custom_spinner_layout);
+        dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
         spinner1.setAdapter(dataAdapter);
 
         final String[] emptyArray = getResources().getStringArray(R.array.empty);
@@ -79,7 +68,7 @@ public class FindAPlaceFragment extends Fragment {
 
         final Spinner spinner2 = (MaterialSpinner)getActivity().findViewById(R.id.spinner2);
         final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,emptyArray);
-        emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_layout);
+        emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
         spinner2.setAdapter(emptyAdapter);
 
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -103,7 +92,7 @@ public class FindAPlaceFragment extends Fragment {
                         break;
                 }
                 ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,tempList);
-                dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_layout);
+                dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
                 spinner2.setAdapter(dataAdapter2);
 
                 spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

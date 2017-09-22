@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background"
     android:fitsSystemWindows="false"
     tools:context=".FindAPlaceFragment">
 
@@ -51,13 +50,12 @@
                     app:ms_baseColor="@color/colorPrimaryDark"
                     app:ms_highlightColor="@color/colorAccent"
                     app:ms_errorColor="@color/colorError"
-
                     app:ms_thickness="2dp"
-                    app:ms_hintColor="@color/colorAccent"
-                    app:ms_arrowColor="@color/colorAccent"
+                    app:ms_hintColor="@color/colorSecondaryLight"
+                    app:ms_arrowColor="@color/colorPrimaryDark"
                     app:ms_arrowSize="16dp"
                     app:ms_alignLabels="true"
-                    app:ms_floatingLabelColor="@color/colorAccent"/>
+                    app:ms_floatingLabelColor="@color/colorSecondaryLight"/>
 
                 <fr.ganfra.materialspinner.MaterialSpinner
                     android:id="@+id/spinner2"
@@ -76,11 +74,11 @@
                     app:ms_errorColor="@color/colorError"
 
                     app:ms_thickness="2dp"
-                    app:ms_hintColor="@color/colorAccent"
-                    app:ms_arrowColor="@color/colorAccent"
+                    app:ms_hintColor="@color/colorSecondaryLight"
+                    app:ms_arrowColor="@color/colorPrimaryDark"
                     app:ms_arrowSize="16dp"
                     app:ms_alignLabels="true"
-                    app:ms_floatingLabelColor="@color/colorAccent"/>
+                    app:ms_floatingLabelColor="@color/colorSecondaryLight"/>
 
 
             </LinearLayout>
@@ -94,7 +92,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/main.collapsing"
-        android:background="@color/window_background"
         android:fitsSystemWindows="false"
         android:paddingTop="16dp"
         android:scrollbars="vertical"
