@@ -69,7 +69,7 @@ public class FindAPlaceFragment extends Fragment {
         final String[] locationArray =getResources().getStringArray(R.array.locationnames);
         final Spinner spinner1 = (MaterialSpinner)getActivity().findViewById(R.id.spinner1);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataAdapter.setDropDownViewResource(R.layout.custom_spinner_layout);
         spinner1.setAdapter(dataAdapter);
 
         final String[] emptyArray = getResources().getStringArray(R.array.empty);
@@ -79,7 +79,7 @@ public class FindAPlaceFragment extends Fragment {
 
         final Spinner spinner2 = (MaterialSpinner)getActivity().findViewById(R.id.spinner2);
         final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,emptyArray);
-        emptyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_layout);
         spinner2.setAdapter(emptyAdapter);
 
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -103,7 +103,7 @@ public class FindAPlaceFragment extends Fragment {
                         break;
                 }
                 ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,tempList);
-                dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_layout);
                 spinner2.setAdapter(dataAdapter2);
 
                 spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
