@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
+
+                hideKeyboardFrom(MainActivity.this, drawerView);
+
                 Button  navHeaderButton = (Button) findViewById(R.id.nav_header_button);
                 assert navHeaderButton!=null;
                 navHeaderButton.setOnClickListener(new View.OnClickListener() {

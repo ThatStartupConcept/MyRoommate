@@ -6,7 +6,6 @@
     <color name="colorSecondary">#ea80fc</color>
     <color name="colorSecondaryDark">#b64fc8</color>
     <color name="colorSecondaryLight">#ffb2ff</color>
-    <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#ea80fc</color>
     <color name="window_background">#eeeeee</color>
     <color name="colorError">#F44336</color>
