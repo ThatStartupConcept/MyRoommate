@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,10 +16,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
+import java.util.Map;
 
 
 import fr.ganfra.materialspinner.MaterialSpinner;
+
+import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 
 public class ListYourPlaceFragment extends Fragment {
 
@@ -27,12 +45,9 @@ public class ListYourPlaceFragment extends Fragment {
     String ListingNameHolder, AddressHolder, SubLocalityHolder, PincodeHolder;
     String LocationHolder, LocalityHolder;
     Integer RentHolder;
-    String finalResult ;
     String HttpURL = "https://myroommate.000webhostapp.com/AddListing.php";
     Boolean CheckEditText ;
-    ProgressDialog progressDialog;
-    HashMap<String, String> hashMap = new HashMap<>();
-    HttpParse httpParse = new HttpParse();
+    RequestQueue requestQueue;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -95,10 +110,7 @@ public class ListYourPlaceFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
-
-
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -112,23 +124,58 @@ public class ListYourPlaceFragment extends Fragment {
         Pincode = (EditText)RootView.findViewById(R.id.lyp_pincode);
         Rent = (EditText)RootView.findViewById(R.id.lyp_rent);
         Submit = (Button)RootView.findViewById(R.id.lyp_submit);
+        requestQueue= Volley.newRequestQueue(getContext());
 
         //Adding Click Listener on button.
         Submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                hideKeyboardFrom(getContext(), view);
+
                 // Checking whether EditText is Empty or Not
                 CheckEditTextIsEmptyOrNot();
 
                 if(CheckEditText){
                     // If EditText is not empty and CheckEditText = True then this block will execute.
-                    UserListingFunction(LocationHolder,LocalityHolder,ListingNameHolder,AddressHolder,SubLocalityHolder,PincodeHolder,RentHolder.toString());
+                    StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
+                        @Override
+                        public void onResponse(String stringResponse){
+                            Snackbar snackbar = Snackbar
+                                    .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                        }
+
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            VolleyLog.e("Error: ", error.toString());
+                        }
+                    }){
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+
+                            Map<String,String> parameters = new HashMap<String,String>();
+                            parameters.put("location",LocationHolder);
+                            parameters.put("locality",LocalityHolder);
+                            parameters.put("listingname",ListingNameHolder);
+                            parameters.put("address",AddressHolder);
+                            parameters.put("sublocality",SubLocalityHolder);
+                            parameters.put("pincode",PincodeHolder);
+                            parameters.put("rent",RentHolder.toString());
+                            return parameters;
+                        }
+                    };
+
+                    requestQueue.add(stringRequest);
                 }
                 else {
 
                     // If EditText is empty then this block will execute .
-                    Toast.makeText(getActivity(), "Please fill all the form fields.", Toast.LENGTH_LONG).show();
+                    Snackbar snackbar = Snackbar
+                            .make(view, "Please fill all the form fields.", Snackbar.LENGTH_LONG);
+                    snackbar.show();
 
                 }
             }
@@ -159,57 +206,5 @@ public class ListYourPlaceFragment extends Fragment {
 
             CheckEditText = true ;
         }
-    }
-
-    public void UserListingFunction(final String location, final String locality, final String listingname, final String address, final String sublocality, final String pincode, final String rent){
-
-        class UserLoginFunctionClass extends AsyncTask<String,Void,String> {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-                progressDialog = ProgressDialog.show(getActivity(),"Loading...",null,true,true);
-            }
-
-            @Override
-            protected void onPostExecute(String httpResponseMsg) {
-
-                super.onPostExecute(httpResponseMsg);
-
-                progressDialog.dismiss();
-
-                Toast.makeText(getActivity(),httpResponseMsg, Toast.LENGTH_LONG).show();
-
-                if(httpResponseMsg.equals("S"));
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                hashMap.put("location",params[0]);
-
-                hashMap.put("locality",params[1]);
-
-                hashMap.put("listingname",params[2]);
-
-                hashMap.put("address",params[3]);
-
-                hashMap.put("sublocality",params[4]);
-
-                hashMap.put("pincode",params[5]);
-
-                hashMap.put("rent",params[6]);
-
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-
-                return finalResult;
-            }
-        }
-
-        UserLoginFunctionClass userLoginFunctionClass = new UserLoginFunctionClass();
-
-
-        userLoginFunctionClass.execute(location, locality, listingname, address, sublocality, pincode, rent);
     }
 }

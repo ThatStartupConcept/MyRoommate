@@ -1,31 +1,44 @@
 package com.myroommate.myroommate;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.util.HashMap;
+import java.util.Map;
+
+import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 
 public class LoginFragment extends Fragment {
 
     Button login;
     EditText Email, Password ;
     String EmailHolder, PasswordHolder;
-    String finalResult ;
     String HttpURL = "https://myroommate.000webhostapp.com/UserLogin.php";
     Boolean CheckEditText ;
-    ProgressDialog progressDialog;
-    HashMap<String,String> hashMap = new HashMap<>();
-    HttpParse httpParse = new HttpParse();
+    RequestQueue requestQueue;
 
     public static final String TITLE = "Login";
 
@@ -39,6 +52,8 @@ public class LoginFragment extends Fragment {
 
         View RootView = inflater.inflate(R.layout.fragment_login, container, false);
 
+        requestQueue = Volley.newRequestQueue(getContext());
+
         //Assign Id'S
         Email = (EditText)RootView.findViewById(R.id.login_email);
         Password = (EditText)RootView.findViewById(R.id.login_password);
@@ -47,24 +62,52 @@ public class LoginFragment extends Fragment {
         //Adding Click Listener on button.
         login.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
 
-                // Checking whether EditText is Empty or Not
-                CheckEditTextIsEmptyOrNot();
+                    hideKeyboardFrom(getContext(), view);
 
-                if(CheckEditText){
+                    // Checking whether EditText is Empty or Not
+                    CheckEditTextIsEmptyOrNot();
 
-                    // If EditText is not empty and CheckEditText = True then this block will execute.
+                    if (CheckEditText) {
 
-                    UserLoginFunction(EmailHolder, PasswordHolder);
+                        // If EditText is not empty and CheckEditText = True then this block will execute.
 
-                }
-                else {
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String stringResponse) {
+                                Snackbar snackbar = Snackbar
+                                        .make(view, stringResponse, Snackbar.LENGTH_LONG);
+                                snackbar.show();
+                            }
 
-                    // If EditText is empty then this block will execute .
-                    Toast.makeText(getActivity(), "Please fill all the form fields.", Toast.LENGTH_LONG).show();
+                        }, new Response.ErrorListener() {
 
-                }
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                VolleyLog.e("Error: ", error.toString());
+                            }
+                        }) {
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+
+                                Map<String, String> parameters = new HashMap<String, String>();
+                                parameters.put("email", EmailHolder);
+                                parameters.put("password", PasswordHolder);
+                                return parameters;
+                            }
+                        };
+
+                        requestQueue.add(stringRequest);
+
+                    } else {
+
+                        // If EditText is empty then this block will execute .
+                        Snackbar snackbar = Snackbar
+                                .make(view, "Please fill all the form fields.", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+
+                    }
 
 
             }
@@ -72,6 +115,8 @@ public class LoginFragment extends Fragment {
 
         return RootView;
     }
+
+
 
     protected void CheckEditTextIsEmptyOrNot(){
 
@@ -81,9 +126,7 @@ public class LoginFragment extends Fragment {
 
         if(TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder))
         {
-
             CheckEditText = false;
-
         }
         else {
 
@@ -91,46 +134,4 @@ public class LoginFragment extends Fragment {
         }
 
     }
-
-    public void UserLoginFunction(final String email, final String password){
-
-        class UserLoginFunctionClass extends AsyncTask<String,Void,String> {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-                progressDialog = ProgressDialog.show(getActivity(),"Loading Data",null,true,true);
-            }
-
-            @Override
-            protected void onPostExecute(String httpResponseMsg) {
-
-                super.onPostExecute(httpResponseMsg);
-
-                progressDialog.dismiss();
-
-                Toast.makeText(getActivity(),httpResponseMsg, Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                hashMap.put("email",params[0]);
-
-                hashMap.put("password",params[1]);
-
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-
-                return finalResult;
-            }
-        }
-
-        UserLoginFunctionClass userLoginFunctionClass = new UserLoginFunctionClass();
-
-        userLoginFunctionClass.execute(email,password);
-    }
-
-
 }

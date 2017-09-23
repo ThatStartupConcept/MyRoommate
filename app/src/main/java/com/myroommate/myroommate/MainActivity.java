@@ -1,5 +1,7 @@
 package com.myroommate.myroommate;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity
@@ -108,6 +111,11 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         displaySelectedScreen(item.getItemId());
         return true;
+    }
+
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void displaySelectedScreen(int itemId) {

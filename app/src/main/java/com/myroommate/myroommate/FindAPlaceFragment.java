@@ -2,6 +2,7 @@ package com.myroommate.myroommate;
 
 import android.app.ProgressDialog;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -109,7 +110,9 @@ public class FindAPlaceFragment extends Fragment {
                                 public void onResponse(String stringResponse){
 
                                     if(stringResponse.equals("No listings available in this locality")) {
-                                        Toast.makeText(getActivity(), stringResponse, Toast.LENGTH_LONG).show();
+                                        Snackbar snackbar = Snackbar
+                                                .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
+                                        snackbar.show();
                                     }
 
                                     else {
