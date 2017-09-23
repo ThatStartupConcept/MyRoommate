@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.myroommate.myroommate.MainActivity">
+    tools:context="com.myroommate.myroommate.MainActivity"
+    android:orientation="vertical">
+
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:layout_anchorGravity="top">
+        app:layout_anchorGravity="top"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="8dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -27,9 +32,9 @@
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="566dp"
+        android:layout_height="fill_parent"
         android:layout_gravity="bottom"
         android:fitsSystemWindows="false"
         tools:context="com.myroommate.myroommate.MainActivity" />
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

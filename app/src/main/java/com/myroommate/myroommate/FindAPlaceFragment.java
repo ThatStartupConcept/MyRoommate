@@ -1,7 +1,6 @@
 package com.myroommate.myroommate;
 
-import android.content.res.Resources;
-import android.content.res.TypedArray;
+import android.app.ProgressDialog;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -13,14 +12,36 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.AdapterView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class FindAPlaceFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
+    RVAdapter mAdapter;
+    ProgressDialog progressDialog;
     private List<Listing> listings;
+    RequestQueue requestqueue;
+    String HttpURL = "https://myroommate.000webhostapp.com/GetListing.php";
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -31,102 +52,105 @@ public class FindAPlaceFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        requestqueue = Volley.newRequestQueue(getContext());
+        mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
 
+        final String[] locationArray =getResources().getStringArray(R.array.locationnames);
+        final Spinner locationSpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_location);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
+        dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+        locationSpinner.setAdapter(dataAdapter);
 
-        final List<String> list0 = new ArrayList<String>();
-        list0.add("Select One");
+        final String[] emptyArray = getResources().getStringArray(R.array.empty);
+        final String[] mumbaiArray = getResources().getStringArray(R.array.mumbainames);
+        final String[] chennaiArray = getResources().getStringArray(R.array.chnnames);
+        final String[] bangaloreArray = getResources().getStringArray(R.array.blorenames);
 
-        List<String> list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
-        final int listsize1 = list1.size() - 1;
+        final Spinner localitySpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_locality);
+        final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,emptyArray);
+        emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+        localitySpinner.setAdapter(emptyAdapter);
 
-        final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.spinner1);
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list1) {
+        locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public int getCount() {
-                return (listsize1); // Truncate the list
-            }
-        };
-
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(dataAdapter);
-        spinner1.setSelection(listsize1);
-
-        final List<String> list2 = Arrays.asList(getResources().getStringArray(R.array.mumbainames));
-        final List<String> list3 = Arrays.asList(getResources().getStringArray(R.array.chnnames));
-        final List<String> list4 = Arrays.asList(getResources().getStringArray(R.array.blorenames));
-
-
-        final Spinner spinner2 = (Spinner)getActivity().findViewById(R.id.spinner2);
-
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int positionLocation, long id) {
                 getActivity().findViewById(R.id.recyclerView).setVisibility(View.GONE);
 
-                final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
+                final String[] tempList;
+                switch (positionLocation){
+                    case 0:
+                        tempList=mumbaiArray;
+                        break;
+                    case 1:
+                        tempList=chennaiArray;
+                        break;
+                    case 2:
+                        tempList=bangaloreArray;
+                        break;
+                    default:
+                        tempList=emptyArray;
+                        break;
+                }
+                ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,tempList);
+                dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                localitySpinner.setAdapter(dataAdapter2);
 
+                localitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                    public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int positionLocality, long id2) {
 
-                        final List<String> tempList;
-                        final int tempSize;
+                        if(!locationSpinner.getSelectedItem().toString().equals("Select City") && !localitySpinner.getSelectedItem().toString().equals("Select Locality")) {
 
-                        switch (position2){
-                            case 0:
-                                tempSize=list2.size()-1;
-                                tempList=list2;
-                                break;
-                            case 1:
-                                tempSize=list3.size()-1;
-                                tempList=list3;
-                                break;
-                            case 2:
-                                tempSize=list4.size()-1;
-                                tempList=list4;
-                                break;
-                            default:
-                                tempSize=list0.size();
-                                tempList=list0;
-                                break;
-                        }
-                        ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, tempList) {
-                            @Override
-                            public int getCount() {
-                                return (tempSize); // Truncate the list
-                            }
-                        };
-                        spinner2.setAdapter(dataAdapter3);
-                        return dataAdapter3.getDropDownView(position, convertView, parent);
-                    }
-                };
+                            final String locality = localitySpinner.getSelectedItem().toString();
+                            listings = new ArrayList<Listing>();
 
-                dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner2.setAdapter(dataAdapter2);
+                            StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
+                                @Override
+                                public void onResponse(String stringResponse){
 
-                spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
+                                    if(stringResponse.equals("No listings available in this locality")) {
+                                        Toast.makeText(getActivity(), stringResponse, Toast.LENGTH_LONG).show();
+                                    }
 
-                        Resources res = getResources();
+                                    else {
+                                        try {
+                                            JSONObject jsonResponse = new JSONObject(stringResponse);
+                                            JSONArray jListings = jsonResponse.getJSONArray("listings");
+                                            for (int i = 0; i < jListings.length(); i++) {
+                                                JSONObject listing = jListings.getJSONObject(i);
+                                                String listingname = listing.getString("listingname");
+                                                String address = listing.getString("address");
+                                                String sublocality = listing.getString("sublocality");
+                                                listings.add(new Listing(R.mipmap.ic_launcher, listingname, address, sublocality));
+                                            }
 
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+                                        catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
 
-                        if(!spinner1.getSelectedItem().toString().equals("Select One") && !spinner2.getSelectedItem().toString().equals("Select One")) {
+                                }
 
-                            TypedArray housing = res.obtainTypedArray(R.array.housing);
-                            TypedArray location = res.obtainTypedArray(housing.getResourceId(position2, 0));
-                            TypedArray locality = res.obtainTypedArray(location.getResourceId(position3,0));
+                            }, new Response.ErrorListener() {
 
-                            String[] listing;
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    VolleyLog.e("Error: ", error.toString());
+                                }
+                            }){
+                                @Override
+                                protected Map<String, String> getParams() throws AuthFailureError {
+                                    Map<String,String> parameters = new HashMap<String,String>();
+                                    parameters.put("locality",locality);
+                                    return parameters;
+                                }
 
-                            listings = new ArrayList<>();
+                            };
 
-                            for(int i=0;i<locality.length();i++){
-                                listing = res.getStringArray(locality.getResourceId(i,0));
-                                listings.add(new Listing(R.mipmap.listing_image,listing[0],listing[1],listing[2]));
-                            }
+                            requestqueue.add(stringRequest);
 
-                            mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
                             initializeAdapter();
 
                             // use a linear layout manager
@@ -155,8 +179,9 @@ public class FindAPlaceFragment extends Fragment {
     }
 
 
+
     private void initializeAdapter(){
-        RVAdapter mAdapter = new RVAdapter(listings);
+        mAdapter = new RVAdapter(listings);
         mRecyclerView.setAdapter(mAdapter);
     }
 }

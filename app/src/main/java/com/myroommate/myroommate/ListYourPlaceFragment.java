@@ -1,8 +1,6 @@
 package com.myroommate.myroommate;
 
 import android.app.ProgressDialog;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,10 +15,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+
+
+import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class ListYourPlaceFragment extends Fragment {
 
@@ -40,90 +38,61 @@ public class ListYourPlaceFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final List<String> list0 = new ArrayList<String>();
-        list0.add("Select One");
+        final String[] locationArray =getResources().getStringArray(R.array.locationnames);
+        final Spinner locationSpinner = (MaterialSpinner)getActivity().findViewById(R.id.lyp_location);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
+        dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+        locationSpinner.setAdapter(dataAdapter);
 
-        List<String> list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
-        final int listsize1 = list1.size() - 1;
+        final String[] emptyArray = getResources().getStringArray(R.array.empty);
+        final String[] mumbaiArray = getResources().getStringArray(R.array.mumbainames);
+        final String[] chennaiArray = getResources().getStringArray(R.array.chnnames);
+        final String[] bangaloreArray = getResources().getStringArray(R.array.blorenames);
 
-        final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.lyp_location);
+        final Spinner localitySpinner = (MaterialSpinner)getActivity().findViewById(R.id.lyp_locality);
+        final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,emptyArray);
+        emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+        localitySpinner.setAdapter(emptyAdapter);
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list1) {
+        locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public int getCount() {
-                return (listsize1); // Truncate the list
-            }
-        };
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int positionLocation, long id) {
 
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(dataAdapter);
-        spinner1.setSelection(listsize1);
+                final String[] tempList;
+                switch (positionLocation){
+                    case 0:
+                        tempList=mumbaiArray;
+                        break;
+                    case 1:
+                        tempList=chennaiArray;
+                        break;
+                    case 2:
+                        tempList=bangaloreArray;
+                        break;
+                    default:
+                        tempList=emptyArray;
+                        break;
+                }
+                ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,tempList);
+                dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                localitySpinner.setAdapter(dataAdapter2);
 
-        final List<String> list2 = Arrays.asList(getResources().getStringArray(R.array.mumbainames));
-        final List<String> list3 = Arrays.asList(getResources().getStringArray(R.array.chnnames));
-        final List<String> list4 = Arrays.asList(getResources().getStringArray(R.array.blorenames));
-
-        final Spinner spinner2 = (Spinner)getActivity().findViewById(R.id.lyp_locality);
-
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
-                LocalityHolder=null;
-                final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
+                localitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                        final List<String> tempList;
-                        final int tempSize;
+                    public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int positionLocality, long id2) {
 
-                        switch (position2){
-                            case 0:
-                                tempSize=list2.size()-1;
-                                tempList=list2;
-                                break;
-                            case 1:
-                                tempSize=list3.size()-1;
-                                tempList=list3;
-                                break;
-                            case 2:
-                                tempSize=list4.size()-1;
-                                tempList=list4;
-                                break;
-                            default:
-                                tempSize=list0.size();
-                                tempList=list0;
-                                break;
-                        }
-                        ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, tempList) {
-                            @Override
-                            public int getCount() {
-                                return (tempSize); // Truncate the list
-                            }
-                        };
-                        spinner2.setAdapter(dataAdapter3);
-                        return dataAdapter3.getDropDownView(position, convertView, parent);
-                    }
-                };
-
-                dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner2.setAdapter(dataAdapter2);
-                spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
-                        Resources res = getResources();
-                        if(!spinner1.getSelectedItem().toString().equals("Select One") && !spinner2.getSelectedItem().toString().equals("Select One")) {
-                            LocationHolder=spinner1.getSelectedItem().toString();
-                            LocalityHolder=spinner2.getSelectedItem().toString();
+                        if(!locationSpinner.getSelectedItem().toString().equals("Select City") && !localitySpinner.getSelectedItem().toString().equals("Select Locality")) {
+                            LocationHolder=locationSpinner.getSelectedItem().toString();
+                            LocalityHolder=localitySpinner.getSelectedItem().toString();
                         }
                     }
 
-                    public void onNothingSelected(AdapterView<?> parentView2)
-                    {
+                    public void onNothingSelected(AdapterView<?> parentView2) {
                     }
                 });
             }
 
-            public void onNothingSelected(AdapterView<?> parentView)
-            {
+            public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
 
