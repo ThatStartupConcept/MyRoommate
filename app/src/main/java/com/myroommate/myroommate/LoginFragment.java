@@ -1,9 +1,6 @@
 package com.myroommate.myroommate;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -12,10 +9,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -26,9 +21,13 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 
 public class LoginFragment extends Fragment {
@@ -39,6 +38,9 @@ public class LoginFragment extends Fragment {
     String HttpURL = "https://myroommate.000webhostapp.com/UserLogin.php";
     Boolean CheckEditText ;
     RequestQueue requestQueue;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editPreferences;
+
 
     public static final String TITLE = "Login";
 
@@ -53,6 +55,8 @@ public class LoginFragment extends Fragment {
         View RootView = inflater.inflate(R.layout.fragment_login, container, false);
 
         requestQueue = Volley.newRequestQueue(getContext());
+        sharedPreferences = getActivity().getSharedPreferences("logindetails",MODE_PRIVATE);
+        editPreferences = sharedPreferences.edit();
 
         //Assign Id'S
         Email = (EditText)RootView.findViewById(R.id.login_email);
@@ -76,9 +80,34 @@ public class LoginFragment extends Fragment {
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String stringResponse) {
-                                Snackbar snackbar = Snackbar
-                                        .make(view, stringResponse, Snackbar.LENGTH_LONG);
-                                snackbar.show();
+                                if(stringResponse.equals("Invalid Username or Password.")){
+                                    Snackbar snackbar = Snackbar
+                                            .make(view, stringResponse, Snackbar.LENGTH_LONG);
+                                    snackbar.show();
+                                }
+                                else {
+                                    try {
+                                        JSONObject jsonResponse = new JSONObject(stringResponse);
+                                        String F_Name_Holder = jsonResponse.getString("first_name");
+                                        String L_Name_Holder = jsonResponse.getString("last_name");
+                                        editPreferences.putString("first_name",F_Name_Holder);
+                                        editPreferences.putString("last_name",L_Name_Holder);
+                                        editPreferences.putString("email",EmailHolder);
+                                        editPreferences.putString("password",PasswordHolder);
+                                        editPreferences.apply();
+                                        Snackbar snackbar = Snackbar
+                                                .make(view, "Logged In successfully as " + F_Name_Holder + " " + L_Name_Holder, Snackbar.LENGTH_LONG);
+                                        snackbar.show();
+                                    }
+                                    catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                        /*Fragment fragment = new HomeScreenFragment();
+                                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                        ft.replace(R.id.content_frame, fragment);
+                                        ft.commit();*/
+
+                                }
                             }
 
                         }, new Response.ErrorListener() {
