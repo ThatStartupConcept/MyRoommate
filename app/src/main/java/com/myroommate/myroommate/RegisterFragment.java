@@ -1,17 +1,16 @@
 package com.myroommate.myroommate;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.app.ProgressDialog;
-import android.text.TextUtils;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -25,16 +24,19 @@ import com.android.volley.toolbox.Volley;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 
 public class RegisterFragment extends Fragment {
 
     Button register;
-    EditText First_Name, Last_Name, Email, Password ;
-    String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder;
+    EditText First_Name, Last_Name, Email, Password, PasswordMatch ;
+    String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder, PasswordMatchHolder;
     String HttpURL = "https://myroommate.000webhostapp.com/UserRegistration.php";
     Boolean CheckEditText ;
     RequestQueue requestQueue;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editPreferences;
 
     public static final String TITLE = "Register";
 
@@ -50,11 +52,15 @@ public class RegisterFragment extends Fragment {
 
         requestQueue = Volley.newRequestQueue(getContext());
 
+        sharedPreferences = getActivity().getSharedPreferences("logindetails",MODE_PRIVATE);
+        editPreferences = sharedPreferences.edit();
+
         //Assign Id'S
         First_Name = (EditText)RootView.findViewById(R.id.register_firstname);
         Last_Name = (EditText)RootView.findViewById(R.id.register_lastname);
         Email = (EditText)RootView.findViewById(R.id.register_email);
         Password = (EditText)RootView.findViewById(R.id.register_password);
+        PasswordMatch = (EditText)RootView.findViewById(R.id.register_password_match);
         register = (Button)RootView.findViewById(R.id.email_register_button);
 
         //Adding Click Listener on button.
@@ -69,34 +75,52 @@ public class RegisterFragment extends Fragment {
 
                 if(CheckEditText){
 
-                    // If EditText is not empty and CheckEditText = True then this block will execute.
-                    StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
-                        @Override
-                        public void onResponse(String stringResponse){
-                            Snackbar snackbar = Snackbar
-                                    .make(view, stringResponse, Snackbar.LENGTH_LONG);
-                            snackbar.show();
-                        }
+                    if(PasswordHolder.equals(PasswordMatchHolder)) {
 
-                    }, new Response.ErrorListener() {
+                        // If EditText is not empty and CheckEditText = True then this block will execute.
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String stringResponse) {
+                                Snackbar snackbar = Snackbar
+                                        .make(view, stringResponse, Snackbar.LENGTH_LONG);
+                                snackbar.show();
 
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            VolleyLog.e("Error: ", error.toString());
-                        }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String,String> parameters = new HashMap<String,String>();
-                            parameters.put("f_name",F_Name_Holder);
-                            parameters.put("L_name",L_Name_Holder);
-                            parameters.put("email",EmailHolder);
-                            parameters.put("password",PasswordHolder);
-                            return parameters;
-                        }
-                    };
+                                if (stringResponse.equals("Registration Successful!")) {
 
-                    requestQueue.add(stringRequest);
+                                    editPreferences.putString("first_name", F_Name_Holder);
+                                    editPreferences.putString("last_name", L_Name_Holder);
+                                    editPreferences.putString("email", EmailHolder);
+                                    editPreferences.putString("password", PasswordHolder);
+                                    editPreferences.apply();
+                                }
+                            }
+
+                        }, new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                VolleyLog.e("Error: ", error.toString());
+                            }
+                        }) {
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> parameters = new HashMap<String, String>();
+                                parameters.put("f_name", F_Name_Holder);
+                                parameters.put("L_name", L_Name_Holder);
+                                parameters.put("email", EmailHolder);
+                                parameters.put("password", PasswordHolder);
+                                return parameters;
+                            }
+                        };
+
+                        requestQueue.add(stringRequest);
+                    }
+
+                    else {
+                        Snackbar snackbar = Snackbar
+                                .make(view, "Passwords do not match. Try again.", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                    }
 
                 }
                 else {
@@ -119,8 +143,9 @@ public class RegisterFragment extends Fragment {
         L_Name_Holder = Last_Name.getText().toString();
         EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
+        PasswordMatchHolder=PasswordMatch.getText().toString();
 
-        if(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder)) {
+        if(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder) || TextUtils.isEmpty(PasswordMatchHolder)) {
             CheckEditText = false;
         }
         else {
