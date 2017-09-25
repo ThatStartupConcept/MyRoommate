@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.myroommate.myroommate.ListYourPlaceInfoFragment.isRedirectedFromLYPInfo;
 import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 
 public class LoginFragment extends Fragment {
@@ -104,10 +106,13 @@ public class LoginFragment extends Fragment {
                                     catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                        /*Fragment fragment = new HomeScreenFragment();
+                                    if(isRedirectedFromLYPInfo) {
+                                        Fragment fragment = new ListYourPlaceFragment();
                                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                                         ft.replace(R.id.content_frame, fragment);
-                                        ft.commit();*/
+                                        ft.commit();
+                                        isRedirectedFromLYPInfo=false;
+                                    }
 
                                 }
                             }

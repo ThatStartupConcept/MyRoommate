@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Boolean isLoggedIn = false;
         sharedPreferences = getSharedPreferences("logindetails",MODE_PRIVATE);
 
 

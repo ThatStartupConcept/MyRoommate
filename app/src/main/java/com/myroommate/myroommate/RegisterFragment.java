@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.myroommate.myroommate.ListYourPlaceInfoFragment.isRedirectedFromLYPInfo;
 import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 
 public class RegisterFragment extends Fragment {
@@ -92,6 +94,15 @@ public class RegisterFragment extends Fragment {
                                     editPreferences.putString("email", EmailHolder);
                                     editPreferences.putString("password", PasswordHolder);
                                     editPreferences.apply();
+
+
+                                    if (isRedirectedFromLYPInfo) {
+                                        Fragment fragment = new ListYourPlaceFragment();
+                                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                        ft.replace(R.id.content_frame, fragment);
+                                        ft.commit();
+                                        isRedirectedFromLYPInfo = false;
+                                    }
                                 }
                             }
 

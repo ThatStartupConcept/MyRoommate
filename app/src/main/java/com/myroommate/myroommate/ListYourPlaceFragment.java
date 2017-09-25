@@ -174,6 +174,13 @@ public class ListYourPlaceFragment extends Fragment {
         return RootView;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //you can set the title for your toolbar here for different fragments different titles
+        getActivity().setTitle("List Your Place");
+    }
+
     protected void CheckEditTextIsEmptyOrNot(){
 
         ListingNameHolder=ListingName.getText().toString();
