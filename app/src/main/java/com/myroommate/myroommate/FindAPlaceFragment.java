@@ -48,8 +48,8 @@ public class FindAPlaceFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        requestqueue = Volley.newRequestQueue(getContext());
-        mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
+        requestqueue = Volley.newRequestQueue(getActivity());
+        mRecyclerView = getActivity().findViewById(R.id.recyclerView);
 
         final String[] locationArray =getResources().getStringArray(R.array.locationnames);
         final Spinner locationSpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_location);
@@ -95,7 +95,7 @@ public class FindAPlaceFragment extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int positionLocality, long id2) {
 
-                        if(!locationSpinner.getSelectedItem().toString().equals("Select City") && !localitySpinner.getSelectedItem().toString().equals("Select Locality")) {
+                        if(locationSpinner.getSelectedItem()!=null && localitySpinner.getSelectedItem()!=null) {
 
                             final String locality = localitySpinner.getSelectedItem().toString();
                             listings = new ArrayList<Listing>();

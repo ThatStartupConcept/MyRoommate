@@ -68,6 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.03"
+        android:padding="8dp"
         android:theme="@style/CustomButton"
         android:text="F.A.Q." />
 </LinearLayout>
