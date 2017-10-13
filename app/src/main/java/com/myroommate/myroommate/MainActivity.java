@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (!this.getTitle().equals("Kamraa")){
+        } else if (!this.getTitle().equals("MeraKamraa")){
             displaySelectedScreen(R.id.nav_home);
         }
         else {
