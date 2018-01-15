@@ -3,9 +3,11 @@ package com.myroommate.myroommate;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +15,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.HashMap;
+import java.util.concurrent.Executor;
+
+import static android.content.ContentValues.TAG;
 
 public class LoginFragment extends Fragment {
 
@@ -26,6 +37,7 @@ public class LoginFragment extends Fragment {
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();
     HttpParse httpParse = new HttpParse();
+    private FirebaseAuth mAuth;
 
     public static final String TITLE = "Login";
 
@@ -38,6 +50,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         View RootView = inflater.inflate(R.layout.fragment_login, container, false);
+        mAuth = FirebaseAuth.getInstance();
 
         //Assign Id'S
         Email = (EditText)RootView.findViewById(R.id.login_email);
@@ -94,42 +107,26 @@ public class LoginFragment extends Fragment {
 
     public void UserLoginFunction(final String email, final String password){
 
-        class UserLoginFunctionClass extends AsyncTask<String,Void,String> {
+        final Task<AuthResult> authResultTask = mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(getActivity(), "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
 
-                progressDialog = ProgressDialog.show(getActivity(),"Loading Data",null,true,true);
-            }
+                        }
 
-            @Override
-            protected void onPostExecute(String httpResponseMsg) {
-
-                super.onPostExecute(httpResponseMsg);
-
-                progressDialog.dismiss();
-
-                Toast.makeText(getActivity(),httpResponseMsg, Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                hashMap.put("email",params[0]);
-
-                hashMap.put("password",params[1]);
-
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-
-                return finalResult;
-            }
-        }
-
-        UserLoginFunctionClass userLoginFunctionClass = new UserLoginFunctionClass();
-
-        userLoginFunctionClass.execute(email,password);
+                        // ...
+                    }
+                });
     }
 
 
