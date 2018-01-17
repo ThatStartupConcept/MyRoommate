@@ -32,7 +32,7 @@ public class RegisterFragment extends Fragment {
     EditText First_Name, Last_Name, Email, Password ;
     String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder;
     String finalResult ;
-    String HttpURL = "https://myroommate.000webhostapp.com/UserRegistration.php";
+    String HttpURL = "https://ftp.merakamraa.com/php/UserRegistration.php";
     Boolean CheckEditText ;
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();

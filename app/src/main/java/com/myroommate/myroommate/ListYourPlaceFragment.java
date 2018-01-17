@@ -30,7 +30,7 @@ public class ListYourPlaceFragment extends Fragment {
     String LocationHolder, LocalityHolder;
     Integer RentHolder;
     String finalResult ;
-    String HttpURL = "https://myroommate.000webhostapp.com/AddListing.php";
+    String HttpURL = "https://ftp.merakamraa.com/php/AddListing.php";
     Boolean CheckEditText ;
     ProgressDialog progressDialog;
     HashMap<String, String> hashMap = new HashMap<>();

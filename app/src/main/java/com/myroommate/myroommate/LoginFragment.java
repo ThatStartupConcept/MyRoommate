@@ -32,7 +32,7 @@ public class LoginFragment extends Fragment {
     EditText Email, Password ;
     String EmailHolder, PasswordHolder;
     String finalResult ;
-    String HttpURL = "https://myroommate.000webhostapp.com/UserLogin.php";
+    String HttpURL = "https://ftp.merakamraa.com/php/UserLogin.php";
     Boolean CheckEditText ;
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();
