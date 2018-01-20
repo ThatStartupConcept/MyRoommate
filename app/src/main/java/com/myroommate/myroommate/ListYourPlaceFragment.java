@@ -21,6 +21,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,9 +37,10 @@ public class ListYourPlaceFragment extends Fragment {
     String ListingNameHolder, AddressHolder, SubLocalityHolder, PincodeHolder;
     String LocationHolder, LocalityHolder;
     Integer RentHolder;
-    String HttpURL = "https://myroommate.000webhostapp.com/AddListing.php";
+    String HttpURL = "http://merakamraa.com/php/AddListing.php";
     Boolean CheckEditText ;
     RequestQueue requestQueue;
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,18 +43,21 @@ public class AccountFragment extends Fragment {
     Button Logout,Update,Delete;
     EditText First_Name, Last_Name, Email, Password, PasswordMatch ;
     String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder,PasswordMatchHolder;
-    String HttpUpdateURL = "https://myroommate.000webhostapp.com/AccountUpdate.php";
-    String HttpDetailsURL = "https://myroommate.000webhostapp.com/AccountDetails.php";
-    String HttpDeleteURL = "https://myroommate.000webhostapp.com/AccountDelete.php";
+    String HttpUpdateURL = "http://merakamraa.com/php/AccountUpdate.php";
+    String HttpDetailsURL = "http://merakamraa.com/php/AccountDetails.php";
+    String HttpDeleteURL = "http://merakamraa.com/php/AccountDelete.php";
     Boolean CheckEditText ;
     RequestQueue requestQueue;
     SharedPreferences sharedPreferences;
+    private FirebaseAuth mAuth;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View RootView = inflater.inflate(R.layout.fragment_account, container, false);
+
+        mAuth = FirebaseAuth.getInstance();
 
         requestQueue = Volley.newRequestQueue(getContext());
 

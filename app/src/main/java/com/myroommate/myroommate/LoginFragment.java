@@ -2,6 +2,7 @@ package com.myroommate.myroommate;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -22,6 +24,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +37,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 import static com.myroommate.myroommate.ListYourPlaceInfoFragment.isRedirectedFromLYPInfo;
 import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
@@ -39,11 +47,12 @@ public class LoginFragment extends Fragment {
     Button login;
     EditText Email, Password ;
     String EmailHolder, PasswordHolder;
-    String HttpURL = "https://myroommate.000webhostapp.com/UserLogin.php";
+    String HttpURL = "http://merakamraa.com/php/UserLogin.php";
     Boolean CheckEditText ;
     RequestQueue requestQueue;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editPreferences;
+    private FirebaseAuth mAuth;
 
 
     public static final String TITLE = "Login";
@@ -57,6 +66,8 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         View RootView = inflater.inflate(R.layout.fragment_login, container, false);
+
+        mAuth = FirebaseAuth.getInstance();
 
         requestQueue = Volley.newRequestQueue(getContext());
         sharedPreferences = getActivity().getSharedPreferences("logindetails",MODE_PRIVATE);
@@ -81,7 +92,7 @@ public class LoginFragment extends Fragment {
 
                         // If EditText is not empty and CheckEditText = True then this block will execute.
 
-                        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
+                        /* StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String stringResponse) {
                                 if(stringResponse.equals("Invalid Username or Password.")){
@@ -143,7 +154,28 @@ public class LoginFragment extends Fragment {
                             }
                         };
 
-                        requestQueue.add(stringRequest);
+                        requestQueue.add(stringRequest); */
+
+                        mAuth.signInWithEmailAndPassword(Email.toString(), Password.toString())
+                                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            // Sign in success, update UI with the signed-in user's information
+                                            Log.d(TAG, "signInWithEmail:success");
+                                            FirebaseUser user = mAuth.getCurrentUser();
+
+                                        } else {
+                                            // If sign in fails, display a message to the user.
+                                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                            Toast.makeText(getActivity(), "Authentication failed.",
+                                                    Toast.LENGTH_SHORT).show();
+
+                                        }
+
+                                        // ...
+                                    }
+                                });
 
                     } else {
 

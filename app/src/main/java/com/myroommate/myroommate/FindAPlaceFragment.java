@@ -21,6 +21,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,11 +39,13 @@ public class FindAPlaceFragment extends Fragment {
     ProgressDialog progressDialog;
     private List<Listing> listings;
     RequestQueue requestqueue;
-    String HttpURL = "https://myroommate.000webhostapp.com/GetListing.php";
+    String HttpURL = "http://merakamraa.com/php/GetListing.php";
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_find_a_place, container, false);
+
+
     }
 
     @Override
