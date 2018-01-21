@@ -29,6 +29,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,51 +96,7 @@ public class RegisterFragment extends Fragment {
                     if(PasswordHolder.equals(PasswordMatchHolder)) {
 
                         // If EditText is not empty and CheckEditText = True then this block will execute.
-                        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String stringResponse) {
-                                Snackbar snackbar = Snackbar
-                                        .make(view, stringResponse, Snackbar.LENGTH_LONG);
-                                snackbar.show();
 
-                                if (stringResponse.equals("Registration Successful!")) {
-
-                                    editPreferences.putString("first_name", F_Name_Holder);
-                                    editPreferences.putString("last_name", L_Name_Holder);
-                                    editPreferences.putString("email", EmailHolder);
-                                    editPreferences.putString("password", PasswordHolder);
-                                    editPreferences.apply();
-
-
-                                    if (isRedirectedFromLYPInfo) {
-                                        Fragment fragment = new ListYourPlaceFragment();
-                                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                        ft.replace(R.id.content_frame, fragment);
-                                        ft.commit();
-                                        isRedirectedFromLYPInfo = false;
-                                    }
-                                }
-                            }
-
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                VolleyLog.e("Error: ", error.toString());
-                            }
-                        }) {
-                            @Override
-                            protected Map<String, String> getParams() throws AuthFailureError {
-                                Map<String, String> parameters = new HashMap<String, String>();
-                                parameters.put("f_name", F_Name_Holder);
-                                parameters.put("L_name", L_Name_Holder);
-                                parameters.put("email", EmailHolder);
-                                parameters.put("password", PasswordHolder);
-                                return parameters;
-                            }
-                        };
-
-                        requestQueue.add(stringRequest);
 
                         mAuth.createUserWithEmailAndPassword(EmailHolder, PasswordHolder)
                                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
@@ -145,7 +105,65 @@ public class RegisterFragment extends Fragment {
                                         if (task.isSuccessful()) {
                                             // Sign in success, update UI with the signed-in user's information
                                             Log.d(TAG, "createUserWithEmail:success");
+                                            Toast.makeText(getActivity(), "Authenticating...",
+                                                    Toast.LENGTH_SHORT).show();
                                             FirebaseUser user = mAuth.getCurrentUser();
+                                            user.getIdToken(true)
+                                                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                                                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                                            if (task.isSuccessful()) {
+                                                                final String idToken = task.getResult().getToken();
+
+
+                                                                StringRequest stringRequest2 = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
+                                                                    @Override
+                                                                    public void onResponse(String stringResponse) {
+
+                                                                        Snackbar snackbar = Snackbar
+                                                                                .make(view, stringResponse, Snackbar.LENGTH_LONG);
+                                                                        snackbar.show();
+
+                                                                        if (stringResponse.equals("Registration Successful!")) {
+
+                                                                            editPreferences.putString("first_name", F_Name_Holder);
+                                                                            editPreferences.putString("last_name", L_Name_Holder);
+                                                                            editPreferences.putString("email", EmailHolder);
+                                                                            editPreferences.putString("password", PasswordHolder);
+                                                                            editPreferences.apply();
+
+                                                                            if (isRedirectedFromLYPInfo) {
+                                                                                Fragment fragment = new ListYourPlaceFragment();
+                                                                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                                                                ft.replace(R.id.content_frame, fragment);
+                                                                                ft.commit();
+                                                                                isRedirectedFromLYPInfo = false;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }, new Response.ErrorListener() {
+
+                                                                    @Override
+                                                                    public void onErrorResponse(VolleyError error) {
+                                                                        VolleyLog.e("Error: ", error.toString());
+                                                                    }
+                                                                }){
+                                                                    @Override
+                                                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                                                        Map<String, String> parameters = new HashMap<String, String>();
+                                                                        parameters.put("f_name", F_Name_Holder);
+                                                                        parameters.put("L_name", L_Name_Holder);
+                                                                        parameters.put("user_token", idToken);
+                                                                        return parameters;
+                                                                    }
+                                                                };
+
+                                                                requestQueue.add(stringRequest2);
+
+                                                            } else {
+                                                                // Handle error -> task.getException();
+                                                            }
+                                                        }
+                                                    });
 
                                         } else {
                                             // If sign in fails, display a message to the user.
