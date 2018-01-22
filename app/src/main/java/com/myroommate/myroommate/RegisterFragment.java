@@ -137,6 +137,11 @@ public class RegisterFragment extends Fragment {
                                                                                 ft.replace(R.id.content_frame, fragment);
                                                                                 ft.commit();
                                                                                 isRedirectedFromLYPInfo = false;
+                                                                            } else{
+                                                                                Fragment fragment = new FindAPlaceFragment();
+                                                                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                                                                ft.replace(R.id.content_frame, fragment);
+                                                                                ft.commit();
                                                                             }
                                                                         }
                                                                     }
