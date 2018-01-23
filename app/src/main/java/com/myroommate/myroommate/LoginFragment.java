@@ -369,10 +369,12 @@ public class LoginFragment extends Fragment {
                                         }
                                     });
 
-                            Fragment fragment = new AccountFragment();
-                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.content_frame, fragment);
-                            ft.commit();
+                            if(!isRedirectedFromLYPInfo) {
+                                Fragment fragment = new AccountFragment();
+                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                ft.replace(R.id.content_frame, fragment);
+                                ft.commit();
+                            }
 
                         } else {
                             // If sign in fails, display a message to the user.

@@ -1,6 +1,7 @@
 package com.myroommate.myroommate;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -21,7 +22,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -125,9 +130,17 @@ public class ListYourPlaceFragment extends Fragment {
             public void onClick(View view) {
 
                 hideKeyboardFrom(getContext(), view);
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = mAuth.getCurrentUser();
 
                 // Checking whether EditText is Empty or Not
                 CheckEditTextIsEmptyOrNot();
+
+                currentUser.getIdToken(true)
+                        .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                if (task.isSuccessful()) {
+                                    final String idToken = task.getResult().getToken();
 
                 if(CheckEditText){
                     // If EditText is not empty and CheckEditText = True then this block will execute.
@@ -157,20 +170,27 @@ public class ListYourPlaceFragment extends Fragment {
                             parameters.put("sublocality",SubLocalityHolder);
                             parameters.put("pincode",PincodeHolder);
                             parameters.put("rent",RentHolder.toString());
+                            parameters.put("firebase_token",idToken);
                             return parameters;
                         }
                     };
 
                     requestQueue.add(stringRequest);
+
                 }
                 else {
 
                     // If EditText is empty then this block will execute .
                     Snackbar snackbar = Snackbar
-                            .make(view, "Please fill all the form fields.", Snackbar.LENGTH_LONG);
+                            .make(getView(), "Please fill all the form fields.", Snackbar.LENGTH_LONG);
                     snackbar.show();
 
                 }
+                                } else {
+                                    // Handle error -> task.getException();
+                                }
+                            }
+                        });
             }
         });
 
