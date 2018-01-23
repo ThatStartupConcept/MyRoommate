@@ -18,6 +18,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import static com.myroommate.myroommate.ListYourPlaceInfoFragment.isRedirectedFromLYPInfo;
 
 public class MainActivity extends AppCompatActivity
@@ -37,17 +40,20 @@ public class MainActivity extends AppCompatActivity
         sharedPreferences = getSharedPreferences("logindetails",MODE_PRIVATE);
 
 
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = mAuth.getCurrentUser();
                 hideKeyboardFrom(MainActivity.this, drawerView);
 
                 Button  navHeaderButton = (Button) findViewById(R.id.nav_header_button);
                 assert navHeaderButton!=null;
-                if(sharedPreferences.contains("first_name")){
-                    navHeaderButton.setText("Welcome, " + sharedPreferences.getString("first_name",""));
+                if(currentUser!=null){
+                    navHeaderButton.setText("Your Profile");
                     navHeaderButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

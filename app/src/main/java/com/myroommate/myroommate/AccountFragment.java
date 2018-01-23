@@ -23,6 +23,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,6 +58,9 @@ public class AccountFragment extends Fragment {
     RequestQueue requestQueue;
     SharedPreferences sharedPreferences;
     private FirebaseAuth mAuth;
+    GoogleSignInOptions gso;
+
+    GoogleSignInClient mGoogleSignInClient;
 
     @Nullable
     @Override
@@ -63,6 +69,13 @@ public class AccountFragment extends Fragment {
         View RootView = inflater.inflate(R.layout.fragment_account, container, false);
 
         mAuth = FirebaseAuth.getInstance();
+
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
         requestQueue = Volley.newRequestQueue(getContext());
 
@@ -221,6 +234,8 @@ public class AccountFragment extends Fragment {
             @Override
             public void onClick(final View view) {
                 getActivity().getSharedPreferences("logindetails", 0).edit().clear().apply();
+                FirebaseAuth.getInstance().signOut();
+                signOut();
                 Snackbar snackbar = Snackbar
                         .make(view, "Successfully Logged Out.", Snackbar.LENGTH_LONG);
                 snackbar.show();
@@ -291,11 +306,21 @@ public class AccountFragment extends Fragment {
         getActivity().setTitle("Account Details");
     }
 
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // ...
+                    }
+                });
+    }
+
     public void CheckEditTextIsEmptyOrNot(){
 
         F_Name_Holder = First_Name.getText().toString();
         L_Name_Holder = Last_Name.getText().toString();
-        //EmailHolder = Email.getText().toString();
+        EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
         PasswordMatchHolder = PasswordMatch.getText().toString();
 
