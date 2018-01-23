@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,13 +45,13 @@ public class FindAPlaceFragment extends Fragment {
     RequestQueue requestqueue;
     String HttpURL = "http://merakamraa.com/php/GetListing.php";
     String InfoURL = "http://merakamraa.com/php/GetListingInfo.php";
+    private int locationcount = 0;
+
+    private ArrayList<String[]> listOfLists = new ArrayList<String[]>();
+
+    private ArrayList<String[]> listOfLocationArrays = new ArrayList<String[]>();
 
     private ArrayList<String> locationList = new ArrayList<String>();
-
-
-    private ArrayList<String> mumbaiList = new ArrayList<String>();
-    private ArrayList<String> chennaiList = new ArrayList<String>();
-    private ArrayList<String> bangaloreList = new ArrayList<String>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -77,8 +78,8 @@ public class FindAPlaceFragment extends Fragment {
                 try {
                     JSONObject jsonResponse = new JSONObject(stringResponse);
                     JSONArray jListings = jsonResponse.getJSONArray("listinginfo");
-                    int locationcount = 0;
-                    int localitycount = 0;
+
+                    int localitynumber = 0;
                     JSONObject listing;
                     JSONObject prevlisting;
                     String prev_location_name;
@@ -101,30 +102,31 @@ public class FindAPlaceFragment extends Fragment {
 
 
                         if (i==0){
+                            listOfLists.add(new String[200]);
                             locationList.add(location_name);
                             locationcount++;
-                            localitycount = 0;
+                            localitynumber = 0;
                         }
                         if(i>0){
                             if(!location_name.equals(prev_location_name)){
+                                listOfLists.add(new String[200]);
                                 locationList.add(location_name);
+                                String[] temp = Arrays.copyOf(listOfLists.get(locationcount-1),localitynumber);
+                                listOfLocationArrays.add(temp);
+
                                 locationcount++;
-                                localitycount = 0;
+                                localitynumber = 0;
                             }
                         }
-                        switch (locationcount){
-                            case 1:
-                                mumbaiList.add(locality_name);
-                                localitycount++;
-                                break;
-                            case 2:
-                                chennaiList.add(locality_name);
-                                localitycount++;
-                                break;
-                            case 3:
-                                bangaloreList.add(locality_name);
-                                localitycount++;
-                                break;
+
+                        listOfLists.get(locationcount-1)[localitynumber] = (locality_name);
+
+                        localitynumber++;
+
+                        if(i== (jListings.length()-1)){
+                            String[] temp = Arrays.copyOf(listOfLists.get(locationcount-1),localitynumber);
+                            listOfLocationArrays.add(temp);
+
                         }
                     }
 
@@ -137,9 +139,7 @@ public class FindAPlaceFragment extends Fragment {
                 }
 
                 final String locationArray[]=locationList.toArray(new String[locationList.size()]);
-                final String mumbaiArray[]=mumbaiList.toArray(new String[mumbaiList.size()]);
-                final String chennaiArray[]=chennaiList.toArray(new String[chennaiList.size()]);
-                final String bangaloreArray[]=bangaloreList.toArray(new String[bangaloreList.size()]);
+
 
                 final String[] emptyArray = getResources().getStringArray(R.array.empty);
                 final Spinner locationSpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_location);
@@ -160,21 +160,22 @@ public class FindAPlaceFragment extends Fragment {
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int positionLocation, long id) {
                         getActivity().findViewById(R.id.recyclerView).setVisibility(View.GONE);
 
-                        final String[] tempList;
-                        switch (positionLocation){
-                            case 0:
-                                tempList=mumbaiArray;
-                                break;
-                            case 1:
-                                tempList=chennaiArray;
-                                break;
-                            case 2:
-                                tempList=bangaloreArray;
-                                break;
-                            default:
-                                tempList=emptyArray;
-                                break;
+
+                        String[] tempList;
+                        if(positionLocation==-1) {
+                            tempList=emptyArray;
                         }
+                        else{
+                            tempList = listOfLocationArrays.get(positionLocation);
+                            Snackbar snackbar = Snackbar
+                                    .make(getView(), tempList[0], Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                        }
+
+                        locationcount = 0;
+
+
+
                         ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,tempList);
                         dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
                         localitySpinner.setAdapter(dataAdapter2);
