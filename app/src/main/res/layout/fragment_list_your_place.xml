@@ -1,124 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list_your_place_form"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
 
-    <Spinner
-        android:id="@+id/lyp_location"
-        style="@style/Platform.Widget.AppCompat.Spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.5"
-        android:fitsSystemWindows="false" />
-
-    <Spinner
-        android:id="@+id/lyp_locality"
-        style="@style/Platform.Widget.AppCompat.Spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.5"
-        android:fitsSystemWindows="false" />
-
-    <android.support.design.widget.TextInputLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/lyp_listing_name"
+        <LinearLayout
+
+            android:id="@+id/list_your_place_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/prompt_listing_name"
-            android:imeOptions="actionNext"
-            android:inputType="textPersonName|textCapWords"
-            android:maxLines="1"
-            android:singleLine="true" />
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
 
-    </android.support.design.widget.TextInputLayout>
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/lyp_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:popupBackground="@color/colorPrimaryDark"
+                app:ms_alignLabels="true"
+                app:ms_arrowColor="@color/colorAccent"
+                app:ms_arrowSize="16dp"
+                app:ms_baseColor="@color/colorPrimaryDark"
+                app:ms_enableErrorLabel="false"
+                app:ms_enableFloatingLabel="true"
+                app:ms_errorColor="@color/colorError"
+                app:ms_floatingLabelColor="@color/colorAccent"
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                app:ms_floatingLabelText="City:"
+                app:ms_highlightColor="@color/colorAccent"
+                app:ms_hint="Select City"
+                app:ms_hintColor="@color/colorAccent"
+                app:ms_multiline="false"
+                app:ms_thickness="2dp" />
 
-        <EditText
-            android:id="@+id/lyp_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_address"
-            android:imeOptions="actionNext"
-            android:inputType="textPersonName|textCapWords"
-            android:maxLines="1"
-            android:singleLine="true" />
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/lyp_locality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="0.5"
+                android:popupBackground="@color/colorPrimaryDark"
+                app:ms_alignLabels="true"
+                app:ms_arrowColor="@color/colorAccent"
+                app:ms_arrowSize="16dp"
+                app:ms_baseColor="@color/colorPrimaryDark"
+                app:ms_enableErrorLabel="false"
+                app:ms_enableFloatingLabel="true"
+                app:ms_errorColor="@color/colorError"
+                app:ms_floatingLabelColor="@color/colorAccent"
 
-    </android.support.design.widget.TextInputLayout>
+                app:ms_floatingLabelText="Locality:"
+                app:ms_highlightColor="@color/colorAccent"
+                app:ms_hint="Select Locality"
+                app:ms_hintColor="@color/colorAccent"
+                app:ms_multiline="false"
+                app:ms_thickness="2dp" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/lyp_sub_locality"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_sub_locality"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:singleLine="true" />
+                <EditText
+                    android:id="@+id/lyp_listing_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_listing_name"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName|textCapWords"
+                    android:maxLines="1"
+                    android:singleLine="true" />
 
-    </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/lyp_pincode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_pincode"
-            android:imeOptions="actionNext"
-            android:inputType="number"
-            android:maxLength="6"
-            android:maxLines="1"
-            android:singleLine="true" />
+                <EditText
+                    android:id="@+id/lyp_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_address"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName|textCapWords"
+                    android:maxLines="1"
+                    android:singleLine="true" />
 
-    </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/lyp_rent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_rent"
-            android:imeActionId="@+id/login"
-            android:imeActionLabel="Submit"
-            android:imeOptions="actionDone"
-            android:inputType="number"
-            android:maxLength="5"
-            android:maxLines="1"
-            android:singleLine="true" />
+                <EditText
+                    android:id="@+id/lyp_sub_locality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_sub_locality"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true" />
 
-    </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/lyp_submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:theme="@style/BlueButton"
-        android:text="SUBMIT"
-        android:textStyle="bold" />
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+                <EditText
+                    android:id="@+id/lyp_pincode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_pincode"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/lyp_rent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_rent"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="Submit"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/lyp_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:text="SUBMIT"
+                android:textStyle="bold"
+                android:theme="@style/CustomButton" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

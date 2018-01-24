@@ -1,5 +1,6 @@
 package com.myroommate.myroommate;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,11 +47,27 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(ListingViewHolder personViewHolder, int i) {
+    public void onBindViewHolder(final ListingViewHolder personViewHolder, int i) {
         personViewHolder.listing_listingPhoto.setImageResource(listings.get(i).listingPhoto);
         personViewHolder.listing_listingName.setText(listings.get(i).listingName);
         personViewHolder.listing_ownerName.setText(listings.get(i).ownerName);
         personViewHolder.listing_subLocality.setText(listings.get(i).subLocality);
+
+        personViewHolder.card_view.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(final View v){ // Makes cards generated in ListYourPlaceFragment clickable
+
+                Snackbar snackbar = Snackbar
+                        .make(personViewHolder.itemView, personViewHolder.listing_listingName.getText().toString(), Snackbar.LENGTH_LONG);
+                snackbar.show();
+
+                // TODO - Link to a new Fragment which will show contents of card
+
+            }
+
+        });
+
     }
 
     @Override

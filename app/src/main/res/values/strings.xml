@@ -1,5 +1,11 @@
 <resources>
-    <string name="app_name">Kamraa</string>
+
+    <item name="visible" type="id"/>
+    <item name="masked" type="id"/>
+
+    <string name="app_name">MeraKamraa</string>
+
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -16,20 +22,12 @@
 
 
     <!-- Strings related to login and register -->
-    <string name="title_activity_login">Log in or Register</string>
     <string name="prompt_firstname">First Name</string>
     <string name="prompt_lastname">Last Name</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_log_in">Log in</string>
     <string name="action_register">Register</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
 
     <!-- Strings related to List Your Place Info-->
     <string name="slogan">List. Rent. Relax.</string>

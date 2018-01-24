@@ -1,11 +1,9 @@
 package com.myroommate.myroommate;
 
-import android.app.ProgressDialog;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,11 +14,32 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+
+import fr.ganfra.materialspinner.MaterialSpinner;
+
+import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 
 public class ListYourPlaceFragment extends Fragment {
 
@@ -29,108 +48,151 @@ public class ListYourPlaceFragment extends Fragment {
     String ListingNameHolder, AddressHolder, SubLocalityHolder, PincodeHolder;
     String LocationHolder, LocalityHolder;
     Integer RentHolder;
-    String finalResult ;
-    String HttpURL = "https://ftp.merakamraa.com/php/AddListing.php";
+    String HttpURL = "http://merakamraa.com/php/AddListing.php";
     Boolean CheckEditText ;
-    ProgressDialog progressDialog;
-    HashMap<String, String> hashMap = new HashMap<>();
-    HttpParse httpParse = new HttpParse();
+    RequestQueue requestqueue;
+
+    String InfoURL = "http://merakamraa.com/php/GetListingInfo.php";
+    private int locationcount = 0;
+
+    private ArrayList<String[]> listOfLists = new ArrayList<String[]>();
+
+    private ArrayList<String[]> listOfLocationArrays = new ArrayList<String[]>();
+
+    private ArrayList<String> locationList = new ArrayList<String>();
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final List<String> list0 = new ArrayList<String>();
-        list0.add("Select One");
+        requestqueue = Volley.newRequestQueue(getActivity());
 
-        List<String> list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
-        final int listsize1 = list1.size() - 1;
-
-        final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.lyp_location);
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list1) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, InfoURL, new Response.Listener<String>() {
             @Override
-            public int getCount() {
-                return (listsize1); // Truncate the list
-            }
-        };
+            public void onResponse(String stringResponse) {
 
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(dataAdapter);
-        spinner1.setSelection(listsize1);
+                try {
+                    JSONObject jsonResponse = new JSONObject(stringResponse);
+                    JSONArray jListings = jsonResponse.getJSONArray("listinginfo");
 
-        final List<String> list2 = Arrays.asList(getResources().getStringArray(R.array.mumbainames));
-        final List<String> list3 = Arrays.asList(getResources().getStringArray(R.array.chnnames));
-        final List<String> list4 = Arrays.asList(getResources().getStringArray(R.array.blorenames));
+                    int localitynumber = 0;
+                    JSONObject listing;
+                    JSONObject prevlisting;
+                    String prev_location_name;
+                    String location_name;
+                    String locality_name;
 
-        final Spinner spinner2 = (Spinner)getActivity().findViewById(R.id.lyp_locality);
+                    for (int i = 0; i < jListings.length(); i++) {
 
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
-                LocalityHolder=null;
-                final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                        final List<String> tempList;
-                        final int tempSize;
+                        listing = jListings.getJSONObject(i);
 
-                        switch (position2){
-                            case 0:
-                                tempSize=list2.size()-1;
-                                tempList=list2;
-                                break;
-                            case 1:
-                                tempSize=list3.size()-1;
-                                tempList=list3;
-                                break;
-                            case 2:
-                                tempSize=list4.size()-1;
-                                tempList=list4;
-                                break;
-                            default:
-                                tempSize=list0.size();
-                                tempList=list0;
-                                break;
+                        location_name = listing.getString("Location");
+                        locality_name = listing.getString("Locality");
+                        prev_location_name = location_name;
+
+                        if (i > 0) {
+                            prevlisting = jListings.getJSONObject(i - 1);
+                            prev_location_name = prevlisting.getString("Location");
                         }
-                        ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, tempList) {
-                            @Override
-                            public int getCount() {
-                                return (tempSize); // Truncate the list
+
+
+                        if (i == 0) {
+                            listOfLists.add(new String[200]);
+                            locationList.add(location_name);
+                            locationcount++;
+                            localitynumber = 0;
+                        }
+                        if (i > 0) {
+                            if (!location_name.equals(prev_location_name)) {
+                                listOfLists.add(new String[200]);
+                                locationList.add(location_name);
+                                String[] temp = Arrays.copyOf(listOfLists.get(locationcount - 1), localitynumber);
+                                listOfLocationArrays.add(temp);
+
+                                locationcount++;
+                                localitynumber = 0;
                             }
-                        };
-                        spinner2.setAdapter(dataAdapter3);
-                        return dataAdapter3.getDropDownView(position, convertView, parent);
-                    }
-                };
+                        }
 
-                dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner2.setAdapter(dataAdapter2);
-                spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
-                        Resources res = getResources();
-                        if(!spinner1.getSelectedItem().toString().equals("Select One") && !spinner2.getSelectedItem().toString().equals("Select One")) {
-                            LocationHolder=spinner1.getSelectedItem().toString();
-                            LocalityHolder=spinner2.getSelectedItem().toString();
+                        listOfLists.get(locationcount - 1)[localitynumber] = (locality_name);
+
+                        localitynumber++;
+
+                        if (i == (jListings.length() - 1)) {
+                            String[] temp = Arrays.copyOf(listOfLists.get(locationcount - 1), localitynumber);
+                            listOfLocationArrays.add(temp);
+
                         }
                     }
 
-                    public void onNothingSelected(AdapterView<?> parentView2)
-                    {
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                final String[] locationArray =locationList.toArray(new String[locationList.size()]);
+                final String[] emptyArray = getResources().getStringArray(R.array.empty);
+
+                final Spinner locationSpinner = (MaterialSpinner) getActivity().findViewById(R.id.lyp_location);
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
+                dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                locationSpinner.setAdapter(dataAdapter);
+
+
+
+                final Spinner localitySpinner = (MaterialSpinner) getActivity().findViewById(R.id.lyp_locality);
+                final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, emptyArray);
+                emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                localitySpinner.setAdapter(emptyAdapter);
+
+                locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int positionLocation, long id) {
+
+                        String[] tempList;
+                        if (positionLocation == -1) {
+                            tempList = emptyArray;
+                        } else {
+                            tempList = listOfLocationArrays.get(positionLocation);
+                        }
+
+                        locationcount = 0;
+
+
+                        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, tempList);
+                        dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                        localitySpinner.setAdapter(dataAdapter2);
+
+                        localitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int positionLocality, long id2) {
+
+                                if (!locationSpinner.getSelectedItem().toString().equals("Select City") && !localitySpinner.getSelectedItem().toString().equals("Select Locality")) {
+                                    LocationHolder = locationSpinner.getSelectedItem().toString();
+                                    LocalityHolder = localitySpinner.getSelectedItem().toString();
+                                }
+                            }
+
+                            public void onNothingSelected(AdapterView<?> parentView2) {
+                            }
+                        });
+                    }
+
+                    public void onNothingSelected(AdapterView<?> parentView) {
                     }
                 });
             }
+        }, new Response.ErrorListener() {
 
-            public void onNothingSelected(AdapterView<?> parentView)
-            {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.e("Error: ", error.toString());
             }
         });
 
-
+        requestqueue.add(stringRequest);
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
@@ -143,29 +205,86 @@ public class ListYourPlaceFragment extends Fragment {
         Pincode = (EditText)RootView.findViewById(R.id.lyp_pincode);
         Rent = (EditText)RootView.findViewById(R.id.lyp_rent);
         Submit = (Button)RootView.findViewById(R.id.lyp_submit);
+        requestqueue= Volley.newRequestQueue(getContext());
 
         //Adding Click Listener on button.
         Submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                hideKeyboardFrom(getContext(), view);
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+
                 // Checking whether EditText is Empty or Not
                 CheckEditTextIsEmptyOrNot();
 
+                currentUser.getIdToken(true)
+                        .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                if (task.isSuccessful()) {
+                                    final String idToken = task.getResult().getToken();
+
                 if(CheckEditText){
                     // If EditText is not empty and CheckEditText = True then this block will execute.
-                    UserListingFunction(LocationHolder,LocalityHolder,ListingNameHolder,AddressHolder,SubLocalityHolder,PincodeHolder,RentHolder.toString());
+                    StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
+                        @Override
+                        public void onResponse(String stringResponse){
+                            Snackbar snackbar = Snackbar
+                                    .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                        }
+
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            VolleyLog.e("Error: ", error.toString());
+                        }
+                    }){
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+
+                            Map<String,String> parameters = new HashMap<String,String>();
+                            parameters.put("location",LocationHolder);
+                            parameters.put("locality",LocalityHolder);
+                            parameters.put("listingname",ListingNameHolder);
+                            parameters.put("address",AddressHolder);
+                            parameters.put("sublocality",SubLocalityHolder);
+                            parameters.put("pincode",PincodeHolder);
+                            parameters.put("rent",RentHolder.toString());
+                            parameters.put("firebase_token",idToken);
+                            return parameters;
+                        }
+                    };
+
+                    requestqueue.add(stringRequest);
+
                 }
                 else {
 
                     // If EditText is empty then this block will execute .
-                    Toast.makeText(getActivity(), "Please fill all the form fields.", Toast.LENGTH_LONG).show();
+                    Snackbar snackbar = Snackbar
+                            .make(getView(), "Please fill all the form fields.", Snackbar.LENGTH_LONG);
+                    snackbar.show();
 
                 }
+                                } else {
+                                    // Handle error -> task.getException();
+                                }
+                            }
+                        });
             }
         });
 
         return RootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //you can set the title for your toolbar here for different fragments different titles
+        getActivity().setTitle("List Your Place");
     }
 
     protected void CheckEditTextIsEmptyOrNot(){
@@ -190,57 +309,5 @@ public class ListYourPlaceFragment extends Fragment {
 
             CheckEditText = true ;
         }
-    }
-
-    public void UserListingFunction(final String location, final String locality, final String listingname, final String address, final String sublocality, final String pincode, final String rent){
-
-        class UserLoginFunctionClass extends AsyncTask<String,Void,String> {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-                progressDialog = ProgressDialog.show(getActivity(),"Loading...",null,true,true);
-            }
-
-            @Override
-            protected void onPostExecute(String httpResponseMsg) {
-
-                super.onPostExecute(httpResponseMsg);
-
-                progressDialog.dismiss();
-
-                Toast.makeText(getActivity(),httpResponseMsg, Toast.LENGTH_LONG).show();
-
-                if(httpResponseMsg.equals("S"));
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                hashMap.put("location",params[0]);
-
-                hashMap.put("locality",params[1]);
-
-                hashMap.put("listingname",params[2]);
-
-                hashMap.put("address",params[3]);
-
-                hashMap.put("sublocality",params[4]);
-
-                hashMap.put("pincode",params[5]);
-
-                hashMap.put("rent",params[6]);
-
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-
-                return finalResult;
-            }
-        }
-
-        UserLoginFunctionClass userLoginFunctionClass = new UserLoginFunctionClass();
-
-
-        userLoginFunctionClass.execute(location, locality, listingname, address, sublocality, pincode, rent);
     }
 }

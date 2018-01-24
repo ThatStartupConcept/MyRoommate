@@ -26,6 +26,10 @@ public class HomeScreenFragment extends Fragment {
 
         final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.locationSpinner);
 
+        //TODO - Is this spinner really needed?
+
+        //TODO - Have to update contents of the cards on this screen, maybe make them clickable and link to the currently unused 'About Us' and 'FAQ' sections on the drawer
+
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list1) {
             @Override
             public int getCount() {

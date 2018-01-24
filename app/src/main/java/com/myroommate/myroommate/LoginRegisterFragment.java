@@ -15,6 +15,7 @@ public class LoginRegisterFragment extends Fragment {
     private ViewPagerAdapter mViewPagerAdapter;
     private TabLayout mTabLayout;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_login_register, container, false);

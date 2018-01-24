@@ -1,47 +1,40 @@
 package com.myroommate.myroommate;
 
 import android.app.ProgressDialog;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.os.AsyncTask;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.AdapterView;
-import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import fr.ganfra.materialspinner.MaterialSpinner;
 
-import static com.android.volley.VolleyLog.TAG;
+import static android.content.ContentValues.TAG;
 
 public class FindAPlaceFragment extends Fragment {
 
@@ -50,166 +43,233 @@ public class FindAPlaceFragment extends Fragment {
     ProgressDialog progressDialog;
     private List<Listing> listings;
     RequestQueue requestqueue;
-    String HttpURL = "https://myroommate.000webhostapp.com/GetListing.php";
+    String HttpURL = "http://merakamraa.com/php/GetListing.php";
+    String InfoURL = "http://merakamraa.com/php/GetListingInfo.php";
+    private int locationcount = 0;
+
+    private ArrayList<String[]> listOfLists = new ArrayList<String[]>();
+
+    private ArrayList<String[]> listOfLocationArrays = new ArrayList<String[]>();
+
+    private ArrayList<String> locationList = new ArrayList<String>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+
+
     return inflater.inflate(R.layout.fragment_find_a_place, container, false);
+
+
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final List<String> list0 = new ArrayList<String>();
-        list0.add("Select One");
+        requestqueue = Volley.newRequestQueue(getActivity());
+        mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
 
-        List<String> list1 = Arrays.asList(getResources().getStringArray(R.array.locationnames));
-        final int listsize1 = list1.size() - 1;
 
-        final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.spinner1);
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list1) {
+        StringRequest stringRequest= new StringRequest(Request.Method.POST, InfoURL , new Response.Listener<String>(){
             @Override
-            public int getCount() {
-                return (listsize1); // Truncate the list
-            }
-        };
+            public void onResponse(String stringResponse){
 
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(dataAdapter);
-        spinner1.setSelection(listsize1);
+                try {
+                    JSONObject jsonResponse = new JSONObject(stringResponse);
+                    JSONArray jListings = jsonResponse.getJSONArray("listinginfo");
 
-        final List<String> list2 = Arrays.asList(getResources().getStringArray(R.array.mumbainames));
-        final List<String> list3 = Arrays.asList(getResources().getStringArray(R.array.chnnames));
-        final List<String> list4 = Arrays.asList(getResources().getStringArray(R.array.blorenames));
+                    int localitynumber = 0;
+                    JSONObject listing;
+                    JSONObject prevlisting;
+                    String prev_location_name;
+                    String location_name;
+                    String locality_name;
 
+                    for (int i = 0; i < jListings.length(); i++) {
 
-        final Spinner spinner2 = (Spinner)getActivity().findViewById(R.id.spinner2);
+                        listing = jListings.getJSONObject(i);
 
-        requestqueue = Volley.newRequestQueue(getContext());
-        mRecyclerView = (RecyclerView)getActivity().findViewById(R.id.recyclerView);
+                        location_name = listing.getString("Location");
+                        locality_name = listing.getString("Locality");
+                        prev_location_name = location_name;
 
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int position2, long id) {
-                getActivity().findViewById(R.id.recyclerView).setVisibility(View.GONE);
-
-                final ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list0) {
-
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-
-                        final List<String> tempList;
-                        final int tempSize;
-
-                        switch (position2){
-                            case 0:
-                                tempSize=list2.size()-1;
-                                tempList=list2;
-                                break;
-                            case 1:
-                                tempSize=list3.size()-1;
-                                tempList=list3;
-                                break;
-                            case 2:
-                                tempSize=list4.size()-1;
-                                tempList=list4;
-                                break;
-                            default:
-                                tempSize=list0.size();
-                                tempList=list0;
-                                break;
+                        if(i>0){
+                            prevlisting = jListings.getJSONObject(i-1);
+                            prev_location_name = prevlisting.getString("Location");
                         }
-                        ArrayAdapter dataAdapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, tempList) {
-                            @Override
-                            public int getCount() {
-                                return (tempSize); // Truncate the list
+
+
+
+                        if (i==0){
+                            listOfLists.add(new String[200]);
+                            locationList.add(location_name);
+                            locationcount++;
+                            localitynumber = 0;
+                        }
+                        if(i>0){
+                            if(!location_name.equals(prev_location_name)){
+                                listOfLists.add(new String[200]);
+                                locationList.add(location_name);
+                                String[] temp = Arrays.copyOf(listOfLists.get(locationcount-1),localitynumber);
+                                listOfLocationArrays.add(temp);
+
+                                locationcount++;
+                                localitynumber = 0;
                             }
-                        };
-                        spinner2.setAdapter(dataAdapter3);
-                        return dataAdapter3.getDropDownView(position, convertView, parent);
+                        }
+
+                        listOfLists.get(locationcount-1)[localitynumber] = (locality_name);
+
+                        localitynumber++;
+
+                        if(i== (jListings.length()-1)){
+                            String[] temp = Arrays.copyOf(listOfLists.get(locationcount-1),localitynumber);
+                            listOfLocationArrays.add(temp);
+
+                        }
                     }
-                };
 
-                dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner2.setAdapter(dataAdapter2);
 
-                spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                final String locationArray[]=locationList.toArray(new String[locationList.size()]);
+                final String[] emptyArray = getResources().getStringArray(R.array.empty);
+
+                final Spinner locationSpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_location);
+                ArrayAdapter<String> dataAdapter;
+                dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
+                dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                locationSpinner.setAdapter(dataAdapter);
+
+
+
+                final Spinner localitySpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_locality);
+                final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,emptyArray);
+                emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                localitySpinner.setAdapter(emptyAdapter);
+
+                locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int position3, long id2) {
-
-                        if(!spinner1.getSelectedItem().toString().equals("Select One") && !spinner2.getSelectedItem().toString().equals("Select One")) {
-
-                            final String locality = spinner2.getSelectedItem().toString();
-
-                            listings = new ArrayList<Listing>();
+                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int positionLocation, long id) {
+                        getActivity().findViewById(R.id.recyclerView).setVisibility(View.GONE);
 
 
-                            StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
-                                @Override
-                                public void onResponse(String stringResponse){
+                        String[] tempList;
+                        if(positionLocation==-1) {
+                            tempList=emptyArray;
+                        }
+                        else{
+                            tempList = listOfLocationArrays.get(positionLocation);
+                        }
 
-                                    if(stringResponse.equals("No listings available in this locality")) {
-                                        Toast.makeText(getActivity(), stringResponse, Toast.LENGTH_LONG).show();
-                                    }
-                                    else {
-                                        try {
-                                            JSONObject jsonResponse = new JSONObject(stringResponse);
-                                            JSONArray jListings = jsonResponse.getJSONArray("listings");
-                                            for (int i = 0; i < jListings.length(); i++) {
-                                                JSONObject listing = jListings.getJSONObject(i);
-                                                String listingname = listing.getString("listingname");
-                                                String address = listing.getString("address");
-                                                String sublocality = listing.getString("sublocality");
-                                                listings.add(new Listing(R.mipmap.ic_launcher, listingname, address, sublocality));
+                        locationcount = 0;
+
+
+
+                        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,tempList);
+                        dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                        localitySpinner.setAdapter(dataAdapter2);
+
+                        localitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int positionLocality, long id2) {
+
+                                if(!locationSpinner.getSelectedItem().toString().equals("Select City") && !localitySpinner.getSelectedItem().toString().equals("Select Locality")) {
+
+                                    final String locality = localitySpinner.getSelectedItem().toString();
+                                    listings = new ArrayList<Listing>();
+
+                                    StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
+                                        @Override
+                                        public void onResponse(String stringResponse){
+
+                                            if(stringResponse.equals("No listings available in this locality")) {
+                                                Snackbar snackbar = Snackbar
+                                                        .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
+                                                snackbar.show();
                                             }
 
-                                            mAdapter.notifyDataSetChanged();
+                                            else {
+                                                try {
+                                                    JSONObject jsonResponse = new JSONObject(stringResponse);
+                                                    JSONArray jListings = jsonResponse.getJSONArray("listings");
+                                                    for (int i = 0; i < jListings.length(); i++) {
+                                                        JSONObject listing = jListings.getJSONObject(i);
+                                                        String listingname = listing.getString("listingname");
+                                                        String address = listing.getString("address");
+                                                        String sublocality = listing.getString("sublocality");
+                                                        listings.add(new Listing(R.mipmap.ic_launcher, listingname, address, sublocality));
+                                                    }
 
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
+                                                    mAdapter.notifyDataSetChanged();
+                                                }
+                                                catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
                                         }
-                                    }
 
+                                    }, new Response.ErrorListener() {
+
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            VolleyLog.e("Error: ", error.toString());
+                                        }
+                                    }){
+                                        @Override
+                                        protected Map<String, String> getParams() throws AuthFailureError {
+                                            Map<String,String> parameters = new HashMap<String,String>();
+                                            parameters.put("locality",locality);
+                                            return parameters;
+                                        }
+
+                                    };
+
+                                    requestqueue.add(stringRequest);
+
+                                    initializeAdapter();
+
+                                    // use a linear layout manager
+                                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                                    mRecyclerView.setLayoutManager(mLayoutManager);
+
+                                    getActivity().findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
                                 }
+                            }
 
-                            }, new Response.ErrorListener() {
-
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    VolleyLog.e("Error: ", error.toString());
-                                }
-                            }){
-                                @Override
-                                protected Map<String, String> getParams() throws AuthFailureError {
-                                    Map<String,String> parameters = new HashMap<String,String>();
-                                    parameters.put("locality",locality);
-                                    return parameters;
-                                }
-
-                            };
-
-                            requestqueue.add(stringRequest);
-
-                            initializeAdapter();
-
-                            // use a linear layout manager
-                            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                            mRecyclerView.setLayoutManager(mLayoutManager);
-
-                            getActivity().findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
-                        }
+                            public void onNothingSelected(AdapterView<?> parentView2) {
+                            }
+                        });
                     }
 
-                    public void onNothingSelected(AdapterView<?> parentView2) {
+                    public void onNothingSelected(AdapterView<?> parentView) {
                     }
                 });
+
             }
 
-            public void onNothingSelected(AdapterView<?> parentView) {
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.e("Error: ", error.toString());
             }
         });
+
+        requestqueue.add(stringRequest);
+
+
+
+
+
+
     }
 
     @Override
@@ -224,6 +284,11 @@ public class FindAPlaceFragment extends Fragment {
     private void initializeAdapter(){
         mAdapter = new RVAdapter(listings);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void createSpinners(){
+
+
     }
 }
 
