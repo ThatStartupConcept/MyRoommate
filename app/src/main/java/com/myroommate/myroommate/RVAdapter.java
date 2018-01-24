@@ -56,11 +56,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder>
         personViewHolder.card_view.setOnClickListener(new View.OnClickListener(){
 
             @Override
-            public void onClick(final View v){
+            public void onClick(final View v){ // Makes cards generated in ListYourPlaceFragment clickable
 
                 Snackbar snackbar = Snackbar
                         .make(personViewHolder.itemView, personViewHolder.listing_listingName.getText().toString(), Snackbar.LENGTH_LONG);
                 snackbar.show();
+
+                // TODO - Link to a new Fragment which will show contents of card
 
             }
 

@@ -102,6 +102,10 @@ public class LoginFragment extends Fragment {
 
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
+        //TODO - Replace UI with 3-4 buttons 'Sign in with e-mail', 'Sign in with Google', 'Sign in with Facebook', 'Sign in via phone number'
+
+        //TODO - Add Facebook and phone-based login
+
         //Adding Click Listener on button.
         login.setOnClickListener(new View.OnClickListener() {
             @Override

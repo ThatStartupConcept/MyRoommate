@@ -81,6 +81,10 @@ public class RegisterFragment extends Fragment {
         PasswordMatch = (EditText)RootView.findViewById(R.id.register_password_match);
         register = (Button)RootView.findViewById(R.id.email_register_button);
 
+        //TODO - Replace UI with two buttons 'Register with email', 'Register with phone number'
+
+        //TODO - Add phone-based registration
+
         //Adding Click Listener on button.
         register.setOnClickListener(new View.OnClickListener() {
             @Override
