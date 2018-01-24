@@ -173,6 +173,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_list:
                 fragment = new ListYourPlaceInfoFragment();
                 break;
+            case R.id.nav_about:
+                fragment = new ListingDetailsFragment();
+                break;
         }
 
         //replacing the fragment

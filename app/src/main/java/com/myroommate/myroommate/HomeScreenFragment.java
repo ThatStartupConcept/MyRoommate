@@ -8,13 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class HomeScreenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.homescreen_content_main, container, false);
+        final View RootView = inflater.inflate(R.layout.homescreen_content_main, container, false);
+        return RootView;
     }
 
     @Override
