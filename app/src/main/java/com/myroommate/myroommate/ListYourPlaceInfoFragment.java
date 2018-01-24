@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -34,7 +37,10 @@ public class ListYourPlaceInfoFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if(sharedPreferences.contains("email")) {
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                if(currentUser!=null) {
 
                     Fragment fragment = new ListYourPlaceFragment();
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();

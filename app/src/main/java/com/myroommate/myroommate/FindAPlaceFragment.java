@@ -139,9 +139,8 @@ public class FindAPlaceFragment extends Fragment {
                 }
 
                 final String locationArray[]=locationList.toArray(new String[locationList.size()]);
-
-
                 final String[] emptyArray = getResources().getStringArray(R.array.empty);
+
                 final Spinner locationSpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_location);
                 ArrayAdapter<String> dataAdapter;
                 dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
@@ -167,9 +166,6 @@ public class FindAPlaceFragment extends Fragment {
                         }
                         else{
                             tempList = listOfLocationArrays.get(positionLocation);
-                            Snackbar snackbar = Snackbar
-                                    .make(getView(), tempList[0], Snackbar.LENGTH_LONG);
-                            snackbar.show();
                         }
 
                         locationcount = 0;

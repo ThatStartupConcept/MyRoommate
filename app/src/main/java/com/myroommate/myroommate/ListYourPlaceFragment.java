@@ -28,6 +28,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,72 +50,149 @@ public class ListYourPlaceFragment extends Fragment {
     Integer RentHolder;
     String HttpURL = "http://merakamraa.com/php/AddListing.php";
     Boolean CheckEditText ;
-    RequestQueue requestQueue;
+    RequestQueue requestqueue;
+
+    String InfoURL = "http://merakamraa.com/php/GetListingInfo.php";
+    private int locationcount = 0;
+
+    private ArrayList<String[]> listOfLists = new ArrayList<String[]>();
+
+    private ArrayList<String[]> listOfLocationArrays = new ArrayList<String[]>();
+
+    private ArrayList<String> locationList = new ArrayList<String>();
 
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final String[] locationArray =getResources().getStringArray(R.array.locationnames);
-        final Spinner locationSpinner = (MaterialSpinner)getActivity().findViewById(R.id.lyp_location);
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
-        dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
-        locationSpinner.setAdapter(dataAdapter);
+        requestqueue = Volley.newRequestQueue(getActivity());
 
-        final String[] emptyArray = getResources().getStringArray(R.array.empty);
-        final String[] mumbaiArray = getResources().getStringArray(R.array.mumbainames);
-        final String[] chennaiArray = getResources().getStringArray(R.array.chnnames);
-        final String[] bangaloreArray = getResources().getStringArray(R.array.blorenames);
-
-        final Spinner localitySpinner = (MaterialSpinner)getActivity().findViewById(R.id.lyp_locality);
-        final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,emptyArray);
-        emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
-        localitySpinner.setAdapter(emptyAdapter);
-
-        locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, InfoURL, new Response.Listener<String>() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int positionLocation, long id) {
+            public void onResponse(String stringResponse) {
 
-                final String[] tempList;
-                switch (positionLocation){
-                    case 0:
-                        tempList=mumbaiArray;
-                        break;
-                    case 1:
-                        tempList=chennaiArray;
-                        break;
-                    case 2:
-                        tempList=bangaloreArray;
-                        break;
-                    default:
-                        tempList=emptyArray;
-                        break;
-                }
-                ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,tempList);
-                dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
-                localitySpinner.setAdapter(dataAdapter2);
+                try {
+                    JSONObject jsonResponse = new JSONObject(stringResponse);
+                    JSONArray jListings = jsonResponse.getJSONArray("listinginfo");
 
-                localitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int positionLocality, long id2) {
+                    int localitynumber = 0;
+                    JSONObject listing;
+                    JSONObject prevlisting;
+                    String prev_location_name;
+                    String location_name;
+                    String locality_name;
 
-                        if(!locationSpinner.getSelectedItem().toString().equals("Select City") && !localitySpinner.getSelectedItem().toString().equals("Select Locality")) {
-                            LocationHolder=locationSpinner.getSelectedItem().toString();
-                            LocalityHolder=localitySpinner.getSelectedItem().toString();
+                    for (int i = 0; i < jListings.length(); i++) {
+
+                        listing = jListings.getJSONObject(i);
+
+                        location_name = listing.getString("Location");
+                        locality_name = listing.getString("Locality");
+                        prev_location_name = location_name;
+
+                        if (i > 0) {
+                            prevlisting = jListings.getJSONObject(i - 1);
+                            prev_location_name = prevlisting.getString("Location");
+                        }
+
+
+                        if (i == 0) {
+                            listOfLists.add(new String[200]);
+                            locationList.add(location_name);
+                            locationcount++;
+                            localitynumber = 0;
+                        }
+                        if (i > 0) {
+                            if (!location_name.equals(prev_location_name)) {
+                                listOfLists.add(new String[200]);
+                                locationList.add(location_name);
+                                String[] temp = Arrays.copyOf(listOfLists.get(locationcount - 1), localitynumber);
+                                listOfLocationArrays.add(temp);
+
+                                locationcount++;
+                                localitynumber = 0;
+                            }
+                        }
+
+                        listOfLists.get(locationcount - 1)[localitynumber] = (locality_name);
+
+                        localitynumber++;
+
+                        if (i == (jListings.length() - 1)) {
+                            String[] temp = Arrays.copyOf(listOfLists.get(locationcount - 1), localitynumber);
+                            listOfLocationArrays.add(temp);
+
                         }
                     }
 
-                    public void onNothingSelected(AdapterView<?> parentView2) {
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                final String[] locationArray =locationList.toArray(new String[locationList.size()]);
+                final String[] emptyArray = getResources().getStringArray(R.array.empty);
+
+                final Spinner locationSpinner = (MaterialSpinner) getActivity().findViewById(R.id.lyp_location);
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
+                dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                locationSpinner.setAdapter(dataAdapter);
+
+
+
+                final Spinner localitySpinner = (MaterialSpinner) getActivity().findViewById(R.id.lyp_locality);
+                final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, emptyArray);
+                emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                localitySpinner.setAdapter(emptyAdapter);
+
+                locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int positionLocation, long id) {
+
+                        String[] tempList;
+                        if (positionLocation == -1) {
+                            tempList = emptyArray;
+                        } else {
+                            tempList = listOfLocationArrays.get(positionLocation);
+                        }
+
+                        locationcount = 0;
+
+
+                        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, tempList);
+                        dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+                        localitySpinner.setAdapter(dataAdapter2);
+
+                        localitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int positionLocality, long id2) {
+
+                                if (!locationSpinner.getSelectedItem().toString().equals("Select City") && !localitySpinner.getSelectedItem().toString().equals("Select Locality")) {
+                                    LocationHolder = locationSpinner.getSelectedItem().toString();
+                                    LocalityHolder = localitySpinner.getSelectedItem().toString();
+                                }
+                            }
+
+                            public void onNothingSelected(AdapterView<?> parentView2) {
+                            }
+                        });
+                    }
+
+                    public void onNothingSelected(AdapterView<?> parentView) {
                     }
                 });
             }
+        }, new Response.ErrorListener() {
 
-            public void onNothingSelected(AdapterView<?> parentView) {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.e("Error: ", error.toString());
             }
         });
-    }
 
+        requestqueue.add(stringRequest);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
@@ -122,7 +205,7 @@ public class ListYourPlaceFragment extends Fragment {
         Pincode = (EditText)RootView.findViewById(R.id.lyp_pincode);
         Rent = (EditText)RootView.findViewById(R.id.lyp_rent);
         Submit = (Button)RootView.findViewById(R.id.lyp_submit);
-        requestQueue= Volley.newRequestQueue(getContext());
+        requestqueue= Volley.newRequestQueue(getContext());
 
         //Adding Click Listener on button.
         Submit.setOnClickListener(new View.OnClickListener() {
@@ -175,7 +258,7 @@ public class ListYourPlaceFragment extends Fragment {
                         }
                     };
 
-                    requestQueue.add(stringRequest);
+                    requestqueue.add(stringRequest);
 
                 }
                 else {
