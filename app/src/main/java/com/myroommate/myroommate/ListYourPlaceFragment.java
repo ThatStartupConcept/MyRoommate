@@ -61,6 +61,13 @@ public class ListYourPlaceFragment extends Fragment {
 
     private ArrayList<String> locationList = new ArrayList<String>();
 
+    private String regexNameCheck = "^[A-Za-z'\\s]+$";
+
+    private String regexNumberCheck = "^[0-9]+$";
+
+    private String regexOtherCheck = "^[A-Za-z0-9'\\s]+$";
+
+    private boolean regexChecker;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -214,10 +221,10 @@ public class ListYourPlaceFragment extends Fragment {
 
                 hideKeyboardFrom(getContext(), view);
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                FirebaseUser currentUser = mAuth.getCurrentUser();
+                final FirebaseUser currentUser = mAuth.getCurrentUser();
 
                 // Checking whether EditText is Empty or Not
-                CheckEditTextIsEmptyOrNot();
+                CheckEditTextIsValidOrNot();
 
                 currentUser.getIdToken(true)
                         .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
@@ -249,10 +256,12 @@ public class ListYourPlaceFragment extends Fragment {
                             parameters.put("location",LocationHolder);
                             parameters.put("locality",LocalityHolder);
                             parameters.put("listingname",ListingNameHolder);
+                            parameters.put("ownername",currentUser.getDisplayName());
                             parameters.put("address",AddressHolder);
                             parameters.put("sublocality",SubLocalityHolder);
                             parameters.put("pincode",PincodeHolder);
                             parameters.put("rent",RentHolder.toString());
+
                             parameters.put("firebase_token",idToken);
                             return parameters;
                         }
@@ -265,7 +274,7 @@ public class ListYourPlaceFragment extends Fragment {
 
                     // If EditText is empty then this block will execute .
                     Snackbar snackbar = Snackbar
-                            .make(getView(), "Please fill all the form fields.", Snackbar.LENGTH_LONG);
+                            .make(getView(), "Please fill all the form fields with valid input.", Snackbar.LENGTH_LONG);
                     snackbar.show();
 
                 }
@@ -287,7 +296,7 @@ public class ListYourPlaceFragment extends Fragment {
         getActivity().setTitle("List Your Place");
     }
 
-    protected void CheckEditTextIsEmptyOrNot(){
+    protected void CheckEditTextIsValidOrNot(){
 
         ListingNameHolder=ListingName.getText().toString();
         AddressHolder=Address.getText().toString();
@@ -309,5 +318,9 @@ public class ListYourPlaceFragment extends Fragment {
 
             CheckEditText = true ;
         }
+
+        regexChecker = ListingNameHolder.matches(regexOtherCheck) && AddressHolder.matches(regexOtherCheck) && SubLocalityHolder.matches(regexNameCheck) && PincodeHolder.matches(regexNumberCheck);
+
+        CheckEditText = CheckEditText && regexChecker;
     }
 }

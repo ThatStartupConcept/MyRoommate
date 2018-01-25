@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,9 +34,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.Object;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
 import static android.content.ContentValues.TAG;
+import static android.util.Base64.NO_CLOSE;
+import static android.util.Base64.decode;
 
 public class FindAPlaceFragment extends Fragment {
 
@@ -201,10 +206,16 @@ public class FindAPlaceFragment extends Fragment {
                                                     JSONArray jListings = jsonResponse.getJSONArray("listings");
                                                     for (int i = 0; i < jListings.length(); i++) {
                                                         JSONObject listing = jListings.getJSONObject(i);
-                                                        String listingname = listing.getString("listingname");
-                                                        String address = listing.getString("address");
+                                                        String primary_key  = listing.getString("primary_key");
+                                                        String location = listing.getString("location");
+                                                        String locality = listing.getString("locality");
+                                                        String listingname = new String(decode(listing.getString("listingname"),NO_CLOSE));
+                                                        String ownername = listing.getString("ownername");
+                                                        String address = new String(decode(listing.getString("address"),NO_CLOSE));
                                                         String sublocality = listing.getString("sublocality");
-                                                        listings.add(new Listing(R.mipmap.ic_launcher, listingname, address, sublocality));
+                                                        String pincode = listing.getString("pincode");
+                                                        int rent = listing.getInt("rent");
+                                                        listings.add(new Listing(R.mipmap.ic_launcher, primary_key, location, locality, listingname, ownername, address, sublocality, pincode, rent));
                                                     }
 
                                                     mAdapter.notifyDataSetChanged();
@@ -241,6 +252,23 @@ public class FindAPlaceFragment extends Fragment {
                                     mRecyclerView.setLayoutManager(mLayoutManager);
 
                                     getActivity().findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
+
+                                    mAdapter.setListener(new RVAdapter.ChangeListener() {
+                                        @Override
+                                        public void onChange() {
+
+
+
+                                            Bundle args = new Bundle();
+                                            args.putString("primary_key",mAdapter.primary_key);
+                                            Fragment fragment = new ListingDetailsFragment();
+                                            fragment.setArguments(args);
+                                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                            ft.replace(R.id.content_frame, fragment);
+                                            ft.commit();
+
+                                        }
+                                    });
                                 }
                             }
 

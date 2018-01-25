@@ -1,6 +1,8 @@
 package com.myroommate.myroommate;
 
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +19,11 @@ import java.util.List;
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder> {
 
     List<Listing> listings;
+    Boolean change_fragment = false;
+    ChangeListener listener;
+
+
+    String primary_key;
 
     RVAdapter(List<Listing> listings){
         this.listings=listings;
@@ -47,7 +54,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(final ListingViewHolder personViewHolder, int i) {
+    public void onBindViewHolder(final ListingViewHolder personViewHolder, final int i) {
         personViewHolder.listing_listingPhoto.setImageResource(listings.get(i).listingPhoto);
         personViewHolder.listing_listingName.setText(listings.get(i).listingName);
         personViewHolder.listing_ownerName.setText(listings.get(i).ownerName);
@@ -58,11 +65,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder>
             @Override
             public void onClick(final View v){ // Makes cards generated in ListYourPlaceFragment clickable
 
-                Snackbar snackbar = Snackbar
-                        .make(personViewHolder.itemView, personViewHolder.listing_listingName.getText().toString(), Snackbar.LENGTH_LONG);
-                snackbar.show();
 
-                // TODO - Link to a new Fragment which will show contents of card
+
+                change_fragment = true;
+
+                primary_key = listings.get(i).primary_key;
+
+                if (listener != null) listener.onChange();
 
             }
 
@@ -78,6 +87,17 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder>
     @Override
     public int getItemCount() {
         return listings.size();
+    }
+
+    public void setListener(ChangeListener listener) {
+        this.listener = listener;
+    }
+
+    public interface ChangeListener {
+        void onChange();
+    }
+    public ChangeListener getListener() {
+        return listener;
     }
 
 }
