@@ -39,5 +39,6 @@
     <string name="prompt_sub_locality">Sub-Locality</string>
     <string name="prompt_pincode">Pincode</string>
     <string name="prompt_rent">Asking Rent</string>
+    <string name="add_rooms">Add rooms to your listing:</string>
 
 </resources>

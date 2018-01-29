@@ -5,7 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,17 +47,25 @@ import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 
 public class ListYourPlaceFragment extends Fragment {
 
-    Button Submit;
-    EditText ListingName, Address, SubLocality, Pincode, Rent;
+    private RecyclerView mRecyclerView;
+
+
+    Button Submit,numberOfRoomsMinus,numberOfRoomsPlus;
+    EditText ListingName, Address, SubLocality, Pincode, Rent, numberOfRooms;
     String ListingNameHolder, AddressHolder, SubLocalityHolder, PincodeHolder;
     String LocationHolder, LocalityHolder;
-    Integer RentHolder;
+    Integer RentHolder,roomCounter,i;
     String HttpURL = "http://merakamraa.com/php/AddListing.php";
-    Boolean CheckEditText ;
+    String RoomURL = "http://merakamraa.com/php/AddRoom.php";
+    String BedURL = "http://merakamraa.com/php/AddBed.php";
+    Boolean CheckEditText;
+    Boolean everythingWorked = true;
     RequestQueue requestqueue;
 
     String InfoURL = "http://merakamraa.com/php/GetListingInfo.php";
     private int locationcount = 0;
+
+    RVAdapter2 mAdapter;
 
     private ArrayList<String[]> listOfLists = new ArrayList<String[]>();
 
@@ -74,6 +86,7 @@ public class ListYourPlaceFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         requestqueue = Volley.newRequestQueue(getActivity());
+        mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.lyp_recyclerView);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, InfoURL, new Response.Listener<String>() {
             @Override
@@ -212,7 +225,97 @@ public class ListYourPlaceFragment extends Fragment {
         Pincode = (EditText)RootView.findViewById(R.id.lyp_pincode);
         Rent = (EditText)RootView.findViewById(R.id.lyp_rent);
         Submit = (Button)RootView.findViewById(R.id.lyp_submit);
+        numberOfRoomsMinus = (Button)RootView.findViewById(R.id.lyp_roomNumberMinus);
+        numberOfRoomsPlus = (Button)RootView.findViewById(R.id.lyp_roomnumberPlus);
+        numberOfRooms = (EditText)RootView.findViewById(R.id.lyp_numberOfRooms);
+
+        roomCounter = Integer.valueOf(numberOfRooms.getText().toString());
+
         requestqueue= Volley.newRequestQueue(getContext());
+
+        numberOfRoomsMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    roomCounter = Integer.valueOf(numberOfRooms.getText().toString());
+                    if(roomCounter>0){
+                        roomCounter--;
+                        numberOfRooms.setText(Integer.toString(roomCounter));
+                    }
+                    else{
+                        Snackbar snackbar = Snackbar
+                                .make(getView(), "How do you make a house with less than zero rooms? :thinking:", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                        numberOfRooms.setText("0");
+                    }
+                }catch(NumberFormatException e){
+
+                }
+            }
+        });
+
+        numberOfRoomsPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    roomCounter = Integer.valueOf(numberOfRooms.getText().toString());
+                    roomCounter++;
+                    numberOfRooms.setText(Integer.toString(roomCounter));
+                }catch(NumberFormatException e){
+
+                }
+            }
+        });
+
+        numberOfRooms.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                try{
+                    roomCounter = Integer.valueOf(numberOfRooms.getText().toString());
+
+
+
+
+
+                if(roomCounter>0 && roomCounter<=6) {
+
+                    initializeAdapter();
+                    getActivity().findViewById(R.id.lyp_recyclerView).setVisibility(View.VISIBLE);
+                }
+
+                else if(roomCounter<0){
+                    Snackbar snackbar = Snackbar
+                            .make(getView(), "How do you make a house with less than zero rooms? :thinking:", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                    numberOfRooms.setText("0");
+                }
+
+                else if(roomCounter>6){
+                    Snackbar snackbar = Snackbar
+                            .make(getView(), "We do not currently list houses of over 6 bedrooms. Sorry!", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                    numberOfRooms.setText("6");
+                }
+
+                else{
+                    getActivity().findViewById(R.id.lyp_recyclerView).setVisibility(View.GONE);
+                }
+                }catch(NumberFormatException e){
+                    numberOfRooms.setText("0");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         //Adding Click Listener on button.
         Submit.setOnClickListener(new View.OnClickListener() {
@@ -223,7 +326,19 @@ public class ListYourPlaceFragment extends Fragment {
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 final FirebaseUser currentUser = mAuth.getCurrentUser();
 
+
                 // Checking whether EditText is Empty or Not
+                CheckEditTextIsValidOrNot();
+
+                if(CheckEditText){
+                    for(int i=0;i<roomCounter;i++)
+                    {
+                        if(mAdapter.numberOfBeds[i]==null){
+                            CheckEditText = false;
+                        }
+                    }
+                }
+
                 CheckEditTextIsValidOrNot();
 
                 currentUser.getIdToken(true)
@@ -234,12 +349,19 @@ public class ListYourPlaceFragment extends Fragment {
 
                 if(CheckEditText){
                     // If EditText is not empty and CheckEditText = True then this block will execute.
+
+                    Snackbar snackbar1 = Snackbar
+                            .make(getView(), "Adding your listing, please wait...", Snackbar.LENGTH_LONG);
+                    snackbar1.show();
+
+                    final String numberOfRooms = Integer.toString(mAdapter.getItemCount());
+
                     StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
                         @Override
                         public void onResponse(String stringResponse){
-                            Snackbar snackbar = Snackbar
-                                    .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
-                            snackbar.show();
+                            if(!stringResponse.equals("Your listing was added.")){
+                                everythingWorked = false;
+                            }
                         }
 
                     }, new Response.ErrorListener() {
@@ -261,6 +383,7 @@ public class ListYourPlaceFragment extends Fragment {
                             parameters.put("sublocality",SubLocalityHolder);
                             parameters.put("pincode",PincodeHolder);
                             parameters.put("rent",RentHolder.toString());
+                            parameters.put("numberOfRooms",numberOfRooms);
 
                             parameters.put("firebase_token",idToken);
                             return parameters;
@@ -269,13 +392,78 @@ public class ListYourPlaceFragment extends Fragment {
 
                     requestqueue.add(stringRequest);
 
+                    if(everythingWorked) {
+
+                        for (i = 0; i < mAdapter.getItemCount(); i++) {
+
+                            final String numberOfBeds = Integer.toString(mAdapter.numberOfBeds[i]);
+                            final String isACAvailable = Integer.toString(mAdapter.isACAvailable[i]);
+                            final String isABAvailable = Integer.toString(mAdapter.isABAvailable[i]);
+
+                            Snackbar snackbar2 = Snackbar
+                                    .make(getView(), "Number of beds in room "+Integer.toString(i+1)+" is "+numberOfBeds, Snackbar.LENGTH_LONG);
+                            snackbar2.show();
+
+                            StringRequest stringRequest2 = new StringRequest(Request.Method.POST, RoomURL, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String stringResponse) {
+                                    if (!stringResponse.equals("Roomdb updated")) {
+                                        everythingWorked = false;
+                                    }
+                                }
+
+                            }, new Response.ErrorListener() {
+
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    VolleyLog.e("Error: ", error.toString());
+                                }
+                            }) {
+                                @Override
+                                protected Map<String, String> getParams() throws AuthFailureError {
+
+                                    Map<String, String> parameters = new HashMap<String, String>();
+
+                                    parameters.put("listingname", ListingNameHolder);
+                                    parameters.put("firebase_token", idToken);
+
+                                    parameters.put("numberOfBeds", numberOfBeds);
+                                    parameters.put("isACAvailable", isACAvailable);
+                                    parameters.put("isABAvailable", isABAvailable);
+
+                                    return parameters;
+                                }
+                            };
+
+
+                            requestqueue.add(stringRequest2);
+                        }
+                    }
+
+                    if(everythingWorked) {
+
+                        Snackbar snackbar3 = Snackbar
+                                .make(getView(), "Your listing has been added.", Snackbar.LENGTH_LONG);
+                        snackbar3.show();
+
+                    }
+
+                    else{
+                        Snackbar snackbar4 = Snackbar
+                                .make(getView(), "Something went wrong, please try again", Snackbar.LENGTH_LONG);
+                        snackbar4.show();
+                    }
+
+                    everythingWorked = true;
+
+
                 }
                 else {
 
                     // If EditText is empty then this block will execute .
-                    Snackbar snackbar = Snackbar
-                            .make(getView(), "Please fill all the form fields with valid input.", Snackbar.LENGTH_LONG);
-                    snackbar.show();
+                    Snackbar snackbar5 = Snackbar
+                            .make(getView(), "Please fill all form fields with valid info", Snackbar.LENGTH_LONG);
+                    snackbar5.show();
 
                 }
                                 } else {
@@ -310,11 +498,13 @@ public class ListYourPlaceFragment extends Fragment {
             RentHolder=0;
         }
 
-        if(TextUtils.isEmpty(LocationHolder) || TextUtils.isEmpty(LocalityHolder) || TextUtils.isEmpty(ListingNameHolder) || TextUtils.isEmpty(AddressHolder) || TextUtils.isEmpty(PincodeHolder) || RentHolder==0)
+        if(TextUtils.isEmpty(LocationHolder) || TextUtils.isEmpty(LocalityHolder) || TextUtils.isEmpty(ListingNameHolder) || TextUtils.isEmpty(AddressHolder) || TextUtils.isEmpty(PincodeHolder) || RentHolder==0 || roomCounter==0)
         {
             CheckEditText = false;
         }
         else {
+
+
 
             CheckEditText = true ;
         }
@@ -322,5 +512,13 @@ public class ListYourPlaceFragment extends Fragment {
         regexChecker = ListingNameHolder.matches(regexOtherCheck) && AddressHolder.matches(regexOtherCheck) && SubLocalityHolder.matches(regexNameCheck) && PincodeHolder.matches(regexNumberCheck);
 
         CheckEditText = CheckEditText && regexChecker;
+    }
+
+    private void initializeAdapter(){
+        mAdapter = new RVAdapter2(roomCounter);
+        mRecyclerView.setAdapter(mAdapter);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
     }
 }

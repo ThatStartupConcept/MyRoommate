@@ -72,7 +72,7 @@ public class FindAPlaceFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         requestqueue = Volley.newRequestQueue(getActivity());
-        mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.fap_recyclerView);
 
 
 
@@ -162,7 +162,7 @@ public class FindAPlaceFragment extends Fragment {
                 locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, final int positionLocation, long id) {
-                        getActivity().findViewById(R.id.recyclerView).setVisibility(View.GONE);
+                        getActivity().findViewById(R.id.fap_recyclerView).setVisibility(View.GONE);
 
 
                         String[] tempList;
@@ -189,6 +189,8 @@ public class FindAPlaceFragment extends Fragment {
 
                                     final String locality = localitySpinner.getSelectedItem().toString();
                                     listings = new ArrayList<Listing>();
+
+                                    //TODO - Move the following StringRequest into the constructor for RVAdapter and pass RVAdapter only 'locality'
 
                                     StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
                                         @Override
@@ -251,7 +253,7 @@ public class FindAPlaceFragment extends Fragment {
                                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                                     mRecyclerView.setLayoutManager(mLayoutManager);
 
-                                    getActivity().findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
+                                    getActivity().findViewById(R.id.fap_recyclerView).setVisibility(View.VISIBLE);
 
                                     mAdapter.setListener(new RVAdapter.ChangeListener() {
                                         @Override

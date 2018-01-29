@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listplace_room_outerLinearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:alwaysDrawnWithCache="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/listplace_room_roomNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/listplace_room_innerLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/listplace_room_beds_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:text="Number of Beds in Room"
+            android:textColor="@android:color/black" />
+
+        <EditText
+            android:id="@+id/listplace_room_beds_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="80"
+            android:ems="10"
+            android:inputType="number"
+            android:text="2"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/listplace_room_features"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Features"
+        android:textColor="@android:color/black" />
+
+    <CheckedTextView
+        android:id="@+id/listplace_room_isACAvailable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkMark="@android:drawable/checkbox_off_background"
+        android:checked="false"
+        android:clickable="true"
+        android:text="AC"
+        android:textColor="@android:color/black" />
+
+    <CheckedTextView
+        android:id="@+id/listplace_room_isABAvailable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkMark="@android:drawable/checkbox_off_background"
+        android:checked="false"
+        android:clickable="true"
+        android:text="Attached Bathroom"
+        android:textColor="@android:color/black" />
+
+</LinearLayout>
