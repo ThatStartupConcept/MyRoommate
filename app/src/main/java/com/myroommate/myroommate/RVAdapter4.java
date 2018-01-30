@@ -1,7 +1,11 @@
 package com.myroommate.myroommate;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +13,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -20,6 +39,8 @@ import java.util.List;
 public class RVAdapter4 extends RecyclerView.Adapter<RVAdapter4.BedImageHolder> {
 
     ArrayList<ArrayList<Integer>> listOfBeds;
+
+    String BedDetailsURL;
 
     RVAdapter4(final ArrayList<ArrayList<Integer>> listOfBeds){
 
@@ -72,27 +93,100 @@ public class RVAdapter4 extends RecyclerView.Adapter<RVAdapter4.BedImageHolder> 
         }
 
 
+        if(bedImageHolder.isAvailable==1) {
 
-        bedImageHolder.bedImage.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View v) {
-                if(bedImageHolder.isAvailable==1) {
+            bedImageHolder.bedImage.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("ResourceAsColor")
+                @Override
+                public void onClick(View v) {
+
+                    AlertDialog.Builder adb = new AlertDialog.Builder(bedImageHolder.itemView.getContext());
 
 
-                    if (bedImageHolder.isClicked == 1) {
+                    adb.setView(bedImageHolder.itemView.getRootView());
 
-                        bedImageHolder.bedImage.setBackgroundColor(Color.TRANSPARENT);
-                        bedImageHolder.isClicked = 0;
 
-                    } else {
+                    adb.setTitle("Title of alert dialog");
 
-                        bedImageHolder.bedImage.setBackgroundColor(R.color.colorAccent);
-                        bedImageHolder.isClicked = 1;
-                    }
+
+                    adb.setIcon(android.R.drawable.ic_dialog_alert);
+
+
+                    adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                           final RequestQueue requestQueue = Volley.newRequestQueue(bedImageHolder.itemView.getContext());
+
+                            StringRequest stringRequest= new StringRequest(Request.Method.POST, BedDetailsURL , new Response.Listener<String>(){
+                                @Override
+                                public void onResponse(String stringResponse){
+
+                                    if(stringResponse.equals("Available")){
+
+                                        StringRequest stringRequest2= new StringRequest(Request.Method.POST, BedDetailsURL , new Response.Listener<String>(){
+                                            @Override
+                                            public void onResponse(String stringResponse){
+
+                                                Snackbar snackbar4 = Snackbar
+                                                        .make(bedImageHolder.itemView.getRootView(), "Booking success", Snackbar.LENGTH_LONG);
+                                                snackbar4.show();
+
+                                            }
+
+                                        }, new Response.ErrorListener() {
+
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                VolleyLog.e("Error: ", error.toString());
+                                            }
+                                        }){
+                                            @Override
+                                            protected Map<String, String> getParams() throws AuthFailureError {
+                                                Map<String,String> parameters = new HashMap<String,String>();
+                                                return parameters;
+                                            }
+
+                                        };
+
+                                        requestQueue.add(stringRequest2);
+
+                                    }
+
+
+
+                                }
+
+                            }, new Response.ErrorListener() {
+
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    VolleyLog.e("Error: ", error.toString());
+                                }
+                            }){
+                                @Override
+                                protected Map<String, String> getParams() throws AuthFailureError {
+                                    Map<String,String> parameters = new HashMap<String,String>();
+                                    parameters.put("bedID",Integer.toString(bedImageHolder.bedID));
+                                    return parameters;
+                                }
+
+                            };
+
+                            requestQueue.add(stringRequest);
+
+                        } });
+
+
+                    adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+
+                        } });
+                    adb.show();
+
                 }
-            }
-        });
+            });
+        }
 
 
     }

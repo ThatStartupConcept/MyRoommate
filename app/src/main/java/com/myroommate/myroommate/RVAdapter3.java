@@ -215,5 +215,9 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
         return listOfRooms.size();
     }
 
+    public void bookNow(){
+
+    }
+
 
 }
