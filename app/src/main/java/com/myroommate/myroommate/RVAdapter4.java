@@ -1,47 +1,16 @@
 package com.myroommate.myroommate;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.CardView;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.R.drawable;
-import static android.R.color;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 
 /**
@@ -113,12 +82,12 @@ public class RVAdapter4 extends RecyclerView.Adapter<RVAdapter4.BedImageHolder> 
 
                     if (bedImageHolder.isClicked == 1) {
 
-                        bedImageHolder.bedImage.setImageResource(R.mipmap.bed_icon);
+                        bedImageHolder.bedImage.setBackgroundColor(Color.TRANSPARENT);
                         bedImageHolder.isClicked = 0;
 
                     } else {
 
-                        bedImageHolder.bedImage.setImageResource(R.mipmap.bed_icon_grey);
+                        bedImageHolder.bedImage.setBackgroundColor(R.color.colorAccent);
                         bedImageHolder.isClicked = 1;
                     }
                 }
