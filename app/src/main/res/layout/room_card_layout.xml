@@ -22,7 +22,10 @@
             android:id="@+id/room_roomNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="50" />
+            android:layout_weight="50"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp" />
 
         <LinearLayout
             android:id="@+id/room_card_row1"

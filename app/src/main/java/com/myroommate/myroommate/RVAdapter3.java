@@ -56,7 +56,6 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
     Activity currentActivity;
     Context currentContext;
     View currentView;
-    RecyclerView mRecyclerView;
     RequestQueue requestQueue;
     String BedDetailsURL = "http://merakamraa.com/php/BedDetails.php";
 
@@ -114,8 +113,6 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
     @Override
     public void onBindViewHolder(final RoomCardHolder roomCardHolder, final int i) {
 
-        mRecyclerView = roomCardHolder.rc_recyclerView;
-
         roomCardHolder.roomNumber.setText("Room Number "+Integer.toString(i+1));
 
         roomCardHolder.roomDetails = listOfRooms.get(i);
@@ -126,14 +123,16 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
         roomCardHolder.numberOfBeds = roomCardHolder.roomDetails.get(3);
 
         if(roomCardHolder.isACAvailableInt==0){
-            roomCardHolder.isACAvailable.setVisibility(View.GONE);
+            roomCardHolder.isACAvailable.setCheckMarkDrawable(drawable.checkbox_off_background);
         }
 
         if(roomCardHolder.isABAvailableInt==0){
-            roomCardHolder.isABAvailable.setVisibility(View.GONE);
+            roomCardHolder.isABAvailable.setCheckMarkDrawable(drawable.checkbox_off_background);
         }
 
         if(roomCardHolder.isACAvailableInt==0 && roomCardHolder.isABAvailableInt==0){
+            roomCardHolder.isACAvailable.setVisibility(View.GONE);
+            roomCardHolder.isABAvailable.setVisibility(View.GONE);
             roomCardHolder.noFeatures.setText("No special features. FeelsBadMan");
         }
 
@@ -162,20 +161,13 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
                             listOfBeds.add(bedDetails);
                         }
 
-                        if(i==0) {
-
-                            Snackbar snackbar3 = Snackbar
-                                    .make(currentView, "Room number " + Integer.toString(i + 1) + " has " + Integer.toString(listOfBeds.size())+" beds", Snackbar.LENGTH_LONG);
-                            snackbar3.show();
-                        }
-
                         final RVAdapter4 mAdapter = new RVAdapter4(listOfBeds);
-                        mRecyclerView.setAdapter(mAdapter);
+                        roomCardHolder.rc_recyclerView.setAdapter(mAdapter);
 
                         // use a linear layout manager
-                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(currentActivity,LinearLayoutManager.HORIZONTAL,false);
-                        mRecyclerView.setLayoutManager(mLayoutManager);
-                        mRecyclerView.setVisibility(View.VISIBLE);
+                        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(currentContext,LinearLayoutManager.HORIZONTAL,false);
+                        roomCardHolder.rc_recyclerView.setLayoutManager(mLayoutManager);
+                        roomCardHolder.rc_recyclerView.setVisibility(View.VISIBLE);
 
                     } catch (JSONException e) {
                         e.printStackTrace();

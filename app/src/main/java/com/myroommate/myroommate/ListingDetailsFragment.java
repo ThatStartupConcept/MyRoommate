@@ -94,7 +94,7 @@ public class ListingDetailsFragment extends Fragment {
                         full_locality.setText(locality);
                         full_location.setText(location);
                         full_rent.setText(Integer.toString(rent));
-                        full_ownerName.setText("Owner Name: "+ownername);
+                        full_ownerName.setText("Owner: "+ownername);
                         full_additionalInfo.setText("Address: "+address+sublocality+"\nPincode: "+pincode);
 
 

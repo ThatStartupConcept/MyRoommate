@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.R.drawable;
-import android.R.color;
+import static android.R.color;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -91,15 +91,14 @@ public class RVAdapter4 extends RecyclerView.Adapter<RVAdapter4.BedImageHolder> 
 
         if(bedImageHolder.isAvailable==0){
 
-            bedImageHolder.bedImage.setImageResource(drawable.ic_delete);
+            bedImageHolder.bedImage.setImageResource(R.mipmap.bed_icon_grey);
             bedImageHolder.bedAvailability.setText("OCCUPIED");
-            bedImageHolder.bedAvailability.setVisibility(View.VISIBLE);
 
         }
 
         else{
 
-            bedImageHolder.bedImage.setImageResource(R.drawable.ic_menu_home);
+            bedImageHolder.bedImage.setImageResource(R.mipmap.bed_icon);
             bedImageHolder.bedAvailability.setText("VACANT");
         }
 
@@ -109,19 +108,19 @@ public class RVAdapter4 extends RecyclerView.Adapter<RVAdapter4.BedImageHolder> 
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
-                if(bedImageHolder.isClicked==1){
+                if(bedImageHolder.isAvailable==1) {
 
-                    bedImageHolder.bedImage.setImageResource(R.drawable.ic_menu_home);
-                    bedImageHolder.bedAvailability.setText("VACANT");
-                    bedImageHolder.isClicked = 0;
 
-                }
+                    if (bedImageHolder.isClicked == 1) {
 
-                else{
+                        bedImageHolder.bedImage.setImageResource(R.mipmap.bed_icon);
+                        bedImageHolder.isClicked = 0;
 
-                    bedImageHolder.bedImage.setImageResource(drawable.ic_delete);
-                    bedImageHolder.bedAvailability.setText("OCCUPIED");
-                    bedImageHolder.isClicked = 1;
+                    } else {
+
+                        bedImageHolder.bedImage.setImageResource(R.mipmap.bed_icon_grey);
+                        bedImageHolder.isClicked = 1;
+                    }
                 }
             }
         });
