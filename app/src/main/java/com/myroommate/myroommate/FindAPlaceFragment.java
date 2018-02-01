@@ -47,7 +47,7 @@ import static android.util.Base64.decode;
 public class FindAPlaceFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    RVAdapter mAdapter;
+    FAPListingCardAdapter mAdapter;
     ProgressDialog progressDialog;
     private List<Listing> listings;
     RequestQueue requestqueue;
@@ -245,7 +245,7 @@ public class FindAPlaceFragment extends Fragment {
 
                                     getActivity().findViewById(R.id.fap_recyclerView).setVisibility(View.VISIBLE);
 
-                                    mAdapter.setListener(new RVAdapter.ChangeListener() {
+                                    mAdapter.setListener(new FAPListingCardAdapter.ChangeListener() {
                                         @Override
                                         public void onChange() {
 
@@ -296,7 +296,7 @@ public class FindAPlaceFragment extends Fragment {
 
 
     private void initializeAdapter() {
-        mAdapter = new RVAdapter(listings);
+        mAdapter = new FAPListingCardAdapter(listings);
         mRecyclerView.setAdapter(mAdapter);
     }
 

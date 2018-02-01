@@ -66,7 +66,7 @@ public class ListYourPlaceFragment extends Fragment {
     String InfoURL = "http://merakamraa.com/php/GetListingInfo.php";
     private int locationcount = 0;
 
-    RVAdapter2 mAdapter;
+    LYPAddRoomAdapter mAdapter;
 
     private ArrayList<String[]> listOfLists = new ArrayList<String[]>();
 
@@ -492,7 +492,7 @@ public class ListYourPlaceFragment extends Fragment {
     }
 
     private void initializeAdapter() {
-        mAdapter = new RVAdapter2(roomCounter);
+        mAdapter = new LYPAddRoomAdapter(roomCounter);
         mRecyclerView.setAdapter(mAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);

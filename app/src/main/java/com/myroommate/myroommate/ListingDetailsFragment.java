@@ -47,7 +47,7 @@ public class ListingDetailsFragment extends Fragment {
     public static final String TITLE = "View Details";
     TextView full_listingName, full_locality, full_location, full_rent, full_ownerName, full_additionalInfo;
     RecyclerView mRecyclerView;
-    RVAdapter3 mAdapter;
+    ListingDetailsRoomAdapter mAdapter;
     int numberOfRooms;
     String primary_key;
 
@@ -125,7 +125,7 @@ public class ListingDetailsFragment extends Fragment {
                                     listOfRooms.add(roomDetails);
                                 }
 
-                                mAdapter = new RVAdapter3(primary_key, getActivity(), getContext(), mRecyclerView, listOfRooms);
+                                mAdapter = new ListingDetailsRoomAdapter(primary_key, getActivity(), getContext(), mRecyclerView, listOfRooms);
                                 mRecyclerView.setAdapter(mAdapter);
 
                                 // use a linear layout manager
