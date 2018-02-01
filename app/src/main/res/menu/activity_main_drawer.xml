@@ -7,6 +7,15 @@
             android:icon="@drawable/ic_menu_home"
             android:title="Home" />
         <item
+            android:id="@+id/nav_profile_or_login"
+            android:icon="@drawable/ic_menu_profile"
+            android:title="Login / Register" />
+        <item
+            android:id="@+id/nav_dynamic_profile_action"
+            android:icon="@drawable/ic_menu_home"
+            android:title="Dynamic"
+            android:visible="false"/>
+        <item
             android:id="@+id/nav_find"
             android:icon="@drawable/ic_menu_find"
             android:title="Find a Place" />

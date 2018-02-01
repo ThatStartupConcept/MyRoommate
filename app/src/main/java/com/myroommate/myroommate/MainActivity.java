@@ -16,19 +16,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import static com.myroommate.myroommate.ListYourPlaceInfoFragment.isRedirectedFromLYPInfo;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
     SharedPreferences sharedPreferences;
-
+    FirebaseUser currentUser;
+    MenuItem nav_profile_or_login, nav_dynamic_profile_action;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,43 +43,27 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                FirebaseUser currentUser = mAuth.getCurrentUser();
+                currentUser = mAuth.getCurrentUser();
                 hideKeyboardFrom(MainActivity.this, drawerView);
 
-                Button navHeaderButton = (Button) findViewById(R.id.nav_header_button);
-                assert navHeaderButton != null;
+                //nav_profile_or_login = (MenuItem) findViewById(R.id.nav_profile_or_login);
+                //nav_dynamic_profile_action = (MenuItem) findViewById(R.id.nav_dynamic_profile_action);
+
                 if (currentUser != null) {
-                    navHeaderButton.setText("Your Profile");
-                    navHeaderButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Fragment fragment = new AccountFragment();
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.content_frame, fragment);
-                            ft.commit();
+                    //((MenuItem) findViewById(R.id.nav_profile_or_login)).setTitle("Your Profile");
+                    ((MenuItem) findViewById(R.id.nav_dynamic_profile_action)).setVisible(true);
+                    /*if(user.type==owner) {
+                        nav_dynamic_profile_action.setTitle("Your Listings");
+                        nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_owner_action);
+                    }
+                    else {
+                        nav_dynamic_profile_action.setTitle("Your Kamraa");
+                        nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_profile);
 
-                            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                            assert drawer != null;
-                            drawer.closeDrawer(GravityCompat.START);
+                    }*/
 
-                        }
-                    });
                 } else {
-                    navHeaderButton.setText("Login/Register");
-                    navHeaderButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            isRedirectedFromLYPInfo = false;
-                            Fragment fragment = new LoginRegisterFragment();
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.content_frame, fragment);
-                            ft.commit();
-
-                            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                            assert drawer != null;
-                            drawer.closeDrawer(GravityCompat.START);
-                        }
-                    });
+                    nav_profile_or_login.setTitle("Login/Register");
                 }
 
 
@@ -154,10 +136,22 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
 
 
+
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_home:
                 fragment = new HomeScreenFragment();
+                break;
+            case R.id.nav_profile_or_login:
+                if(currentUser==null) {
+                    fragment = new LoginRegisterFragment();
+                }
+                else {
+                    fragment = new AccountFragment();
+                }
+                break;
+            case R.id.nav_dynamic_profile_action:
+                //fragment = new DynamicProfileActionFragment();
                 break;
             case R.id.nav_find:
                 fragment = new FindAPlaceFragment();

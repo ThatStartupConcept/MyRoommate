@@ -1,13 +1,9 @@
 package com.myroommate.myroommate;
 
+import android.R.drawable;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,11 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.R.drawable;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -35,15 +27,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-
-import static android.util.Base64.NO_CLOSE;
-import static android.util.Base64.decode;
 
 /**
  * Created by G551JK-DM053H on 01-09-2017.
@@ -93,7 +79,6 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
             isACAvailable = (CheckedTextView) itemView.findViewById(R.id.room_isACAvailable);
             isABAvailable = (CheckedTextView) itemView.findViewById(R.id.room_isABAvailable);
             roomNumber = (TextView) itemView.findViewById(R.id.room_roomNumber);
-            noFeatures = (TextView) itemView.findViewById(R.id.room_noFeatures);
             rc_recyclerView = (RecyclerView) itemView.findViewById(R.id.rc_recyclerView);
 
         }
