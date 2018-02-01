@@ -33,25 +33,25 @@ public class RVAdapter2 extends RecyclerView.Adapter<RVAdapter2.RoomListViewHold
     Integer[] isACAvailable = new Integer[6];
     Integer[] isABAvailable = new Integer[6];
 
-    RVAdapter2(int numberOfRooms){
+    RVAdapter2(int numberOfRooms) {
 
         this.numberOfRooms = numberOfRooms;
 
     }
 
     public static class RoomListViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout outerLinearLayout,innerLinearLayout;
+        LinearLayout outerLinearLayout, innerLinearLayout;
         TextView beds_textview, features, roomNumber;
         EditText beds_edittext;
-        CheckedTextView isACAvailable,isABAvailable;
+        CheckedTextView isACAvailable, isABAvailable;
 
         RoomListViewHolder(View itemView) {
             super(itemView);
             outerLinearLayout = (LinearLayout) itemView.findViewById(R.id.listplace_room_outerLinearLayout);
             roomNumber = (TextView) itemView.findViewById(R.id.listplace_room_roomNumber);
             innerLinearLayout = (LinearLayout) itemView.findViewById(R.id.listplace_room_innerLinearLayout);
-            beds_textview = (TextView)itemView.findViewById(R.id.listplace_room_beds_textview);
-            features = (TextView)itemView.findViewById(R.id.listplace_room_features);
+            beds_textview = (TextView) itemView.findViewById(R.id.listplace_room_beds_textview);
+            features = (TextView) itemView.findViewById(R.id.listplace_room_features);
             beds_edittext = (EditText) itemView.findViewById(R.id.listplace_room_beds_edittext);
             isACAvailable = (CheckedTextView) itemView.findViewById(R.id.listplace_room_isACAvailable);
             isABAvailable = (CheckedTextView) itemView.findViewById(R.id.listplace_room_isABAvailable);
@@ -59,11 +59,10 @@ public class RVAdapter2 extends RecyclerView.Adapter<RVAdapter2.RoomListViewHold
     }
 
     @Override
-    public RoomListViewHolder onCreateViewHolder(ViewGroup viewGroup,final int i) {
+    public RoomListViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
         final View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.room_linear_layout, viewGroup, false);
         final RoomListViewHolder rlvh = new RoomListViewHolder(v);
 
-        
 
         return rlvh;
     }
@@ -71,7 +70,7 @@ public class RVAdapter2 extends RecyclerView.Adapter<RVAdapter2.RoomListViewHold
     @Override
     public void onBindViewHolder(final RoomListViewHolder roomViewHolder, final int i) {
 
-        String roomNumberString = "Room "+Integer.toString(i+1);
+        String roomNumberString = "Room " + Integer.toString(i + 1);
 
         roomViewHolder.roomNumber.setText(roomNumberString);
 
@@ -106,7 +105,6 @@ public class RVAdapter2 extends RecyclerView.Adapter<RVAdapter2.RoomListViewHold
             public void afterTextChanged(Editable s) {
 
 
-
             }
         });
 
@@ -118,13 +116,11 @@ public class RVAdapter2 extends RecyclerView.Adapter<RVAdapter2.RoomListViewHold
             @Override
             public void onClick(View v) {
 
-                if(roomViewHolder.isACAvailable.isChecked()){
+                if (roomViewHolder.isACAvailable.isChecked()) {
                     roomViewHolder.isACAvailable.setCheckMarkDrawable(drawable.checkbox_off_background);
                     roomViewHolder.isACAvailable.setChecked(false);
                     isACAvailable[i] = 0;
-                }
-
-                else{
+                } else {
                     roomViewHolder.isACAvailable.setCheckMarkDrawable(drawable.checkbox_on_background);
                     roomViewHolder.isACAvailable.setChecked(true);
                     isACAvailable[i] = 1;
@@ -136,13 +132,11 @@ public class RVAdapter2 extends RecyclerView.Adapter<RVAdapter2.RoomListViewHold
         roomViewHolder.isABAvailable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(roomViewHolder.isABAvailable.isChecked()){
+                if (roomViewHolder.isABAvailable.isChecked()) {
                     roomViewHolder.isABAvailable.setCheckMarkDrawable(drawable.checkbox_off_background);
                     roomViewHolder.isABAvailable.setChecked(false);
                     isABAvailable[i] = 0;
-                }
-
-                else{
+                } else {
                     roomViewHolder.isABAvailable.setCheckMarkDrawable(drawable.checkbox_on_background);
                     roomViewHolder.isABAvailable.setChecked(true);
                     isABAvailable[i] = 1;

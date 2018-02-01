@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.List;
 
 /**
@@ -25,8 +26,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder>
 
     String primary_key;
 
-    RVAdapter(List<Listing> listings){
-        this.listings=listings;
+    RVAdapter(List<Listing> listings) {
+        this.listings = listings;
     }
 
     public static class ListingViewHolder extends RecyclerView.ViewHolder {
@@ -38,11 +39,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder>
 
         ListingViewHolder(View itemView) {
             super(itemView);
-            card_view = (CardView)itemView.findViewById(R.id.card_view);
-            listing_listingPhoto = (ImageView)itemView.findViewById(R.id.listing_photo);
-            listing_listingName = (TextView)itemView.findViewById(R.id.listing_name);
-            listing_ownerName = (TextView)itemView.findViewById(R.id.owner_name);
-            listing_subLocality = (TextView)itemView.findViewById(R.id.sub_locality);
+            card_view = (CardView) itemView.findViewById(R.id.card_view);
+            listing_listingPhoto = (ImageView) itemView.findViewById(R.id.listing_photo);
+            listing_listingName = (TextView) itemView.findViewById(R.id.listing_name);
+            listing_ownerName = (TextView) itemView.findViewById(R.id.owner_name);
+            listing_subLocality = (TextView) itemView.findViewById(R.id.sub_locality);
         }
     }
 
@@ -60,11 +61,10 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder>
         personViewHolder.listing_ownerName.setText(listings.get(i).ownerName);
         personViewHolder.listing_subLocality.setText(listings.get(i).subLocality);
 
-        personViewHolder.card_view.setOnClickListener(new View.OnClickListener(){
+        personViewHolder.card_view.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(final View v){ // Makes cards generated in ListYourPlaceFragment clickable
-
+            public void onClick(final View v) { // Makes cards generated in ListYourPlaceFragment clickable
 
 
                 change_fragment = true;
@@ -96,6 +96,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ListingViewHolder>
     public interface ChangeListener {
         void onChange();
     }
+
     public ChangeListener getListener() {
         return listener;
     }

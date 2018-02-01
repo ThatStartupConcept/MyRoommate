@@ -45,10 +45,10 @@ import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 public class RegisterFragment extends Fragment {
 
     Button register;
-    EditText First_Name, Last_Name, Email, Password, PasswordMatch ;
+    EditText First_Name, Last_Name, Email, Password, PasswordMatch;
     String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder, PasswordMatchHolder;
     String HttpURL = "http://merakamraa.com/php/UserRegistration.php";
-    Boolean CheckEditText ;
+    Boolean CheckEditText;
     RequestQueue requestQueue;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editPreferences;
@@ -70,16 +70,16 @@ public class RegisterFragment extends Fragment {
 
         requestQueue = Volley.newRequestQueue(getContext());
 
-        sharedPreferences = getActivity().getSharedPreferences("logindetails",MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("logindetails", MODE_PRIVATE);
         editPreferences = sharedPreferences.edit();
 
         //Assign Id'S
-        First_Name = (EditText)RootView.findViewById(R.id.register_firstname);
-        Last_Name = (EditText)RootView.findViewById(R.id.register_lastname);
-        Email = (EditText)RootView.findViewById(R.id.register_email);
-        Password = (EditText)RootView.findViewById(R.id.register_password);
-        PasswordMatch = (EditText)RootView.findViewById(R.id.register_password_match);
-        register = (Button)RootView.findViewById(R.id.email_register_button);
+        First_Name = (EditText) RootView.findViewById(R.id.register_firstname);
+        Last_Name = (EditText) RootView.findViewById(R.id.register_lastname);
+        Email = (EditText) RootView.findViewById(R.id.register_email);
+        Password = (EditText) RootView.findViewById(R.id.register_password);
+        PasswordMatch = (EditText) RootView.findViewById(R.id.register_password_match);
+        register = (Button) RootView.findViewById(R.id.email_register_button);
 
         //TODO - Replace UI with two buttons 'Register with email', 'Register with phone number'
 
@@ -95,9 +95,9 @@ public class RegisterFragment extends Fragment {
                 // Checking whether EditText is Empty or Not
                 CheckEditTextIsEmptyOrNot();
 
-                if(CheckEditText){
+                if (CheckEditText) {
 
-                    if(PasswordHolder.equals(PasswordMatchHolder)) {
+                    if (PasswordHolder.equals(PasswordMatchHolder)) {
 
                         // If EditText is not empty and CheckEditText = True then this block will execute.
 
@@ -141,7 +141,7 @@ public class RegisterFragment extends Fragment {
                                                                                 ft.replace(R.id.content_frame, fragment);
                                                                                 ft.commit();
                                                                                 isRedirectedFromLYPInfo = false;
-                                                                            } else{
+                                                                            } else {
                                                                                 Fragment fragment = new FindAPlaceFragment();
                                                                                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                                                                                 ft.replace(R.id.content_frame, fragment);
@@ -155,7 +155,7 @@ public class RegisterFragment extends Fragment {
                                                                     public void onErrorResponse(VolleyError error) {
                                                                         VolleyLog.e("Error: ", error.toString());
                                                                     }
-                                                                }){
+                                                                }) {
                                                                     @Override
                                                                     protected Map<String, String> getParams() throws AuthFailureError {
                                                                         Map<String, String> parameters = new HashMap<String, String>();
@@ -185,16 +185,13 @@ public class RegisterFragment extends Fragment {
                                         // ...
                                     }
                                 });
-                    }
-
-                    else {
+                    } else {
                         Snackbar snackbar = Snackbar
                                 .make(view, "Passwords do not match. Try again.", Snackbar.LENGTH_LONG);
                         snackbar.show();
                     }
 
-                }
-                else {
+                } else {
 
                     // If EditText is empty then this block will execute .
                     Snackbar snackbar = Snackbar
@@ -208,20 +205,15 @@ public class RegisterFragment extends Fragment {
         return RootView;
     }
 
-    public void CheckEditTextIsEmptyOrNot(){
+    public void CheckEditTextIsEmptyOrNot() {
 
         F_Name_Holder = First_Name.getText().toString();
         L_Name_Holder = Last_Name.getText().toString();
         EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
-        PasswordMatchHolder=PasswordMatch.getText().toString();
+        PasswordMatchHolder = PasswordMatch.getText().toString();
 
-        if(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder) || TextUtils.isEmpty(PasswordMatchHolder)) {
-            CheckEditText = false;
-        }
-        else {
-            CheckEditText = true ;
-        }
+        CheckEditText = !(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder) || TextUtils.isEmpty(PasswordMatchHolder));
     }
 
 }

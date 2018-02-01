@@ -30,34 +30,32 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences sharedPreferences;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        sharedPreferences = getSharedPreferences("logindetails",MODE_PRIVATE);
-
+        sharedPreferences = getSharedPreferences("logindetails", MODE_PRIVATE);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 hideKeyboardFrom(MainActivity.this, drawerView);
 
-                Button  navHeaderButton = (Button) findViewById(R.id.nav_header_button);
-                assert navHeaderButton!=null;
-                if(currentUser!=null){
+                Button navHeaderButton = (Button) findViewById(R.id.nav_header_button);
+                assert navHeaderButton != null;
+                if (currentUser != null) {
                     navHeaderButton.setText("Your Profile");
                     navHeaderButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Fragment fragment=new AccountFragment();
+                            Fragment fragment = new AccountFragment();
                             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                             ft.replace(R.id.content_frame, fragment);
                             ft.commit();
@@ -67,15 +65,14 @@ public class MainActivity extends AppCompatActivity
                             drawer.closeDrawer(GravityCompat.START);
 
                         }
-                        });
-                }
-                else{
+                    });
+                } else {
                     navHeaderButton.setText("Login/Register");
                     navHeaderButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             isRedirectedFromLYPInfo = false;
-                            Fragment fragment=new LoginRegisterFragment();
+                            Fragment fragment = new LoginRegisterFragment();
                             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                             ft.replace(R.id.content_frame, fragment);
                             ft.commit();
@@ -86,7 +83,6 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
                 }
-
 
 
             }
@@ -108,10 +104,9 @@ public class MainActivity extends AppCompatActivity
         assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (!this.getTitle().equals("MeraKamraa")){
+        } else if (!this.getTitle().equals("MeraKamraa")) {
             displaySelectedScreen(R.id.nav_home);
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -143,8 +138,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
 
-
-
         // Handle navigation view item clicks here.
         displaySelectedScreen(item.getItemId());
         return true;
@@ -161,11 +154,10 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
 
 
-
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_home:
-                fragment=new HomeScreenFragment();
+                fragment = new HomeScreenFragment();
                 break;
             case R.id.nav_find:
                 fragment = new FindAPlaceFragment();

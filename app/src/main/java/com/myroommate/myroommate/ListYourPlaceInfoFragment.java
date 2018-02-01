@@ -30,7 +30,7 @@ public class ListYourPlaceInfoFragment extends Fragment {
 
         View RootView = inflater.inflate(R.layout.fragment_list_your_place_info, container, false);
 
-        sharedPreferences = getActivity().getSharedPreferences("logindetails",MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("logindetails", MODE_PRIVATE);
 
         Button listNowButton = (Button) RootView.findViewById(R.id.list_now_button);
         listNowButton.setOnClickListener(new View.OnClickListener() {
@@ -40,15 +40,14 @@ public class ListYourPlaceInfoFragment extends Fragment {
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 FirebaseUser currentUser = mAuth.getCurrentUser();
 
-                if(currentUser!=null) {
+                if (currentUser != null) {
 
                     Fragment fragment = new ListYourPlaceFragment();
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.content_frame, fragment);
                     ft.commit();
 
-                }
-                else {
+                } else {
 
                     isRedirectedFromLYPInfo = true;
                     Snackbar snackbar = Snackbar

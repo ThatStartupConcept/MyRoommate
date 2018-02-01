@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -50,11 +51,11 @@ public class ListYourPlaceFragment extends Fragment {
     private RecyclerView mRecyclerView;
 
 
-    Button Submit,numberOfRoomsMinus,numberOfRoomsPlus;
+    Button Submit, numberOfRoomsMinus, numberOfRoomsPlus;
     EditText ListingName, Address, SubLocality, Pincode, Rent, numberOfRooms;
     String ListingNameHolder, AddressHolder, SubLocalityHolder, PincodeHolder;
     String LocationHolder, LocalityHolder;
-    Integer RentHolder,roomCounter,i;
+    Integer RentHolder, roomCounter, i;
     String HttpURL = "http://merakamraa.com/php/AddListing.php";
     String RoomURL = "http://merakamraa.com/php/AddRoom.php";
     String BedURL = "http://merakamraa.com/php/AddBed.php";
@@ -151,14 +152,13 @@ public class ListYourPlaceFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                final String[] locationArray =locationList.toArray(new String[locationList.size()]);
+                final String[] locationArray = locationList.toArray(new String[locationList.size()]);
                 final String[] emptyArray = getResources().getStringArray(R.array.empty);
 
                 final Spinner locationSpinner = (MaterialSpinner) getActivity().findViewById(R.id.lyp_location);
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
                 dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
                 locationSpinner.setAdapter(dataAdapter);
-
 
 
                 final Spinner localitySpinner = (MaterialSpinner) getActivity().findViewById(R.id.lyp_locality);
@@ -213,42 +213,42 @@ public class ListYourPlaceFragment extends Fragment {
 
         requestqueue.add(stringRequest);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         View RootView = inflater.inflate(R.layout.fragment_list_your_place, container, false);
 
         //Assign Id'S
-        ListingName = (EditText)RootView.findViewById(R.id.lyp_listing_name);
-        Address = (EditText)RootView.findViewById(R.id.lyp_address);
-        SubLocality = (EditText)RootView.findViewById(R.id.lyp_sub_locality);
-        Pincode = (EditText)RootView.findViewById(R.id.lyp_pincode);
-        Rent = (EditText)RootView.findViewById(R.id.lyp_rent);
-        Submit = (Button)RootView.findViewById(R.id.lyp_submit);
-        numberOfRoomsMinus = (Button)RootView.findViewById(R.id.lyp_roomNumberMinus);
-        numberOfRoomsPlus = (Button)RootView.findViewById(R.id.lyp_roomnumberPlus);
-        numberOfRooms = (EditText)RootView.findViewById(R.id.lyp_numberOfRooms);
+        ListingName = (EditText) RootView.findViewById(R.id.lyp_listing_name);
+        Address = (EditText) RootView.findViewById(R.id.lyp_address);
+        SubLocality = (EditText) RootView.findViewById(R.id.lyp_sub_locality);
+        Pincode = (EditText) RootView.findViewById(R.id.lyp_pincode);
+        Rent = (EditText) RootView.findViewById(R.id.lyp_rent);
+        Submit = (Button) RootView.findViewById(R.id.lyp_submit);
+        numberOfRoomsMinus = (Button) RootView.findViewById(R.id.lyp_roomNumberMinus);
+        numberOfRoomsPlus = (Button) RootView.findViewById(R.id.lyp_roomnumberPlus);
+        numberOfRooms = (EditText) RootView.findViewById(R.id.lyp_numberOfRooms);
 
         roomCounter = Integer.valueOf(numberOfRooms.getText().toString());
 
-        requestqueue= Volley.newRequestQueue(getContext());
+        requestqueue = Volley.newRequestQueue(getContext());
 
         numberOfRoomsMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
+                try {
                     roomCounter = Integer.valueOf(numberOfRooms.getText().toString());
-                    if(roomCounter>0){
+                    if (roomCounter > 0) {
                         roomCounter--;
                         numberOfRooms.setText(Integer.toString(roomCounter));
-                    }
-                    else{
+                    } else {
                         Snackbar snackbar = Snackbar
                                 .make(getView(), "How do you make a house with less than zero rooms? :thinking:", Snackbar.LENGTH_LONG);
                         snackbar.show();
                         numberOfRooms.setText("0");
                     }
-                }catch(NumberFormatException e){
+                } catch (NumberFormatException e) {
 
                 }
             }
@@ -257,11 +257,11 @@ public class ListYourPlaceFragment extends Fragment {
         numberOfRoomsPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
+                try {
                     roomCounter = Integer.valueOf(numberOfRooms.getText().toString());
                     roomCounter++;
                     numberOfRooms.setText(Integer.toString(roomCounter));
-                }catch(NumberFormatException e){
+                } catch (NumberFormatException e) {
 
                 }
             }
@@ -276,37 +276,28 @@ public class ListYourPlaceFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                try{
+                try {
                     roomCounter = Integer.valueOf(numberOfRooms.getText().toString());
 
 
+                    if (roomCounter > 0 && roomCounter <= 6) {
 
-
-
-                if(roomCounter>0 && roomCounter<=6) {
-
-                    initializeAdapter();
-                    getActivity().findViewById(R.id.lyp_recyclerView).setVisibility(View.VISIBLE);
-                }
-
-                else if(roomCounter<0){
-                    Snackbar snackbar = Snackbar
-                            .make(getView(), "How do you make a house with less than zero rooms? :thinking:", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                    numberOfRooms.setText("0");
-                }
-
-                else if(roomCounter>6){
-                    Snackbar snackbar = Snackbar
-                            .make(getView(), "We do not currently list houses of over 6 bedrooms. Sorry!", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                    numberOfRooms.setText("6");
-                }
-
-                else{
-                    getActivity().findViewById(R.id.lyp_recyclerView).setVisibility(View.GONE);
-                }
-                }catch(NumberFormatException e){
+                        initializeAdapter();
+                        getActivity().findViewById(R.id.lyp_recyclerView).setVisibility(View.VISIBLE);
+                    } else if (roomCounter < 0) {
+                        Snackbar snackbar = Snackbar
+                                .make(getView(), "How do you make a house with less than zero rooms? :thinking:", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                        numberOfRooms.setText("0");
+                    } else if (roomCounter > 6) {
+                        Snackbar snackbar = Snackbar
+                                .make(getView(), "We do not currently list houses of over 6 bedrooms. Sorry!", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                        numberOfRooms.setText("6");
+                    } else {
+                        getActivity().findViewById(R.id.lyp_recyclerView).setVisibility(View.GONE);
+                    }
+                } catch (NumberFormatException e) {
                     numberOfRooms.setText("0");
                 }
             }
@@ -330,10 +321,9 @@ public class ListYourPlaceFragment extends Fragment {
                 // Checking whether EditText is Empty or Not
                 CheckEditTextIsValidOrNot();
 
-                if(CheckEditText){
-                    for(int i=0;i<roomCounter;i++)
-                    {
-                        if(mAdapter.numberOfBeds[i]==null){
+                if (CheckEditText) {
+                    for (int i = 0; i < roomCounter; i++) {
+                        if (mAdapter.numberOfBeds[i] == null) {
                             CheckEditText = false;
                         }
                     }
@@ -347,125 +337,122 @@ public class ListYourPlaceFragment extends Fragment {
                                 if (task.isSuccessful()) {
                                     final String idToken = task.getResult().getToken();
 
-                if(CheckEditText){
-                    // If EditText is not empty and CheckEditText = True then this block will execute.
+                                    if (CheckEditText) {
+                                        // If EditText is not empty and CheckEditText = True then this block will execute.
 
-                    Snackbar snackbar1 = Snackbar
-                            .make(getView(), "Adding your listing, please wait...", Snackbar.LENGTH_LONG);
-                    snackbar1.show();
+                                        Snackbar snackbar1 = Snackbar
+                                                .make(getView(), "Adding your listing, please wait...", Snackbar.LENGTH_LONG);
+                                        snackbar1.show();
 
-                    final String numberOfRooms = Integer.toString(mAdapter.getItemCount());
+                                        final String numberOfRooms = Integer.toString(mAdapter.getItemCount());
 
-                    StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
-                        @Override
-                        public void onResponse(String stringResponse){
-                            if(!stringResponse.equals("Your listing was added.")){
-                                everythingWorked = false;
-                            }
-                        }
+                                        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String stringResponse) {
+                                                if (!stringResponse.equals("Your listing was added.")) {
+                                                    everythingWorked = false;
+                                                }
+                                            }
 
-                    }, new Response.ErrorListener() {
+                                        }, new Response.ErrorListener() {
 
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            VolleyLog.e("Error: ", error.toString());
-                        }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                VolleyLog.e("Error: ", error.toString());
+                                            }
+                                        }) {
+                                            @Override
+                                            protected Map<String, String> getParams() throws AuthFailureError {
 
-                            Map<String,String> parameters = new HashMap<String,String>();
-                            parameters.put("location",LocationHolder);
-                            parameters.put("locality",LocalityHolder);
-                            parameters.put("listingname",ListingNameHolder);
-                            parameters.put("ownername",currentUser.getDisplayName());
-                            parameters.put("address",AddressHolder);
-                            parameters.put("sublocality",SubLocalityHolder);
-                            parameters.put("pincode",PincodeHolder);
-                            parameters.put("rent",RentHolder.toString());
-                            parameters.put("numberOfRooms",numberOfRooms);
+                                                Map<String, String> parameters = new HashMap<String, String>();
+                                                parameters.put("location", LocationHolder);
+                                                parameters.put("locality", LocalityHolder);
+                                                parameters.put("listingname", ListingNameHolder);
+                                                parameters.put("ownername", currentUser.getDisplayName());
+                                                parameters.put("address", AddressHolder);
+                                                parameters.put("sublocality", SubLocalityHolder);
+                                                parameters.put("pincode", PincodeHolder);
+                                                parameters.put("rent", RentHolder.toString());
+                                                parameters.put("numberOfRooms", numberOfRooms);
 
-                            parameters.put("firebase_token",idToken);
-                            return parameters;
-                        }
-                    };
+                                                parameters.put("firebase_token", idToken);
+                                                return parameters;
+                                            }
+                                        };
 
-                    requestqueue.add(stringRequest);
+                                        requestqueue.add(stringRequest);
 
-                    if(everythingWorked) {
+                                        if (everythingWorked) {
 
-                        for (i = 0; i < mAdapter.getItemCount(); i++) {
+                                            for (i = 0; i < mAdapter.getItemCount(); i++) {
 
-                            final String numberOfBeds = Integer.toString(mAdapter.numberOfBeds[i]);
-                            final String isACAvailable = Integer.toString(mAdapter.isACAvailable[i]);
-                            final String isABAvailable = Integer.toString(mAdapter.isABAvailable[i]);
+                                                final String numberOfBeds = Integer.toString(mAdapter.numberOfBeds[i]);
+                                                final String isACAvailable = Integer.toString(mAdapter.isACAvailable[i]);
+                                                final String isABAvailable = Integer.toString(mAdapter.isABAvailable[i]);
 
-                            Snackbar snackbar2 = Snackbar
-                                    .make(getView(), "Number of beds in room "+Integer.toString(i+1)+" is "+numberOfBeds, Snackbar.LENGTH_LONG);
-                            snackbar2.show();
+                                                Snackbar snackbar2 = Snackbar
+                                                        .make(getView(), "Number of beds in room " + Integer.toString(i + 1) + " is " + numberOfBeds, Snackbar.LENGTH_LONG);
+                                                snackbar2.show();
 
-                            StringRequest stringRequest2 = new StringRequest(Request.Method.POST, RoomURL, new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String stringResponse) {
-                                    if (!stringResponse.equals("Roomdb updated")) {
-                                        everythingWorked = false;
+                                                StringRequest stringRequest2 = new StringRequest(Request.Method.POST, RoomURL, new Response.Listener<String>() {
+                                                    @Override
+                                                    public void onResponse(String stringResponse) {
+                                                        if (!stringResponse.equals("Roomdb updated")) {
+                                                            everythingWorked = false;
+                                                        }
+                                                    }
+
+                                                }, new Response.ErrorListener() {
+
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+                                                        VolleyLog.e("Error: ", error.toString());
+                                                    }
+                                                }) {
+                                                    @Override
+                                                    protected Map<String, String> getParams() throws AuthFailureError {
+
+                                                        Map<String, String> parameters = new HashMap<String, String>();
+
+                                                        parameters.put("listingname", ListingNameHolder);
+                                                        parameters.put("firebase_token", idToken);
+
+                                                        parameters.put("numberOfBeds", numberOfBeds);
+                                                        parameters.put("isACAvailable", isACAvailable);
+                                                        parameters.put("isABAvailable", isABAvailable);
+
+                                                        return parameters;
+                                                    }
+                                                };
+
+
+                                                requestqueue.add(stringRequest2);
+                                            }
+                                        }
+
+                                        if (everythingWorked) {
+
+                                            Snackbar snackbar3 = Snackbar
+                                                    .make(getView(), "Your listing has been added.", Snackbar.LENGTH_LONG);
+                                            snackbar3.show();
+
+                                        } else {
+                                            Snackbar snackbar4 = Snackbar
+                                                    .make(getView(), "Something went wrong, please try again", Snackbar.LENGTH_LONG);
+                                            snackbar4.show();
+                                        }
+
+                                        everythingWorked = true;
+
+
+                                    } else {
+
+                                        // If EditText is empty then this block will execute .
+                                        Snackbar snackbar5 = Snackbar
+                                                .make(getView(), "Please fill all form fields with valid info", Snackbar.LENGTH_LONG);
+                                        snackbar5.show();
+
                                     }
-                                }
-
-                            }, new Response.ErrorListener() {
-
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    VolleyLog.e("Error: ", error.toString());
-                                }
-                            }) {
-                                @Override
-                                protected Map<String, String> getParams() throws AuthFailureError {
-
-                                    Map<String, String> parameters = new HashMap<String, String>();
-
-                                    parameters.put("listingname", ListingNameHolder);
-                                    parameters.put("firebase_token", idToken);
-
-                                    parameters.put("numberOfBeds", numberOfBeds);
-                                    parameters.put("isACAvailable", isACAvailable);
-                                    parameters.put("isABAvailable", isABAvailable);
-
-                                    return parameters;
-                                }
-                            };
-
-
-                            requestqueue.add(stringRequest2);
-                        }
-                    }
-
-                    if(everythingWorked) {
-
-                        Snackbar snackbar3 = Snackbar
-                                .make(getView(), "Your listing has been added.", Snackbar.LENGTH_LONG);
-                        snackbar3.show();
-
-                    }
-
-                    else{
-                        Snackbar snackbar4 = Snackbar
-                                .make(getView(), "Something went wrong, please try again", Snackbar.LENGTH_LONG);
-                        snackbar4.show();
-                    }
-
-                    everythingWorked = true;
-
-
-                }
-                else {
-
-                    // If EditText is empty then this block will execute .
-                    Snackbar snackbar5 = Snackbar
-                            .make(getView(), "Please fill all form fields with valid info", Snackbar.LENGTH_LONG);
-                    snackbar5.show();
-
-                }
                                 } else {
                                     // Handle error -> task.getException();
                                 }
@@ -484,37 +471,27 @@ public class ListYourPlaceFragment extends Fragment {
         getActivity().setTitle("List Your Place");
     }
 
-    protected void CheckEditTextIsValidOrNot(){
+    protected void CheckEditTextIsValidOrNot() {
 
-        ListingNameHolder=ListingName.getText().toString();
-        AddressHolder=Address.getText().toString();
-        SubLocalityHolder=SubLocality.getText().toString();
+        ListingNameHolder = ListingName.getText().toString();
+        AddressHolder = Address.getText().toString();
+        SubLocalityHolder = SubLocality.getText().toString();
         PincodeHolder = Pincode.getText().toString();
 
         try {
             RentHolder = Integer.valueOf(Rent.getText().toString());
-        }
-        catch (NumberFormatException e){
-            RentHolder=0;
+        } catch (NumberFormatException e) {
+            RentHolder = 0;
         }
 
-        if(TextUtils.isEmpty(LocationHolder) || TextUtils.isEmpty(LocalityHolder) || TextUtils.isEmpty(ListingNameHolder) || TextUtils.isEmpty(AddressHolder) || TextUtils.isEmpty(PincodeHolder) || RentHolder==0 || roomCounter==0)
-        {
-            CheckEditText = false;
-        }
-        else {
-
-
-
-            CheckEditText = true ;
-        }
+        CheckEditText = !(TextUtils.isEmpty(LocationHolder) || TextUtils.isEmpty(LocalityHolder) || TextUtils.isEmpty(ListingNameHolder) || TextUtils.isEmpty(AddressHolder) || TextUtils.isEmpty(PincodeHolder) || RentHolder == 0 || roomCounter == 0);
 
         regexChecker = ListingNameHolder.matches(regexOtherCheck) && AddressHolder.matches(regexOtherCheck) && SubLocalityHolder.matches(regexNameCheck) && PincodeHolder.matches(regexNumberCheck);
 
         CheckEditText = CheckEditText && regexChecker;
     }
 
-    private void initializeAdapter(){
+    private void initializeAdapter() {
         mAdapter = new RVAdapter2(roomCounter);
         mRecyclerView.setAdapter(mAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());

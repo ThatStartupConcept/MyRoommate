@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,12 +30,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.lang.Object;
+
 import fr.ganfra.materialspinner.MaterialSpinner;
 
 import static android.content.ContentValues.TAG;
@@ -62,7 +65,7 @@ public class FindAPlaceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
 
-    return inflater.inflate(R.layout.fragment_find_a_place, container, false);
+        return inflater.inflate(R.layout.fragment_find_a_place, container, false);
 
 
     }
@@ -75,10 +78,9 @@ public class FindAPlaceFragment extends Fragment {
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.fap_recyclerView);
 
 
-
-        StringRequest stringRequest= new StringRequest(Request.Method.POST, InfoURL , new Response.Listener<String>(){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, InfoURL, new Response.Listener<String>() {
             @Override
-            public void onResponse(String stringResponse){
+            public void onResponse(String stringResponse) {
 
                 try {
                     JSONObject jsonResponse = new JSONObject(stringResponse);
@@ -99,24 +101,23 @@ public class FindAPlaceFragment extends Fragment {
                         locality_name = listing.getString("Locality");
                         prev_location_name = location_name;
 
-                        if(i>0){
-                            prevlisting = jListings.getJSONObject(i-1);
+                        if (i > 0) {
+                            prevlisting = jListings.getJSONObject(i - 1);
                             prev_location_name = prevlisting.getString("Location");
                         }
 
 
-
-                        if (i==0){
+                        if (i == 0) {
                             listOfLists.add(new String[200]);
                             locationList.add(location_name);
                             locationcount++;
                             localitynumber = 0;
                         }
-                        if(i>0){
-                            if(!location_name.equals(prev_location_name)){
+                        if (i > 0) {
+                            if (!location_name.equals(prev_location_name)) {
                                 listOfLists.add(new String[200]);
                                 locationList.add(location_name);
-                                String[] temp = Arrays.copyOf(listOfLists.get(locationcount-1),localitynumber);
+                                String[] temp = Arrays.copyOf(listOfLists.get(locationcount - 1), localitynumber);
                                 listOfLocationArrays.add(temp);
 
                                 locationcount++;
@@ -124,38 +125,34 @@ public class FindAPlaceFragment extends Fragment {
                             }
                         }
 
-                        listOfLists.get(locationcount-1)[localitynumber] = (locality_name);
+                        listOfLists.get(locationcount - 1)[localitynumber] = (locality_name);
 
                         localitynumber++;
 
-                        if(i== (jListings.length()-1)){
-                            String[] temp = Arrays.copyOf(listOfLists.get(locationcount-1),localitynumber);
+                        if (i == (jListings.length() - 1)) {
+                            String[] temp = Arrays.copyOf(listOfLists.get(locationcount - 1), localitynumber);
                             listOfLocationArrays.add(temp);
 
                         }
                     }
 
 
-
-
-                }
-                catch (JSONException e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                final String locationArray[]=locationList.toArray(new String[locationList.size()]);
+                final String locationArray[] = locationList.toArray(new String[locationList.size()]);
                 final String[] emptyArray = getResources().getStringArray(R.array.empty);
 
-                final Spinner locationSpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_location);
+                final Spinner locationSpinner = (MaterialSpinner) getActivity().findViewById(R.id.fap_location);
                 ArrayAdapter<String> dataAdapter;
                 dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locationArray);
                 dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
                 locationSpinner.setAdapter(dataAdapter);
 
 
-
-                final Spinner localitySpinner = (MaterialSpinner)getActivity().findViewById(R.id.fap_locality);
-                final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,emptyArray);
+                final Spinner localitySpinner = (MaterialSpinner) getActivity().findViewById(R.id.fap_locality);
+                final ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, emptyArray);
                 emptyAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
                 localitySpinner.setAdapter(emptyAdapter);
 
@@ -166,18 +163,16 @@ public class FindAPlaceFragment extends Fragment {
 
 
                         String[] tempList;
-                        if(positionLocation==-1) {
-                            tempList=emptyArray;
-                        }
-                        else{
+                        if (positionLocation == -1) {
+                            tempList = emptyArray;
+                        } else {
                             tempList = listOfLocationArrays.get(positionLocation);
                         }
 
                         locationcount = 0;
 
 
-
-                        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,tempList);
+                        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, tempList);
                         dataAdapter2.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
                         localitySpinner.setAdapter(dataAdapter2);
 
@@ -185,35 +180,31 @@ public class FindAPlaceFragment extends Fragment {
                             @Override
                             public void onItemSelected(AdapterView<?> parentView2, View selectedItemView2, final int positionLocality, long id2) {
 
-                                if(!locationSpinner.getSelectedItem().toString().equals("Select City") && !localitySpinner.getSelectedItem().toString().equals("Select Locality")) {
+                                if (!locationSpinner.getSelectedItem().toString().equals("Select City") && !localitySpinner.getSelectedItem().toString().equals("Select Locality")) {
 
                                     final String locality = localitySpinner.getSelectedItem().toString();
                                     listings = new ArrayList<Listing>();
 
-                                    //TODO - Move the following StringRequest into the constructor for RVAdapter and pass RVAdapter only 'locality'
-
-                                    StringRequest stringRequest= new StringRequest(Request.Method.POST, HttpURL , new Response.Listener<String>(){
+                                    StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
                                         @Override
-                                        public void onResponse(String stringResponse){
+                                        public void onResponse(String stringResponse) {
 
-                                            if(stringResponse.equals("No listings available in this locality")) {
+                                            if (stringResponse.equals("No listings available in this locality")) {
                                                 Snackbar snackbar = Snackbar
                                                         .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
                                                 snackbar.show();
-                                            }
-
-                                            else {
+                                            } else {
                                                 try {
                                                     JSONObject jsonResponse = new JSONObject(stringResponse);
                                                     JSONArray jListings = jsonResponse.getJSONArray("listings");
                                                     for (int i = 0; i < jListings.length(); i++) {
                                                         JSONObject listing = jListings.getJSONObject(i);
-                                                        String primary_key  = listing.getString("primary_key");
+                                                        String primary_key = listing.getString("primary_key");
                                                         String location = listing.getString("location");
                                                         String locality = listing.getString("locality");
-                                                        String listingname = new String(decode(listing.getString("listingname"),NO_CLOSE));
+                                                        String listingname = new String(decode(listing.getString("listingname"), NO_CLOSE));
                                                         String ownername = listing.getString("ownername");
-                                                        String address = new String(decode(listing.getString("address"),NO_CLOSE));
+                                                        String address = new String(decode(listing.getString("address"), NO_CLOSE));
                                                         String sublocality = listing.getString("sublocality");
                                                         String pincode = listing.getString("pincode");
                                                         int rent = listing.getInt("rent");
@@ -221,8 +212,7 @@ public class FindAPlaceFragment extends Fragment {
                                                     }
 
                                                     mAdapter.notifyDataSetChanged();
-                                                }
-                                                catch (JSONException e) {
+                                                } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
                                             }
@@ -235,11 +225,11 @@ public class FindAPlaceFragment extends Fragment {
                                         public void onErrorResponse(VolleyError error) {
                                             VolleyLog.e("Error: ", error.toString());
                                         }
-                                    }){
+                                    }) {
                                         @Override
                                         protected Map<String, String> getParams() throws AuthFailureError {
-                                            Map<String,String> parameters = new HashMap<String,String>();
-                                            parameters.put("locality",locality);
+                                            Map<String, String> parameters = new HashMap<String, String>();
+                                            parameters.put("locality", locality);
                                             return parameters;
                                         }
 
@@ -260,9 +250,8 @@ public class FindAPlaceFragment extends Fragment {
                                         public void onChange() {
 
 
-
                                             Bundle args = new Bundle();
-                                            args.putString("primary_key",mAdapter.primary_key);
+                                            args.putString("primary_key", mAdapter.primary_key);
                                             Fragment fragment = new ListingDetailsFragment();
                                             fragment.setArguments(args);
                                             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -296,10 +285,6 @@ public class FindAPlaceFragment extends Fragment {
         requestqueue.add(stringRequest);
 
 
-
-
-
-
     }
 
     @Override
@@ -310,13 +295,12 @@ public class FindAPlaceFragment extends Fragment {
     }
 
 
-
-    private void initializeAdapter(){
+    private void initializeAdapter() {
         mAdapter = new RVAdapter(listings);
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void createSpinners(){
+    private void createSpinners() {
 
 
     }

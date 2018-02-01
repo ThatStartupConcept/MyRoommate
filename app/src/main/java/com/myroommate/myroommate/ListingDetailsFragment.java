@@ -39,7 +39,6 @@ import static android.util.Base64.decode;
 public class ListingDetailsFragment extends Fragment {
 
 
-
     String GetFullDetailsURL = "http://merakamraa.com/php/GetFullDetails.php";
     String GetAccountDetailsURL = "http://merakamraa.com/php/AccountDetails.php";
     String RoomDetailsURL = "http://merakamraa.com/php/RoomDetails.php";
@@ -56,12 +55,12 @@ public class ListingDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         final View RootView = inflater.inflate(R.layout.fragment_listing_details, container, false);
 
-        full_listingName = (TextView)RootView.findViewById(R.id.full_listingName);
-        full_locality = (TextView)RootView.findViewById(R.id.full_locality);
-        full_location = (TextView)RootView.findViewById(R.id.full_location);
-        full_rent = (TextView)RootView.findViewById(R.id.full_rent);
-        full_ownerName = (TextView)RootView.findViewById(R.id.full_ownerName);
-        full_additionalInfo = (TextView)RootView.findViewById(R.id.full_additionalInfo);
+        full_listingName = (TextView) RootView.findViewById(R.id.full_listingName);
+        full_locality = (TextView) RootView.findViewById(R.id.full_locality);
+        full_location = (TextView) RootView.findViewById(R.id.full_location);
+        full_rent = (TextView) RootView.findViewById(R.id.full_rent);
+        full_ownerName = (TextView) RootView.findViewById(R.id.full_ownerName);
+        full_additionalInfo = (TextView) RootView.findViewById(R.id.full_additionalInfo);
         mRecyclerView = (RecyclerView) RootView.findViewById(R.id.ld_recyclerView);
 
 
@@ -69,45 +68,42 @@ public class ListingDetailsFragment extends Fragment {
 
         requestQueue = Volley.newRequestQueue(getContext());
 
-        StringRequest stringRequest= new StringRequest(Request.Method.POST, GetFullDetailsURL , new Response.Listener<String>(){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, GetFullDetailsURL, new Response.Listener<String>() {
             @Override
-            public void onResponse(String stringResponse){
+            public void onResponse(String stringResponse) {
 
-                    try {
+                try {
 
-                        JSONObject jsonResponse = new JSONObject(stringResponse);
+                    JSONObject jsonResponse = new JSONObject(stringResponse);
 
-                        String location = jsonResponse.getString("location");
-                        String locality = jsonResponse.getString("locality");
-                        String listingname = new String(decode(jsonResponse.getString("listingname"),NO_CLOSE));
-                        String ownername = jsonResponse.getString("ownername");
-                        String address = new String(decode(jsonResponse.getString("address"),NO_CLOSE));
-                        String sublocality = jsonResponse.getString("sublocality");
-                        String pincode = jsonResponse.getString("pincode");
-                        int rent = jsonResponse.getInt("rent");
-                        numberOfRooms = jsonResponse.getInt("numberOfRooms");
-
-
+                    String location = jsonResponse.getString("location");
+                    String locality = jsonResponse.getString("locality");
+                    String listingname = new String(decode(jsonResponse.getString("listingname"), NO_CLOSE));
+                    String ownername = jsonResponse.getString("ownername");
+                    String address = new String(decode(jsonResponse.getString("address"), NO_CLOSE));
+                    String sublocality = jsonResponse.getString("sublocality");
+                    String pincode = jsonResponse.getString("pincode");
+                    int rent = jsonResponse.getInt("rent");
+                    numberOfRooms = jsonResponse.getInt("numberOfRooms");
 
 
-                        full_listingName.setText(listingname);
-                        full_locality.setText(locality);
-                        full_location.setText(location);
-                        full_rent.setText(Integer.toString(rent));
-                        full_ownerName.setText("Owner: "+ownername);
-                        full_additionalInfo.setText("Address: "+address+sublocality+"\nPincode: "+pincode);
+                    full_listingName.setText(listingname);
+                    full_locality.setText(locality);
+                    full_location.setText(location);
+                    full_rent.setText(Integer.toString(rent));
+                    full_ownerName.setText("Owner: " + ownername);
+                    full_additionalInfo.setText("Address: " + address + sublocality + "\nPincode: " + pincode);
 
 
-                        }
-                        catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-                StringRequest stringRequest2= new StringRequest(Request.Method.POST, RoomDetailsURL , new Response.Listener<String>(){
+                StringRequest stringRequest2 = new StringRequest(Request.Method.POST, RoomDetailsURL, new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String stringResponse){
+                    public void onResponse(String stringResponse) {
 
-                        if(!stringResponse.equals("Listing not found.")) {
+                        if (!stringResponse.equals("Listing not found.")) {
 
                             ArrayList<ArrayList<Integer>> listOfRooms = new ArrayList<ArrayList<Integer>>();
 
@@ -115,7 +111,6 @@ public class ListingDetailsFragment extends Fragment {
 
                                 JSONObject jsonResponse = new JSONObject(stringResponse);
                                 JSONArray jListings = jsonResponse.getJSONArray("rooms");
-
 
 
                                 for (int i = 0; i < jListings.length(); i++) {
@@ -130,7 +125,7 @@ public class ListingDetailsFragment extends Fragment {
                                     listOfRooms.add(roomDetails);
                                 }
 
-                                mAdapter = new RVAdapter3(primary_key,getActivity(),getContext(),mRecyclerView,listOfRooms);
+                                mAdapter = new RVAdapter3(primary_key, getActivity(), getContext(), mRecyclerView, listOfRooms);
                                 mRecyclerView.setAdapter(mAdapter);
 
                                 // use a linear layout manager
@@ -142,9 +137,7 @@ public class ListingDetailsFragment extends Fragment {
                                 e.printStackTrace();
                             }
 
-                        }
-
-                        else{
+                        } else {
 
                         }
 
@@ -157,19 +150,17 @@ public class ListingDetailsFragment extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         VolleyLog.e("Error: ", error.toString());
                     }
-                }){
+                }) {
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String,String> parameters = new HashMap<String,String>();
-                        parameters.put("primary_key",primary_key);
+                        Map<String, String> parameters = new HashMap<String, String>();
+                        parameters.put("primary_key", primary_key);
                         return parameters;
                     }
 
                 };
 
                 requestQueue.add(stringRequest2);
-
-
 
 
             }
@@ -180,20 +171,17 @@ public class ListingDetailsFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.e("Error: ", error.toString());
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> parameters = new HashMap<String,String>();
-                parameters.put("primary_key",primary_key);
+                Map<String, String> parameters = new HashMap<String, String>();
+                parameters.put("primary_key", primary_key);
                 return parameters;
             }
 
         };
 
         requestQueue.add(stringRequest);
-
-
-
 
 
         return RootView;
@@ -208,7 +196,7 @@ public class ListingDetailsFragment extends Fragment {
         getActivity().setTitle(TITLE);
     }
 
-    private void initializeAdapter(){
+    private void initializeAdapter() {
 
     }
 }

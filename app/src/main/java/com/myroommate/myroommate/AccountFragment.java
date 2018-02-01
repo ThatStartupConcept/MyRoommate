@@ -48,13 +48,13 @@ import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 
 public class AccountFragment extends Fragment {
 
-    Button Logout,Update,Delete;
-    EditText First_Name, Last_Name, Email, Password, PasswordMatch ;
-    String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder,PasswordMatchHolder;
+    Button Logout, Update, Delete;
+    EditText First_Name, Last_Name, Email, Password, PasswordMatch;
+    String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder, PasswordMatchHolder;
     String HttpUpdateURL = "http://merakamraa.com/php/AccountUpdate.php";
     String HttpDetailsURL = "http://merakamraa.com/php/AccountDetails.php";
     String HttpDeleteURL = "http://merakamraa.com/php/AccountDelete.php";
-    Boolean CheckEditText ;
+    Boolean CheckEditText;
     RequestQueue requestQueue;
     SharedPreferences sharedPreferences;
     private FirebaseAuth mAuth;
@@ -80,79 +80,79 @@ public class AccountFragment extends Fragment {
         requestQueue = Volley.newRequestQueue(getContext());
 
         //Assign Id'S
-        First_Name = (EditText)RootView.findViewById(R.id.account_firstname);
-        Last_Name = (EditText)RootView.findViewById(R.id.account_lastname);
-        Email = (EditText)RootView.findViewById(R.id.account_email);
-        Password = (EditText)RootView.findViewById(R.id.account_password);
-        PasswordMatch = (EditText)RootView.findViewById(R.id.account_password_match);
+        First_Name = (EditText) RootView.findViewById(R.id.account_firstname);
+        Last_Name = (EditText) RootView.findViewById(R.id.account_lastname);
+        Email = (EditText) RootView.findViewById(R.id.account_email);
+        Password = (EditText) RootView.findViewById(R.id.account_password);
+        PasswordMatch = (EditText) RootView.findViewById(R.id.account_password_match);
 
-        sharedPreferences = getActivity().getSharedPreferences("logindetails",MODE_PRIVATE);
-        EmailHolder= sharedPreferences.getString("email","");
+        sharedPreferences = getActivity().getSharedPreferences("logindetails", MODE_PRIVATE);
+        EmailHolder = sharedPreferences.getString("email", "");
 
         final FirebaseUser user = mAuth.getCurrentUser();
 
         user.getIdToken(true)
                 .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                                           public void onComplete(@NonNull Task<GetTokenResult> task) {
-                                               if (task.isSuccessful()) {
-                                                   final String idToken = task.getResult().getToken();
+                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                        if (task.isSuccessful()) {
+                            final String idToken = task.getResult().getToken();
 
-                                                   StringRequest detailsRequest = new StringRequest(Request.Method.POST, HttpDetailsURL, new Response.Listener<String>() {
-                                                       @Override
-                                                       public void onResponse(String stringResponse) {
-                                                           if (stringResponse.equals("User not found.")) {
-                                                               Snackbar snackbar = Snackbar
-                                                                       .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
-                                                               snackbar.show();
-                                                           } else {
-                                                               try {
-                                                                   JSONObject jsonResponse = new JSONObject(stringResponse);
-                                                                   F_Name_Holder = jsonResponse.getString("first_name");
-                                                                   L_Name_Holder = jsonResponse.getString("last_name");
-                                                                   EmailHolder = jsonResponse.getString("user_email");
+                            StringRequest detailsRequest = new StringRequest(Request.Method.POST, HttpDetailsURL, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String stringResponse) {
+                                    if (stringResponse.equals("User not found.")) {
+                                        Snackbar snackbar = Snackbar
+                                                .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
+                                        snackbar.show();
+                                    } else {
+                                        try {
+                                            JSONObject jsonResponse = new JSONObject(stringResponse);
+                                            F_Name_Holder = jsonResponse.getString("first_name");
+                                            L_Name_Holder = jsonResponse.getString("last_name");
+                                            EmailHolder = jsonResponse.getString("user_email");
 
-                                                                   First_Name.setText(F_Name_Holder);
-                                                                   Last_Name.setText(L_Name_Holder);
-                                                                   Email.setText(EmailHolder);
+                                            First_Name.setText(F_Name_Holder);
+                                            Last_Name.setText(L_Name_Holder);
+                                            Email.setText(EmailHolder);
 
 
-                                                               } catch (JSONException e) {
-                                                                   e.printStackTrace();
-                                                               }
-                                                           }
-                                                       }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
 
-                                                   }, new Response.ErrorListener() {
+                            }, new Response.ErrorListener() {
 
-                                                       @Override
-                                                       public void onErrorResponse(VolleyError error) {
-                                                           NetworkResponse errorRes = error.networkResponse;
-                                                           String stringData = "";
-                                                           try {
-                                                               if (errorRes != null && errorRes.data != null) {
-                                                                   stringData = new String(errorRes.data, "UTF-8");
-                                                               }
-                                                           } catch (UnsupportedEncodingException e) {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    NetworkResponse errorRes = error.networkResponse;
+                                    String stringData = "";
+                                    try {
+                                        if (errorRes != null && errorRes.data != null) {
+                                            stringData = new String(errorRes.data, "UTF-8");
+                                        }
+                                    } catch (UnsupportedEncodingException e) {
 
-                                                           }
-                                                           Log.e("Error", stringData);
-                                                       }
-                                                   }) {
-                                                       @Override
-                                                       protected Map<String, String> getParams() throws AuthFailureError {
+                                    }
+                                    Log.e("Error", stringData);
+                                }
+                            }) {
+                                @Override
+                                protected Map<String, String> getParams() throws AuthFailureError {
 
-                                                           Map<String, String> parameters = new HashMap<String, String>();
-                                                           parameters.put("user_token", idToken);
-                                                           return parameters;
-                                                       }
-                                                   };
+                                    Map<String, String> parameters = new HashMap<String, String>();
+                                    parameters.put("user_token", idToken);
+                                    return parameters;
+                                }
+                            };
 
-                                                   requestQueue.add(detailsRequest);
-                                               }
-                                           }
-                                       });
+                            requestQueue.add(detailsRequest);
+                        }
+                    }
+                });
 
-        Update = (Button)RootView.findViewById(R.id.account_update);
+        Update = (Button) RootView.findViewById(R.id.account_update);
         Update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -164,52 +164,52 @@ public class AccountFragment extends Fragment {
              /*   if(CheckEditText){
                     if(PasswordHolder.equals(PasswordMatchHolder)) { */
 
-                        // If EditText is not empty and CheckEditText = True then this block will execute.
-                        user.getIdToken(true)
-                                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                                    public void onComplete(@NonNull Task<GetTokenResult> task) {
-                                        if (task.isSuccessful()) {
-                                            final String idToken = task.getResult().getToken();
+                // If EditText is not empty and CheckEditText = True then this block will execute.
+                user.getIdToken(true)
+                        .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                if (task.isSuccessful()) {
+                                    final String idToken = task.getResult().getToken();
 
-                                            StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUpdateURL, new Response.Listener<String>() {
-                                                @Override
-                                                public void onResponse(String stringResponse) {
-                                                    Snackbar snackbar = Snackbar
-                                                            .make(view, stringResponse, Snackbar.LENGTH_LONG);
-                                                    snackbar.show();
-                                                }
-
-                                            }, new Response.ErrorListener() {
-
-                                                @Override
-                                                public void onErrorResponse(VolleyError error) {
-                                                    NetworkResponse errorRes = error.networkResponse;
-                                                    String stringData = "";
-                                                    try {
-                                                        if (errorRes != null && errorRes.data != null) {
-                                                            stringData = new String(errorRes.data, "UTF-8");
-                                                        }
-                                                    } catch (UnsupportedEncodingException e) {
-
-                                                    }
-                                                    Log.e("Error", stringData);
-                                                }
-                                            }) {
-                                                @Override
-                                                protected Map<String, String> getParams() throws AuthFailureError {
-                                                    Map<String, String> parameters = new HashMap<String, String>();
-                                                    parameters.put("f_name", F_Name_Holder);
-                                                    parameters.put("L_name", L_Name_Holder);
-                                                    parameters.put("email", EmailHolder);
-                                                    parameters.put("user_token", idToken);
-                                                    return parameters;
-                                                }
-                                            };
-
-                                            requestQueue.add(stringRequest);
+                                    StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUpdateURL, new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String stringResponse) {
+                                            Snackbar snackbar = Snackbar
+                                                    .make(view, stringResponse, Snackbar.LENGTH_LONG);
+                                            snackbar.show();
                                         }
-                                    }
-                                });
+
+                                    }, new Response.ErrorListener() {
+
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            NetworkResponse errorRes = error.networkResponse;
+                                            String stringData = "";
+                                            try {
+                                                if (errorRes != null && errorRes.data != null) {
+                                                    stringData = new String(errorRes.data, "UTF-8");
+                                                }
+                                            } catch (UnsupportedEncodingException e) {
+
+                                            }
+                                            Log.e("Error", stringData);
+                                        }
+                                    }) {
+                                        @Override
+                                        protected Map<String, String> getParams() throws AuthFailureError {
+                                            Map<String, String> parameters = new HashMap<String, String>();
+                                            parameters.put("f_name", F_Name_Holder);
+                                            parameters.put("L_name", L_Name_Holder);
+                                            parameters.put("email", EmailHolder);
+                                            parameters.put("user_token", idToken);
+                                            return parameters;
+                                        }
+                                    };
+
+                                    requestQueue.add(stringRequest);
+                                }
+                            }
+                        });
                  /*   }
                     else{
                         Snackbar snackbar = Snackbar
@@ -227,9 +227,9 @@ public class AccountFragment extends Fragment {
 
                 } */
             }
-            });
+        });
 
-        Logout=(Button)RootView.findViewById(R.id.account_logout);
+        Logout = (Button) RootView.findViewById(R.id.account_logout);
         Logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -245,21 +245,21 @@ public class AccountFragment extends Fragment {
                 ft.replace(R.id.content_frame, fragment);
                 ft.commit();
             }
-            });
+        });
 
-        Delete=(Button)RootView.findViewById(R.id.account_delete);
+        Delete = (Button) RootView.findViewById(R.id.account_delete);
         Delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                StringRequest deleteRequest= new StringRequest(Request.Method.POST, HttpDeleteURL , new Response.Listener<String>(){
+                StringRequest deleteRequest = new StringRequest(Request.Method.POST, HttpDeleteURL, new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String stringResponse){
+                    public void onResponse(String stringResponse) {
 
                         Snackbar snackbar = Snackbar
                                 .make(view, stringResponse, Snackbar.LENGTH_LONG);
                         snackbar.show();
 
-                        if(stringResponse.equals("Account deleted successfully!")) {
+                        if (stringResponse.equals("Account deleted successfully!")) {
                             getActivity().getSharedPreferences("logindetails", 0).edit().clear().apply();
 
 
@@ -276,20 +276,20 @@ public class AccountFragment extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         NetworkResponse errorRes = error.networkResponse;
                         String stringData = "";
-                        try{
-                            if(errorRes != null && errorRes.data != null){
-                                stringData = new String(errorRes.data,"UTF-8");
-                            }}
-                        catch (UnsupportedEncodingException e){
+                        try {
+                            if (errorRes != null && errorRes.data != null) {
+                                stringData = new String(errorRes.data, "UTF-8");
+                            }
+                        } catch (UnsupportedEncodingException e) {
 
                         }
-                        Log.e("Error",stringData);
+                        Log.e("Error", stringData);
                     }
-                }){
+                }) {
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String,String> parameters = new HashMap<String,String>();
-                        parameters.put("email",EmailHolder);
+                        Map<String, String> parameters = new HashMap<String, String>();
+                        parameters.put("email", EmailHolder);
                         return parameters;
                     }
                 };
@@ -316,7 +316,7 @@ public class AccountFragment extends Fragment {
                 });
     }
 
-    public void CheckEditTextIsEmptyOrNot(){
+    public void CheckEditTextIsEmptyOrNot() {
 
         F_Name_Holder = First_Name.getText().toString();
         L_Name_Holder = Last_Name.getText().toString();
@@ -324,12 +324,7 @@ public class AccountFragment extends Fragment {
         PasswordHolder = Password.getText().toString();
         PasswordMatchHolder = PasswordMatch.getText().toString();
 
-        if(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder) || TextUtils.isEmpty(PasswordMatchHolder)) {
-            CheckEditText = false;
-        }
-        else {
-            CheckEditText = true ;
-        }
+        CheckEditText = !(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder) || TextUtils.isEmpty(PasswordMatchHolder));
     }
 }
 

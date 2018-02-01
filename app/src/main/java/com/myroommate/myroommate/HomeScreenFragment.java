@@ -26,7 +26,7 @@ public class HomeScreenFragment extends Fragment {
 
         final int listsize1 = list1.size() - 1;
 
-        final Spinner spinner1 = (Spinner)getActivity().findViewById(R.id.locationSpinner);
+        final Spinner spinner1 = (Spinner) getActivity().findViewById(R.id.locationSpinner);
 
         //TODO - Is this spinner really needed?
 

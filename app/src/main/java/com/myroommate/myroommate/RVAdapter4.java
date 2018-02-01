@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,9 +46,9 @@ public class RVAdapter4 extends RecyclerView.Adapter<RVAdapter4.BedImageHolder> 
 
     ArrayList<ArrayList<Integer>> listOfBeds;
 
-    String BedDetailsURL;
+    String BedAvailableURL = "http://merakamraa.com/php/CheckBedAvailability.php", BedBookURL = "http://merakamraa.com/php/BookBed.php";
 
-    RVAdapter4(final ArrayList<ArrayList<Integer>> listOfBeds){
+    RVAdapter4(final ArrayList<ArrayList<Integer>> listOfBeds) {
 
         this.listOfBeds = listOfBeds;
 
@@ -55,7 +61,7 @@ public class RVAdapter4 extends RecyclerView.Adapter<RVAdapter4.BedImageHolder> 
         TextView bedAvailability;
         ImageView bedImage;
         List<Integer> bedDetails;
-        int bedID,isAvailable,isClicked = 0;
+        int bedID, isAvailable, isClicked = 0;
 
         BedImageHolder(View itemView) {
             super(itemView);
@@ -79,110 +85,160 @@ public class RVAdapter4 extends RecyclerView.Adapter<RVAdapter4.BedImageHolder> 
         bedImageHolder.bedID = bedImageHolder.bedDetails.get(0);
         bedImageHolder.isAvailable = bedImageHolder.bedDetails.get(1);
 
-        if(bedImageHolder.isAvailable==0){
+        if (bedImageHolder.isAvailable == 0) {
 
             bedImageHolder.bedImage.setImageResource(R.mipmap.bed_icon_grey);
             bedImageHolder.bedAvailability.setText("OCCUPIED");
 
-        }
-
-        else{
+        } else {
 
             bedImageHolder.bedImage.setImageResource(R.mipmap.bed_icon);
             bedImageHolder.bedAvailability.setText("VACANT");
         }
 
 
-        if(bedImageHolder.isAvailable==1) {
+        if (bedImageHolder.isAvailable == 1) {
 
             bedImageHolder.bedImage.setOnClickListener(new View.OnClickListener() {
                 @SuppressLint("ResourceAsColor")
                 @Override
                 public void onClick(View v) {
 
-                    AlertDialog.Builder adb = new AlertDialog.Builder(bedImageHolder.itemView.getContext());
+                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                    final FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                    currentUser.getIdToken(true)
+                            .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                                public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                    if (task.isSuccessful()) {
+
+                                        final String idToken = task.getResult().getToken();
 
 
-                    adb.setView(bedImageHolder.itemView.getRootView());
+                                        AlertDialog.Builder adb = new AlertDialog.Builder(bedImageHolder.itemView.getContext());
 
 
-                    adb.setTitle("Title of alert dialog");
+                                        adb.setTitle("Book this Bed?");
 
 
-                    adb.setIcon(android.R.drawable.ic_dialog_alert);
+                                        adb.setIcon(android.R.drawable.ic_dialog_alert);
 
 
-                    adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
+                                        adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
 
-                           final RequestQueue requestQueue = Volley.newRequestQueue(bedImageHolder.itemView.getContext());
+                                                final RequestQueue requestQueue = Volley.newRequestQueue(bedImageHolder.itemView.getContext());
 
-                            StringRequest stringRequest= new StringRequest(Request.Method.POST, BedDetailsURL , new Response.Listener<String>(){
-                                @Override
-                                public void onResponse(String stringResponse){
+                                                StringRequest stringRequest = new StringRequest(Request.Method.POST, BedAvailableURL, new Response.Listener<String>() {
+                                                    @Override
+                                                    public void onResponse(String stringResponse) {
 
-                                    if(stringResponse.equals("Available")){
+                                                        if (stringResponse.equals("Available")) {
 
-                                        StringRequest stringRequest2= new StringRequest(Request.Method.POST, BedDetailsURL , new Response.Listener<String>(){
-                                            @Override
-                                            public void onResponse(String stringResponse){
+                                                            StringRequest stringRequest2 = new StringRequest(Request.Method.POST, BedBookURL, new Response.Listener<String>() {
+                                                                @Override
+                                                                public void onResponse(String stringResponse) {
 
-                                                Snackbar snackbar4 = Snackbar
-                                                        .make(bedImageHolder.itemView.getRootView(), "Booking success", Snackbar.LENGTH_LONG);
-                                                snackbar4.show();
+                                                                    if(stringResponse.equals("Booked")) {
+
+                                                                        // TODO - Implement payment gateway
+
+                                                                        Snackbar snackbar4 = Snackbar
+                                                                                .make(bedImageHolder.itemView.getRootView(), "Booking success", Snackbar.LENGTH_LONG);
+                                                                        snackbar4.show();
+
+                                                                        // Refresh layout
+                                                                        ((RecyclerView)bedImageHolder.itemView.getRootView().findViewById(R.id.ld_recyclerView)).getAdapter().notifyDataSetChanged();
+                                                                    }
+
+                                                                    else{
+                                                                        Snackbar snackbar4 = Snackbar
+                                                                                .make(bedImageHolder.itemView.getRootView(), "Something went wrong, please try again", Snackbar.LENGTH_LONG);
+                                                                        snackbar4.show();
+
+                                                                        ((RecyclerView)bedImageHolder.itemView.getRootView().findViewById(R.id.ld_recyclerView)).getAdapter().notifyDataSetChanged();
+                                                                    }
+
+                                                                }
+
+                                                            }, new Response.ErrorListener() {
+
+                                                                @Override
+                                                                public void onErrorResponse(VolleyError error) {
+                                                                    VolleyLog.e("Error: ", error.toString());
+                                                                }
+                                                            }) {
+                                                                @Override
+                                                                protected Map<String, String> getParams() throws AuthFailureError {
+                                                                    Map<String, String> parameters = new HashMap<String, String>();
+                                                                    parameters.put("firebase_token", idToken);
+                                                                    parameters.put("bedID", Integer.toString(bedImageHolder.bedID));
+                                                                    return parameters;
+                                                                }
+
+                                                            };
+
+                                                            requestQueue.add(stringRequest2);
+
+
+                                                        }
+
+                                                        else if(stringResponse.equals("Booked")){
+
+                                                            // Sorry, the bed you were trying to select has already been booked! Please try another bed
+
+                                                            // Refresh layout
+                                                            ((RecyclerView)bedImageHolder.itemView.getRootView().findViewById(R.id.ld_recyclerView)).getAdapter().notifyDataSetChanged();
+
+                                                        }
+
+                                                        else if(stringResponse.equals("Something went wrong")){
+
+                                                            // Sorry, something went wrong! Please try another bed
+                                                        }
+
+
+                                                    }
+
+                                                }, new Response.ErrorListener() {
+
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+                                                        VolleyLog.e("Error: ", error.toString());
+                                                    }
+                                                }) {
+                                                    @Override
+                                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                                        Map<String, String> parameters = new HashMap<String, String>();
+                                                        parameters.put("bedID", Integer.toString(bedImageHolder.bedID));
+                                                        return parameters;
+                                                    }
+
+                                                };
+
+                                                requestQueue.add(stringRequest);
 
                                             }
+                                        });
 
-                                        }, new Response.ErrorListener() {
 
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
-                                                VolleyLog.e("Error: ", error.toString());
+                                        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+
+
                                             }
-                                        }){
-                                            @Override
-                                            protected Map<String, String> getParams() throws AuthFailureError {
-                                                Map<String,String> parameters = new HashMap<String,String>();
-                                                return parameters;
-                                            }
+                                        });
 
-                                        };
+                                        AlertDialog alert = adb.create();
 
-                                        requestQueue.add(stringRequest2);
+                                        alert.show();
 
+                                    } else {
+
+                                        // Please login to continue
                                     }
-
-
-
                                 }
-
-                            }, new Response.ErrorListener() {
-
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    VolleyLog.e("Error: ", error.toString());
-                                }
-                            }){
-                                @Override
-                                protected Map<String, String> getParams() throws AuthFailureError {
-                                    Map<String,String> parameters = new HashMap<String,String>();
-                                    parameters.put("bedID",Integer.toString(bedImageHolder.bedID));
-                                    return parameters;
-                                }
-
-                            };
-
-                            requestQueue.add(stringRequest);
-
-                        } });
-
-
-                    adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-
-
-                        } });
-                    adb.show();
+                            });
 
                 }
             });

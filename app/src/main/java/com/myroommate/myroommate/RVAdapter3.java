@@ -63,7 +63,7 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
     StringRequest stringRequest;
 
 
-    RVAdapter3(String primary_key, final Activity currentActivity, Context currentContext, final View currentView, final ArrayList<ArrayList<Integer>> listOfRooms){
+    RVAdapter3(String primary_key, final Activity currentActivity, Context currentContext, final View currentView, final ArrayList<ArrayList<Integer>> listOfRooms) {
 
         this.currentView = currentView;
         this.currentActivity = currentActivity;
@@ -80,11 +80,11 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
     public static class RoomCardHolder extends RecyclerView.ViewHolder {
 
         CardView room_card;
-        CheckedTextView isACAvailable,isABAvailable;
-        TextView roomNumber,noFeatures;
+        CheckedTextView isACAvailable, isABAvailable;
+        TextView roomNumber, noFeatures;
         RecyclerView rc_recyclerView;
         List<Integer> roomDetails;
-        int  roomID, isACAvailableInt, isABAvailableInt, numberOfBeds;
+        int roomID, isACAvailableInt, isABAvailableInt, numberOfBeds;
 
 
         RoomCardHolder(View itemView) {
@@ -104,8 +104,6 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.room_card_layout, viewGroup, false);
         final RoomCardHolder rch = new RoomCardHolder(v);
 
-        
-        
 
         return rch;
     }
@@ -113,7 +111,7 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
     @Override
     public void onBindViewHolder(final RoomCardHolder roomCardHolder, final int i) {
 
-        roomCardHolder.roomNumber.setText("Room Number "+Integer.toString(i+1));
+        roomCardHolder.roomNumber.setText("Room Number " + Integer.toString(i + 1));
 
         roomCardHolder.roomDetails = listOfRooms.get(i);
 
@@ -122,15 +120,15 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
         roomCardHolder.isABAvailableInt = roomCardHolder.roomDetails.get(2);
         roomCardHolder.numberOfBeds = roomCardHolder.roomDetails.get(3);
 
-        if(roomCardHolder.isACAvailableInt==0){
+        if (roomCardHolder.isACAvailableInt == 0) {
             roomCardHolder.isACAvailable.setCheckMarkDrawable(drawable.checkbox_off_background);
         }
 
-        if(roomCardHolder.isABAvailableInt==0){
+        if (roomCardHolder.isABAvailableInt == 0) {
             roomCardHolder.isABAvailable.setCheckMarkDrawable(drawable.checkbox_off_background);
         }
 
-        if(roomCardHolder.isACAvailableInt==0 && roomCardHolder.isABAvailableInt==0){
+        if (roomCardHolder.isACAvailableInt == 0 && roomCardHolder.isABAvailableInt == 0) {
             roomCardHolder.isACAvailable.setVisibility(View.GONE);
             roomCardHolder.isABAvailable.setVisibility(View.GONE);
             roomCardHolder.noFeatures.setText("No special features. FeelsBadMan");
@@ -138,11 +136,11 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
 
         requestQueue = Volley.newRequestQueue(currentContext);
 
-        stringRequest= new StringRequest(Request.Method.POST, BedDetailsURL , new Response.Listener<String>(){
+        stringRequest = new StringRequest(Request.Method.POST, BedDetailsURL, new Response.Listener<String>() {
             @Override
-            public void onResponse(String stringResponse){
+            public void onResponse(String stringResponse) {
 
-                if(!stringResponse.equals("Listing not found.")) {
+                if (!stringResponse.equals("Listing not found.")) {
 
                     ArrayList<ArrayList<Integer>> listOfBeds = new ArrayList<ArrayList<Integer>>();
 
@@ -165,15 +163,14 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
                         roomCardHolder.rc_recyclerView.setAdapter(mAdapter);
 
                         // use a linear layout manager
-                        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(currentContext,LinearLayoutManager.HORIZONTAL,false);
+                        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(currentContext, LinearLayoutManager.HORIZONTAL, false);
                         roomCardHolder.rc_recyclerView.setLayoutManager(mLayoutManager);
                         roomCardHolder.rc_recyclerView.setVisibility(View.VISIBLE);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }
-                else{
+                } else {
 
                     Snackbar snackbar3 = Snackbar
                             .make(currentView, "Listing issue", Snackbar.LENGTH_LONG);
@@ -190,11 +187,11 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.e("Error: ", error.toString());
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> parameters = new HashMap<String,String>();
-                parameters.put("roomID",Integer.toString(roomCardHolder.roomID));
+                Map<String, String> parameters = new HashMap<String, String>();
+                parameters.put("roomID", Integer.toString(roomCardHolder.roomID));
                 return parameters;
             }
 
@@ -215,7 +212,7 @@ public class RVAdapter3 extends RecyclerView.Adapter<RVAdapter3.RoomCardHolder> 
         return listOfRooms.size();
     }
 
-    public void bookNow(){
+    public void bookNow() {
 
     }
 

@@ -18,7 +18,7 @@ public class LoginRegisterFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.fragment_login_register, container, false);
+        return inflater.inflate(R.layout.fragment_login_register, container, false);
     }
 
     @Override
@@ -36,11 +36,11 @@ public class LoginRegisterFragment extends Fragment {
 
     private void setViewPager() {
 
-        mViewPager = (ViewPager)getActivity().findViewById(R.id.pager);
+        mViewPager = (ViewPager) getActivity().findViewById(R.id.pager);
         mViewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
         mViewPager.setAdapter(mViewPagerAdapter);
 
-        mTabLayout = (TabLayout)getActivity().findViewById(R.id.tab);
+        mTabLayout = (TabLayout) getActivity().findViewById(R.id.tab);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 }

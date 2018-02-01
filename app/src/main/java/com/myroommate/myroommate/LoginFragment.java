@@ -56,11 +56,11 @@ public class LoginFragment extends Fragment {
 
     Button login;
     SignInButton google_login;
-    EditText Email, Password ;
+    EditText Email, Password;
     String EmailHolder, PasswordHolder;
     String HttpURL = "http://merakamraa.com/php/UserLogin.php";
     String GoogleURL = "http://merakamraa.com/php/GoogleLogin.php";
-    Boolean CheckEditText ;
+    Boolean CheckEditText;
     RequestQueue requestQueue;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editPreferences;
@@ -85,13 +85,13 @@ public class LoginFragment extends Fragment {
         final View RootView = inflater.inflate(R.layout.fragment_login, container, false);
 
         requestQueue = Volley.newRequestQueue(getContext());
-        sharedPreferences = getActivity().getSharedPreferences("logindetails",MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("logindetails", MODE_PRIVATE);
         editPreferences = sharedPreferences.edit();
 
         //Assign Id'S
-        Email = (EditText)RootView.findViewById(R.id.login_email);
-        Password = (EditText)RootView.findViewById(R.id.login_password);
-        login = (Button)RootView.findViewById(R.id.email_login_button);
+        Email = (EditText) RootView.findViewById(R.id.login_email);
+        Password = (EditText) RootView.findViewById(R.id.login_password);
+        login = (Button) RootView.findViewById(R.id.email_login_button);
         google_login = (SignInButton) RootView.findViewById(R.id.google_login_button);
         mAuth = FirebaseAuth.getInstance();
 
@@ -111,132 +111,125 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(final View view) {
 
-                    hideKeyboardFrom(getContext(), view);
+                hideKeyboardFrom(getContext(), view);
 
-                    // Checking whether EditText is Empty or Not
-                    CheckEditTextIsEmptyOrNot();
+                // Checking whether EditText is Empty or Not
+                CheckEditTextIsEmptyOrNot();
 
-                    if (CheckEditText) {
+                if (CheckEditText) {
 
-                        // If EditText is not empty and CheckEditText = True then this block will execute.
+                    // If EditText is not empty and CheckEditText = True then this block will execute.
 
                         /*  */
 
-                        editPreferences.putString("email",EmailHolder);
-                        editPreferences.putString("password",PasswordHolder);
+                    editPreferences.putString("email", EmailHolder);
+                    editPreferences.putString("password", PasswordHolder);
 
-                        mAuth.signInWithEmailAndPassword(EmailHolder,PasswordHolder)
-                                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            // Sign in success, update UI with the signed-in user's information
-                                            Log.d(TAG, "signInWithEmail:success");
-                                            FirebaseUser user = mAuth.getCurrentUser();
-                                            user.getIdToken(true)
-                                                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                                                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-                                                            if (task.isSuccessful()) {
-                                                                final String idToken = task.getResult().getToken();
-                                                                StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
-                                                                    @Override
-                                                                    public void onResponse(String stringResponse) {
-                                                                        if(stringResponse.equals("Invalid Username or Password.")){
+                    mAuth.signInWithEmailAndPassword(EmailHolder, PasswordHolder)
+                            .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Log.d(TAG, "signInWithEmail:success");
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        user.getIdToken(true)
+                                                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                                                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                                        if (task.isSuccessful()) {
+                                                            final String idToken = task.getResult().getToken();
+                                                            StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpURL, new Response.Listener<String>() {
+                                                                @Override
+                                                                public void onResponse(String stringResponse) {
+                                                                    if (stringResponse.equals("Invalid Username or Password.")) {
+                                                                        Snackbar snackbar = Snackbar
+                                                                                .make(view, stringResponse, Snackbar.LENGTH_LONG);
+                                                                        snackbar.show();
+                                                                    } else {
+                                                                        try {
+                                                                            JSONObject jsonResponse = new JSONObject(stringResponse);
+                                                                            String F_Name_Holder = jsonResponse.getString("first_name");
+                                                                            String L_Name_Holder = jsonResponse.getString("last_name");
+                                                                            editPreferences.putString("first_name", F_Name_Holder);
+                                                                            editPreferences.putString("last_name", L_Name_Holder);
+                                                                            editPreferences.putString("email", EmailHolder);
+                                                                            editPreferences.putString("password", PasswordHolder);
+                                                                            editPreferences.apply();
                                                                             Snackbar snackbar = Snackbar
-                                                                                    .make(view, stringResponse, Snackbar.LENGTH_LONG);
+                                                                                    .make(view, "Logged In successfully as " + F_Name_Holder + " " + L_Name_Holder, Snackbar.LENGTH_LONG);
                                                                             snackbar.show();
+                                                                        } catch (JSONException e) {
+                                                                            e.printStackTrace();
                                                                         }
-                                                                        else {
-                                                                            try {
-                                                                                JSONObject jsonResponse = new JSONObject(stringResponse);
-                                                                                String F_Name_Holder = jsonResponse.getString("first_name");
-                                                                                String L_Name_Holder = jsonResponse.getString("last_name");
-                                                                                editPreferences.putString("first_name",F_Name_Holder);
-                                                                                editPreferences.putString("last_name",L_Name_Holder);
-                                                                                editPreferences.putString("email",EmailHolder);
-                                                                                editPreferences.putString("password",PasswordHolder);
-                                                                                editPreferences.apply();
-                                                                                Snackbar snackbar = Snackbar
-                                                                                        .make(view, "Logged In successfully as " + F_Name_Holder + " " + L_Name_Holder, Snackbar.LENGTH_LONG);
-                                                                                snackbar.show();
-                                                                            }
-                                                                            catch (JSONException e) {
-                                                                                e.printStackTrace();
-                                                                            }
-                                                                            if(isRedirectedFromLYPInfo) {
-                                                                                Fragment fragment = new ListYourPlaceFragment();
-                                                                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                                                                ft.replace(R.id.content_frame, fragment);
-                                                                                ft.commit();
-                                                                                isRedirectedFromLYPInfo=false;
-                                                                            }
-
+                                                                        if (isRedirectedFromLYPInfo) {
+                                                                            Fragment fragment = new ListYourPlaceFragment();
+                                                                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                                                            ft.replace(R.id.content_frame, fragment);
+                                                                            ft.commit();
+                                                                            isRedirectedFromLYPInfo = false;
                                                                         }
+
                                                                     }
+                                                                }
 
-                                                                }, new Response.ErrorListener() {
+                                                            }, new Response.ErrorListener() {
 
-                                                                    @Override
-                                                                    public void onErrorResponse(VolleyError error) {
-                                                                        NetworkResponse errorRes = error.networkResponse;
-                                                                        String stringData = "";
-                                                                        try{
-                                                                            if(errorRes != null && errorRes.data != null){
-                                                                                stringData = new String(errorRes.data,"UTF-8");
-                                                                            }}
-                                                                        catch (UnsupportedEncodingException e){
-
+                                                                @Override
+                                                                public void onErrorResponse(VolleyError error) {
+                                                                    NetworkResponse errorRes = error.networkResponse;
+                                                                    String stringData = "";
+                                                                    try {
+                                                                        if (errorRes != null && errorRes.data != null) {
+                                                                            stringData = new String(errorRes.data, "UTF-8");
                                                                         }
-                                                                        Log.e("Error",stringData);
+                                                                    } catch (UnsupportedEncodingException e) {
+
                                                                     }
-                                                                }) {
-                                                                    @Override
-                                                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                                                    Log.e("Error", stringData);
+                                                                }
+                                                            }) {
+                                                                @Override
+                                                                protected Map<String, String> getParams() throws AuthFailureError {
 
-                                                                        Map<String, String> parameters = new HashMap<String, String>();
-                                                                        parameters.put("user_token", idToken);
-                                                                        return parameters;
-                                                                    }
-                                                                };
+                                                                    Map<String, String> parameters = new HashMap<String, String>();
+                                                                    parameters.put("user_token", idToken);
+                                                                    return parameters;
+                                                                }
+                                                            };
 
-                                                                requestQueue.add(stringRequest);
+                                                            requestQueue.add(stringRequest);
 
-                                                            } else {
-                                                                // Handle error -> task.getException();
-                                                            }
+                                                        } else {
+                                                            // Handle error -> task.getException();
                                                         }
-                                                    });
+                                                    }
+                                                });
 
 
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                        Toast.makeText(getActivity(), "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
 
-
-
-
-                                        } else {
-                                            // If sign in fails, display a message to the user.
-                                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                            Toast.makeText(getActivity(), "Authentication failed.",
-                                                    Toast.LENGTH_SHORT).show();
-
-                                        }
-
-                                        // ...
                                     }
-                                });
 
-                    } else {
+                                    // ...
+                                }
+                            });
 
-                        // If EditText is empty then this block will execute .
-                        Snackbar snackbar = Snackbar
-                                .make(view, "Please fill all the form fields.", Snackbar.LENGTH_LONG);
-                        snackbar.show();
+                } else {
 
-                    }
+                    // If EditText is empty then this block will execute .
+                    Snackbar snackbar = Snackbar
+                            .make(view, "Please fill all the form fields.", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+
+                }
 
 
             }
         });
-
 
 
         google_login.setOnClickListener(new View.OnClickListener() {
@@ -249,24 +242,22 @@ public class LoginFragment extends Fragment {
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity());
 
 
-
                 FirebaseAuth.getInstance().signOut();
                 signOut();
 
-             //   if(currentUser==null) {
+                //   if(currentUser==null) {
 
 
-
-                 //   if (account == null) {
-                        signIn();
-                    //    final GoogleSignInAccount account2 = GoogleSignIn.getLastSignedInAccount(getContext());
+                //   if (account == null) {
+                signIn();
+                //    final GoogleSignInAccount account2 = GoogleSignIn.getLastSignedInAccount(getContext());
                    /*     if(account2!=null)
                         {   */
 
 
-                    //    }
-                  //  }
-              //  }
+                //    }
+                //  }
+                //  }
 
             }
         });
@@ -322,13 +313,12 @@ public class LoginFragment extends Fragment {
                                                         snackbar.show();
 
 
-
-                                                        if(isRedirectedFromLYPInfo) {
+                                                        if (isRedirectedFromLYPInfo) {
                                                             Fragment fragment = new ListYourPlaceFragment();
                                                             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                                                             ft.replace(R.id.content_frame, fragment);
                                                             ft.commit();
-                                                            isRedirectedFromLYPInfo=false;
+                                                            isRedirectedFromLYPInfo = false;
                                                         }
 
 
@@ -340,14 +330,14 @@ public class LoginFragment extends Fragment {
                                                     public void onErrorResponse(VolleyError error) {
                                                         NetworkResponse errorRes = error.networkResponse;
                                                         String stringData = "";
-                                                        try{
-                                                            if(errorRes != null && errorRes.data != null){
-                                                                stringData = new String(errorRes.data,"UTF-8");
-                                                            }}
-                                                        catch (UnsupportedEncodingException e){
+                                                        try {
+                                                            if (errorRes != null && errorRes.data != null) {
+                                                                stringData = new String(errorRes.data, "UTF-8");
+                                                            }
+                                                        } catch (UnsupportedEncodingException e) {
 
                                                         }
-                                                        Log.e("Error",stringData);
+                                                        Log.e("Error", stringData);
                                                     }
                                                 }) {
                                                     @Override
@@ -373,7 +363,7 @@ public class LoginFragment extends Fragment {
                                         }
                                     });
 
-                            if(!isRedirectedFromLYPInfo) {
+                            if (!isRedirectedFromLYPInfo) {
                                 Fragment fragment = new AccountFragment();
                                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                                 ft.replace(R.id.content_frame, fragment);
@@ -412,20 +402,13 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    protected void CheckEditTextIsEmptyOrNot(){
+    protected void CheckEditTextIsEmptyOrNot() {
 
         EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
 
 
-        if(TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder))
-        {
-            CheckEditText = false;
-        }
-        else {
-
-            CheckEditText = true ;
-        }
+        CheckEditText = !(TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder));
 
     }
 }
