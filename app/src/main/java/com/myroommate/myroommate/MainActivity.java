@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -73,32 +74,32 @@ public class MainActivity extends AppCompatActivity
 
         requestQueue = Volley.newRequestQueue(getBaseContext());
 
-        sharedPreferences = getSharedPreferences("userdetails", MODE_PRIVATE);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPreferences.edit();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                Toast.makeText(MainActivity.this, "WP", Toast.LENGTH_LONG).show();
                 currentUser = firebaseAuth.getCurrentUser();
                 if (currentUser != null) {
+                    Toast.makeText(MainActivity.this, "logged in", Toast.LENGTH_LONG).show();
                     currentUser.getIdToken(true)
                             .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                                 public void onComplete(@NonNull Task<GetTokenResult> task) {
                                     if (task.isSuccessful()) {
                                         final String idToken = task.getResult().getToken();
                                         userTypeRequest(idToken);
-                                        editor.putString("userType", userType);
+
                                     }
                                 }
                             });
                 }
                 else {
-                    editor.putString("userType", null);
+                    Toast.makeText(MainActivity.this, "logged out", Toast.LENGTH_LONG).show();
+                    editor.putString("userType", null).apply();
 
                 }
-                editor.apply();
             }
         };
 
@@ -115,7 +116,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
 
-                currentUser = mAuth.getCurrentUser();
                 hideKeyboardFrom(MainActivity.this, drawerView);
 
 
@@ -128,7 +128,8 @@ public class MainActivity extends AppCompatActivity
                     nav_profile_or_login.setTitle("Your Profile");
                     nav_dynamic_profile_action.setVisible(true);
 
-                    if ((sharedPreferences.getString("userType", null)).equals("House Owner")) {
+                    String userTypePref = sharedPreferences.getString("userType", null);
+                    if (userTypePref.equals("House Owner")) {
                         nav_dynamic_profile_action.setTitle("Your Listings");
                         nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_owner_action);
                         nav_dynamic_listing_action.setTitle("List a Place");
@@ -207,7 +208,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void userTypeRequest(final String idToken) {
-        Toast.makeText(this, "GG", Toast.LENGTH_LONG).show();
         StringRequest detailsRequest = new StringRequest(Request.Method.POST, HttpDetailsURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String stringResponse) {
@@ -219,12 +219,11 @@ public class MainActivity extends AppCompatActivity
                     try {
                         JSONObject jsonResponse = new JSONObject(stringResponse);
                         userType = jsonResponse.getString("user_type");
-
-
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    editor.putString("userType", userType).apply();
+
                 }
             }
 
