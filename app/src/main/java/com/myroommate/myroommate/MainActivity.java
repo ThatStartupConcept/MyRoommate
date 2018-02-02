@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity
                         nav_dynamic_listing_action.setIcon(R.drawable.ic_menu_list);
                     } else {
                         nav_dynamic_profile_action.setTitle("Your Kamraa");
-                        nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_profile);
+                        nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_tenant_action);
                         nav_dynamic_listing_action.setTitle("Find a Place");
                         nav_dynamic_listing_action.setIcon(R.drawable.ic_menu_find);
 
