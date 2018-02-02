@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -44,12 +45,21 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
+    FirebaseAuth.AuthStateListener mAuthListener;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();;
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     FirebaseUser currentUser;
     MenuItem nav_profile_or_login, nav_dynamic_profile_action, nav_dynamic_listing_action;
     RequestQueue requestQueue;
     String HttpDetailsURL = "http://merakamraa.com/php/AccountDetails.php", userType;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mAuth.addAuthStateListener(mAuthListener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +67,46 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        sharedPreferences = getSharedPreferences("logindetails", MODE_PRIVATE);
+
+
+
+
+        requestQueue = Volley.newRequestQueue(getBaseContext());
+
+        sharedPreferences = getSharedPreferences("userdetails", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                Toast.makeText(MainActivity.this, "WP", Toast.LENGTH_LONG).show();
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser != null) {
+                    currentUser.getIdToken(true)
+                            .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                                public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                    if (task.isSuccessful()) {
+                                        final String idToken = task.getResult().getToken();
+                                        userTypeRequest(idToken);
+                                        editor.putString("userType", userType);
+                                    }
+                                }
+                            });
+                }
+                else {
+                    editor.putString("userType", null);
+
+                }
+                editor.apply();
+            }
+        };
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
+
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -69,11 +114,10 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
                 currentUser = mAuth.getCurrentUser();
                 hideKeyboardFrom(MainActivity.this, drawerView);
 
-                requestQueue = Volley.newRequestQueue(getBaseContext());
 
                 nav_profile_or_login = navigationView.getMenu().getItem(1);
                 nav_dynamic_profile_action = navigationView.getMenu().getItem(2);
@@ -81,80 +125,24 @@ public class MainActivity extends AppCompatActivity
 
                 if (currentUser != null) {
 
-                    currentUser.getIdToken(true)
-                            .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                                public void onComplete(@NonNull Task<GetTokenResult> task) {
-                                    if (task.isSuccessful()) {
-                                        final String idToken = task.getResult().getToken();
+                    nav_profile_or_login.setTitle("Your Profile");
+                    nav_dynamic_profile_action.setVisible(true);
 
-                                        StringRequest detailsRequest = new StringRequest(Request.Method.POST, HttpDetailsURL, new Response.Listener<String>() {
-                                            @Override
-                                            public void onResponse(String stringResponse) {
-                                                if (stringResponse.equals("User not found.")) {
-                                                    Snackbar snackbar = Snackbar
-                                                            .make(getCurrentFocus(), stringResponse, Snackbar.LENGTH_LONG);
-                                                    snackbar.show();
-                                                } else {
-                                                    try {
-                                                        JSONObject jsonResponse = new JSONObject(stringResponse);
-                                                        userType = jsonResponse.getString("user_type");
+                    if ((sharedPreferences.getString("userType", null)).equals("House Owner")) {
+                        nav_dynamic_profile_action.setTitle("Your Listings");
+                        nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_owner_action);
+                        nav_dynamic_listing_action.setTitle("List a Place");
+                        nav_dynamic_listing_action.setIcon(R.drawable.ic_menu_list);
+                    } else {
+                        nav_dynamic_profile_action.setTitle("Your Kamraa");
+                        nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_profile);
+                        nav_dynamic_listing_action.setTitle("Find a Place");
+                        nav_dynamic_listing_action.setIcon(R.drawable.ic_menu_find);
+
+                    }
 
 
-                                                        nav_profile_or_login.setTitle("Your Profile");
-                                                        nav_dynamic_profile_action.setVisible(true);
-                                                        if (userType.equals("House Owner")) {
-                                                            nav_dynamic_profile_action.setTitle("Your Listings");
-                                                            nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_owner_action);
-                                                            nav_dynamic_listing_action.setTitle("List a Place");
-                                                            nav_dynamic_listing_action.setIcon(R.drawable.ic_menu_list);
-                                                        } else {
-                                                            nav_dynamic_profile_action.setTitle("Your Kamraa");
-                                                            nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_profile);
-                                                            nav_dynamic_listing_action.setTitle("Find a Place");
-                                                            nav_dynamic_listing_action.setIcon(R.drawable.ic_menu_find);
-
-                                                        }
-
-
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                            }
-
-                                        }, new Response.ErrorListener() {
-
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
-                                                NetworkResponse errorRes = error.networkResponse;
-                                                String stringData = "";
-                                                try {
-                                                    if (errorRes != null && errorRes.data != null) {
-                                                        stringData = new String(errorRes.data, "UTF-8");
-                                                    }
-                                                } catch (UnsupportedEncodingException e) {
-
-                                                }
-                                                Log.e("Error", stringData);
-                                            }
-                                        }) {
-                                            @Override
-                                            protected Map<String, String> getParams() throws AuthFailureError {
-
-                                                Map<String, String> parameters = new HashMap<String, String>();
-                                                parameters.put("user_token", idToken);
-                                                return parameters;
-                                            }
-                                        };
-
-                                        requestQueue.add(detailsRequest);
-                                    }
-                                }
-                            });
-
-
-                }
-                else {
+                } else {
                     nav_profile_or_login.setTitle("Login/Register");
                     nav_dynamic_profile_action.setVisible(false);
                 }
@@ -185,7 +173,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
         return true;
     }
 
@@ -219,6 +206,56 @@ public class MainActivity extends AppCompatActivity
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    private void userTypeRequest(final String idToken) {
+        Toast.makeText(this, "GG", Toast.LENGTH_LONG).show();
+        StringRequest detailsRequest = new StringRequest(Request.Method.POST, HttpDetailsURL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String stringResponse) {
+                if (stringResponse.equals("User not found.")) {
+                    Snackbar snackbar = Snackbar
+                            .make(getCurrentFocus(), stringResponse, Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                } else {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(stringResponse);
+                        userType = jsonResponse.getString("user_type");
+
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse errorRes = error.networkResponse;
+                String stringData = "";
+                try {
+                    if (errorRes != null && errorRes.data != null) {
+                        stringData = new String(errorRes.data, "UTF-8");
+                    }
+                } catch (UnsupportedEncodingException e) {
+
+                }
+                Log.e("Error", stringData);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                Map<String, String> parameters = new HashMap<String, String>();
+                parameters.put("user_token", idToken);
+                return parameters;
+            }
+        };
+
+        requestQueue.add(detailsRequest);
+    }
+
     private void displaySelectedScreen(int itemId) {
 
         //creating fragment object
@@ -241,10 +278,9 @@ public class MainActivity extends AppCompatActivity
                 //fragment = new DynamicProfileActionFragment();
                 break;
             case R.id.nav_dynamic_listing_action:
-                if(userType.equals("House Owner")) {
+                if (userType.equals("House Owner")) {
                     fragment = new ListYourPlaceInfoFragment();
-                }
-                else{
+                } else {
                     fragment = new FindAPlaceFragment();
                 }
                 break;
