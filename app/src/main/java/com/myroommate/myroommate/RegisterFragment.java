@@ -12,8 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -37,6 +39,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
+
 import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 import static com.myroommate.myroommate.ListYourPlaceInfoFragment.isRedirectedFromLYPInfo;
@@ -45,8 +49,9 @@ import static com.myroommate.myroommate.MainActivity.hideKeyboardFrom;
 public class RegisterFragment extends Fragment {
 
     Button register;
+    Spinner typeSpinner;
     EditText First_Name, Last_Name, Email, Password, PasswordMatch;
-    String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder, PasswordMatchHolder;
+    String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder, PasswordMatchHolder, UserTypeHolder;
     String HttpURL = "http://merakamraa.com/php/UserRegistration.php";
     Boolean CheckEditText;
     RequestQueue requestQueue;
@@ -80,6 +85,12 @@ public class RegisterFragment extends Fragment {
         Password = (EditText) RootView.findViewById(R.id.register_password);
         PasswordMatch = (EditText) RootView.findViewById(R.id.register_password_match);
         register = (Button) RootView.findViewById(R.id.email_register_button);
+
+        typeSpinner = (MaterialSpinner) RootView.findViewById(R.id.register_typeSpinner);
+        final String[] userTypesArray = getResources().getStringArray(R.array.usertypes);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, userTypesArray);
+        dataAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_layout);
+        typeSpinner.setAdapter(dataAdapter);
 
         //TODO - Replace UI with two buttons 'Register with email', 'Register with phone number'
 
@@ -162,6 +173,7 @@ public class RegisterFragment extends Fragment {
                                                                         parameters.put("f_name", F_Name_Holder);
                                                                         parameters.put("L_name", L_Name_Holder);
                                                                         parameters.put("user_token", idToken);
+                                                                        parameters.put("user_type", UserTypeHolder);
                                                                         return parameters;
                                                                     }
                                                                 };
@@ -212,8 +224,9 @@ public class RegisterFragment extends Fragment {
         EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
         PasswordMatchHolder = PasswordMatch.getText().toString();
+        UserTypeHolder = typeSpinner.getSelectedItem().toString();
 
-        CheckEditText = !(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder) || TextUtils.isEmpty(PasswordMatchHolder));
+        CheckEditText = !(TextUtils.isEmpty(F_Name_Holder) || TextUtils.isEmpty(L_Name_Holder) || TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder) || TextUtils.isEmpty(PasswordMatchHolder) || UserTypeHolder.equals("Select User Type"));
     }
 
 }

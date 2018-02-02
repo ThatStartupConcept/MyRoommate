@@ -16,13 +16,9 @@
             android:title="Dynamic"
             android:visible="false"/>
         <item
-            android:id="@+id/nav_find"
+            android:id="@+id/nav_dynamic_listing_action"
             android:icon="@drawable/ic_menu_find"
             android:title="Find a Place" />
-        <item
-            android:id="@+id/nav_list"
-            android:icon="@drawable/ic_menu_list"
-            android:title="List Your Place" />
         <item
             android:id="@+id/nav_policies"
             android:icon="@drawable/ic_menu_policies"

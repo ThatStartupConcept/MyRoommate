@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -12,13 +14,32 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -26,7 +47,9 @@ public class MainActivity extends AppCompatActivity
 
     SharedPreferences sharedPreferences;
     FirebaseUser currentUser;
-    MenuItem nav_profile_or_login, nav_dynamic_profile_action;
+    MenuItem nav_profile_or_login, nav_dynamic_profile_action, nav_dynamic_listing_action;
+    RequestQueue requestQueue;
+    String HttpDetailsURL = "http://merakamraa.com/php/AccountDetails.php", userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +58,10 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         sharedPreferences = getSharedPreferences("logindetails", MODE_PRIVATE);
+
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        assert navigationView != null;
+        navigationView.setNavigationItemSelectedListener(this);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -46,36 +73,97 @@ public class MainActivity extends AppCompatActivity
                 currentUser = mAuth.getCurrentUser();
                 hideKeyboardFrom(MainActivity.this, drawerView);
 
-                //nav_profile_or_login = (MenuItem) findViewById(R.id.nav_profile_or_login);
-                //nav_dynamic_profile_action = (MenuItem) findViewById(R.id.nav_dynamic_profile_action);
+                requestQueue = Volley.newRequestQueue(getBaseContext());
+
+                nav_profile_or_login = navigationView.getMenu().getItem(1);
+                nav_dynamic_profile_action = navigationView.getMenu().getItem(2);
+                nav_dynamic_listing_action = navigationView.getMenu().getItem(3);
 
                 if (currentUser != null) {
-                    //((MenuItem) findViewById(R.id.nav_profile_or_login)).setTitle("Your Profile");
-                    ((MenuItem) findViewById(R.id.nav_dynamic_profile_action)).setVisible(true);
-                    /*if(user.type==owner) {
-                        nav_dynamic_profile_action.setTitle("Your Listings");
-                        nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_owner_action);
-                    }
-                    else {
-                        nav_dynamic_profile_action.setTitle("Your Kamraa");
-                        nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_profile);
 
-                    }*/
+                    currentUser.getIdToken(true)
+                            .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                                public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                    if (task.isSuccessful()) {
+                                        final String idToken = task.getResult().getToken();
 
-                } else {
-                    nav_profile_or_login.setTitle("Login/Register");
+                                        StringRequest detailsRequest = new StringRequest(Request.Method.POST, HttpDetailsURL, new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String stringResponse) {
+                                                if (stringResponse.equals("User not found.")) {
+                                                    Snackbar snackbar = Snackbar
+                                                            .make(getCurrentFocus(), stringResponse, Snackbar.LENGTH_LONG);
+                                                    snackbar.show();
+                                                } else {
+                                                    try {
+                                                        JSONObject jsonResponse = new JSONObject(stringResponse);
+                                                        userType = jsonResponse.getString("user_type");
+
+
+                                                        nav_profile_or_login.setTitle("Your Profile");
+                                                        nav_dynamic_profile_action.setVisible(true);
+                                                        if (userType.equals("House Owner")) {
+                                                            nav_dynamic_profile_action.setTitle("Your Listings");
+                                                            nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_owner_action);
+                                                            nav_dynamic_listing_action.setTitle("List a Place");
+                                                            nav_dynamic_listing_action.setIcon(R.drawable.ic_menu_list);
+                                                        } else {
+                                                            nav_dynamic_profile_action.setTitle("Your Kamraa");
+                                                            nav_dynamic_profile_action.setIcon(R.drawable.ic_menu_profile);
+                                                            nav_dynamic_listing_action.setTitle("Find a Place");
+                                                            nav_dynamic_listing_action.setIcon(R.drawable.ic_menu_find);
+
+                                                        }
+
+
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }
+
+                                        }, new Response.ErrorListener() {
+
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                NetworkResponse errorRes = error.networkResponse;
+                                                String stringData = "";
+                                                try {
+                                                    if (errorRes != null && errorRes.data != null) {
+                                                        stringData = new String(errorRes.data, "UTF-8");
+                                                    }
+                                                } catch (UnsupportedEncodingException e) {
+
+                                                }
+                                                Log.e("Error", stringData);
+                                            }
+                                        }) {
+                                            @Override
+                                            protected Map<String, String> getParams() throws AuthFailureError {
+
+                                                Map<String, String> parameters = new HashMap<String, String>();
+                                                parameters.put("user_token", idToken);
+                                                return parameters;
+                                            }
+                                        };
+
+                                        requestQueue.add(detailsRequest);
+                                    }
+                                }
+                            });
+
+
                 }
-
-
+                else {
+                    nav_profile_or_login.setTitle("Login/Register");
+                    nav_dynamic_profile_action.setVisible(false);
+                }
             }
         };
         assert drawer != null;
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        assert navigationView != null;
-        navigationView.setNavigationItemSelectedListener(this);
 
         displaySelectedScreen(R.id.nav_home);
     }
@@ -97,6 +185,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
         return true;
     }
 
@@ -136,28 +225,28 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
 
 
-
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_home:
                 fragment = new HomeScreenFragment();
                 break;
             case R.id.nav_profile_or_login:
-                if(currentUser==null) {
+                if (currentUser == null) {
                     fragment = new LoginRegisterFragment();
-                }
-                else {
+                } else {
                     fragment = new AccountFragment();
                 }
                 break;
             case R.id.nav_dynamic_profile_action:
                 //fragment = new DynamicProfileActionFragment();
                 break;
-            case R.id.nav_find:
-                fragment = new FindAPlaceFragment();
-                break;
-            case R.id.nav_list:
-                fragment = new ListYourPlaceInfoFragment();
+            case R.id.nav_dynamic_listing_action:
+                if(userType.equals("House Owner")) {
+                    fragment = new ListYourPlaceInfoFragment();
+                }
+                else{
+                    fragment = new FindAPlaceFragment();
+                }
                 break;
         }
 

@@ -1,5 +1,7 @@
 package com.myroommate.myroommate;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -57,9 +59,10 @@ public class LoginFragment extends Fragment {
     Button login;
     SignInButton google_login;
     EditText Email, Password;
-    String EmailHolder, PasswordHolder;
+    String EmailHolder, PasswordHolder, UserTypeHolder;
     String HttpURL = "http://merakamraa.com/php/UserLogin.php";
     String GoogleURL = "http://merakamraa.com/php/GoogleLogin.php";
+    String HttpDetailsURL = "http://merakamraa.com/php/AccountDetails.php";
     Boolean CheckEditText;
     RequestQueue requestQueue;
     SharedPreferences sharedPreferences;
@@ -245,6 +248,7 @@ public class LoginFragment extends Fragment {
                 FirebaseAuth.getInstance().signOut();
                 signOut();
 
+                
                 //   if(currentUser==null) {
 
 
@@ -299,29 +303,238 @@ public class LoginFragment extends Fragment {
                                     .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                                         public void onComplete(@NonNull Task<GetTokenResult> task) {
                                             if (task.isSuccessful()) {
-                                                final String firebaseToken = task.getResult().getToken();
+                                                final String idToken = task.getResult().getToken();
                                                 final String email = acct.getEmail();
                                                 final String f_name = acct.getGivenName();
                                                 final String L_name = acct.getFamilyName();
-                                                Log.d(TAG, firebaseToken);
-                                                StringRequest stringRequest = new StringRequest(Request.Method.POST, GoogleURL, new Response.Listener<String>() {
+                                                Log.d(TAG, idToken);
+
+                                                StringRequest detailsRequest = new StringRequest(Request.Method.POST, HttpDetailsURL, new Response.Listener<String>() {
                                                     @Override
                                                     public void onResponse(String stringResponse) {
+                                                        if (stringResponse.equals("User not found.")) {
 
-                                                        Snackbar snackbar = Snackbar
-                                                                .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
-                                                        snackbar.show();
+                                                            AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
 
 
-                                                        if (isRedirectedFromLYPInfo) {
-                                                            Fragment fragment = new ListYourPlaceFragment();
-                                                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                                            ft.replace(R.id.content_frame, fragment);
-                                                            ft.commit();
-                                                            isRedirectedFromLYPInfo = false;
+                                                            adb.setTitle("Sign in as?");
+
+
+                                                            adb.setIcon(android.R.drawable.ic_dialog_alert);
+
+
+                                                            adb.setPositiveButton("House Owner", new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                                    UserTypeHolder = "House Owner";
+
+                                                                    StringRequest stringRequest = new StringRequest(Request.Method.POST, GoogleURL, new Response.Listener<String>() {
+                                                                        @Override
+                                                                        public void onResponse(String stringResponse) {
+
+                                                                            Snackbar snackbar = Snackbar
+                                                                                    .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
+                                                                            snackbar.show();
+
+
+                                                                            if (isRedirectedFromLYPInfo) {
+                                                                                Fragment fragment = new ListYourPlaceFragment();
+                                                                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                                                                ft.replace(R.id.content_frame, fragment);
+                                                                                ft.commit();
+                                                                                isRedirectedFromLYPInfo = false;
+                                                                            }
+                                                                            /*else {
+                                                                                Fragment fragment = new AccountFragment();
+                                                                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                                                                ft.replace(R.id.content_frame, fragment);
+                                                                                ft.commit();
+                                                                            }*/
+
+
+                                                                        }
+
+                                                                    }, new Response.ErrorListener() {
+
+                                                                        @Override
+                                                                        public void onErrorResponse(VolleyError error) {
+                                                                            NetworkResponse errorRes = error.networkResponse;
+                                                                            String stringData = "";
+                                                                            try {
+                                                                                if (errorRes != null && errorRes.data != null) {
+                                                                                    stringData = new String(errorRes.data, "UTF-8");
+                                                                                }
+                                                                            } catch (UnsupportedEncodingException e) {
+
+                                                                            }
+                                                                            Log.e("Error", stringData);
+                                                                        }
+                                                                    }) {
+                                                                        @Override
+                                                                        protected Map<String, String> getParams() throws AuthFailureError {
+
+                                                                            Map<String, String> parameters = new HashMap<String, String>();
+                                                                            parameters.put("idToken", idToken);
+                                                                            parameters.put("f_name", f_name);
+                                                                            parameters.put("L_name", L_name);
+                                                                            parameters.put("email", email);
+                                                                            parameters.put("user_type", UserTypeHolder);
+                                                                            Snackbar snackbar = Snackbar
+                                                                                    .make(getView(), "sending the stuff", Snackbar.LENGTH_LONG);
+                                                                            snackbar.show();
+                                                                            return parameters;
+                                                                        }
+                                                                    };
+
+                                                                    requestQueue.add(stringRequest);
+
+                                                                }
+                                                            });
+
+
+                                                            adb.setNegativeButton("Tenant", new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                                    UserTypeHolder = "Tenant";
+
+                                                                    StringRequest stringRequest = new StringRequest(Request.Method.POST, GoogleURL, new Response.Listener<String>() {
+                                                                        @Override
+                                                                        public void onResponse(String stringResponse) {
+
+                                                                            Snackbar snackbar = Snackbar
+                                                                                    .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
+                                                                            snackbar.show();
+
+
+                                                                            if (isRedirectedFromLYPInfo) {
+                                                                                Fragment fragment = new ListYourPlaceFragment();
+                                                                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                                                                ft.replace(R.id.content_frame, fragment);
+                                                                                ft.commit();
+                                                                                isRedirectedFromLYPInfo = false;
+                                                                            }
+                                                                            /*else {
+                                                                                Fragment fragment = new AccountFragment();
+                                                                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                                                                ft.replace(R.id.content_frame, fragment);
+                                                                                ft.commit();
+                                                                            }*/
+
+
+                                                                        }
+
+                                                                    }, new Response.ErrorListener() {
+
+                                                                        @Override
+                                                                        public void onErrorResponse(VolleyError error) {
+                                                                            NetworkResponse errorRes = error.networkResponse;
+                                                                            String stringData = "";
+                                                                            try {
+                                                                                if (errorRes != null && errorRes.data != null) {
+                                                                                    stringData = new String(errorRes.data, "UTF-8");
+                                                                                }
+                                                                            } catch (UnsupportedEncodingException e) {
+
+                                                                            }
+                                                                            Log.e("Error", stringData);
+                                                                        }
+                                                                    }) {
+                                                                        @Override
+                                                                        protected Map<String, String> getParams() throws AuthFailureError {
+
+                                                                            Map<String, String> parameters = new HashMap<String, String>();
+                                                                            parameters.put("idToken", idToken);
+                                                                            parameters.put("f_name", f_name);
+                                                                            parameters.put("L_name", L_name);
+                                                                            parameters.put("email", email);
+                                                                            parameters.put("user_type", UserTypeHolder);
+                                                                            Snackbar snackbar = Snackbar
+                                                                                    .make(getView(), "sending the stuff", Snackbar.LENGTH_LONG);
+                                                                            snackbar.show();
+                                                                            return parameters;
+                                                                        }
+                                                                    };
+
+                                                                    requestQueue.add(stringRequest);
+
+                                                                }
+                                                            });
+
+                                                            AlertDialog alert = adb.create();
+
+                                                            alert.show();
+                                                            
+                                                        } else {
+                                                            try {
+                                                                JSONObject jsonResponse = new JSONObject(stringResponse);
+                                                                UserTypeHolder = jsonResponse.getString("user_type");
+
+                                                                StringRequest stringRequest = new StringRequest(Request.Method.POST, GoogleURL, new Response.Listener<String>() {
+                                                                    @Override
+                                                                    public void onResponse(String stringResponse) {
+
+                                                                        Snackbar snackbar = Snackbar
+                                                                                .make(getView(), stringResponse, Snackbar.LENGTH_LONG);
+                                                                        snackbar.show();
+
+
+                                                                        if (isRedirectedFromLYPInfo) {
+                                                                            Fragment fragment = new ListYourPlaceFragment();
+                                                                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                                                            ft.replace(R.id.content_frame, fragment);
+                                                                            ft.commit();
+                                                                            isRedirectedFromLYPInfo = false;
+                                                                        }
+                                                                        /*else {
+                                                                            Fragment fragment = new AccountFragment();
+                                                                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                                                            ft.replace(R.id.content_frame, fragment);
+                                                                            ft.commit();
+                                                                        }*/
+
+
+                                                                    }
+
+                                                                }, new Response.ErrorListener() {
+
+                                                                    @Override
+                                                                    public void onErrorResponse(VolleyError error) {
+                                                                        NetworkResponse errorRes = error.networkResponse;
+                                                                        String stringData = "";
+                                                                        try {
+                                                                            if (errorRes != null && errorRes.data != null) {
+                                                                                stringData = new String(errorRes.data, "UTF-8");
+                                                                            }
+                                                                        } catch (UnsupportedEncodingException e) {
+
+                                                                        }
+                                                                        Log.e("Error", stringData);
+                                                                    }
+                                                                }) {
+                                                                    @Override
+                                                                    protected Map<String, String> getParams() throws AuthFailureError {
+
+                                                                        Map<String, String> parameters = new HashMap<String, String>();
+                                                                        parameters.put("idToken", idToken);
+                                                                        parameters.put("f_name", f_name);
+                                                                        parameters.put("L_name", L_name);
+                                                                        parameters.put("email", email);
+                                                                        parameters.put("user_type", UserTypeHolder);
+                                                                        Snackbar snackbar = Snackbar
+                                                                                .make(getView(), "sending the stuff", Snackbar.LENGTH_LONG);
+                                                                        snackbar.show();
+                                                                        return parameters;
+                                                                    }
+                                                                };
+
+                                                                requestQueue.add(stringRequest);
+
+                                                            } catch (JSONException e) {
+                                                                e.printStackTrace();
+                                                            }
                                                         }
 
-
+                                                        
                                                     }
 
                                                 }, new Response.ErrorListener() {
@@ -344,18 +557,15 @@ public class LoginFragment extends Fragment {
                                                     protected Map<String, String> getParams() throws AuthFailureError {
 
                                                         Map<String, String> parameters = new HashMap<String, String>();
-                                                        parameters.put("firebase_token", firebaseToken);
-                                                        parameters.put("f_name", f_name);
-                                                        parameters.put("L_name", L_name);
-                                                        parameters.put("email", email);
-                                                        Snackbar snackbar = Snackbar
-                                                                .make(getView(), "sending the stuff", Snackbar.LENGTH_LONG);
-                                                        snackbar.show();
+                                                        parameters.put("user_token", idToken);
                                                         return parameters;
                                                     }
                                                 };
 
-                                                requestQueue.add(stringRequest);
+                                                requestQueue.add(detailsRequest);
+
+                                                
+                                                
 
                                             } else {
                                                 // Handle error -> task.getException();
@@ -363,12 +573,7 @@ public class LoginFragment extends Fragment {
                                         }
                                     });
 
-                            if (!isRedirectedFromLYPInfo) {
-                                Fragment fragment = new AccountFragment();
-                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                ft.replace(R.id.content_frame, fragment);
-                                ft.commit();
-                            }
+                            
 
                         } else {
                             // If sign in fails, display a message to the user.
