@@ -146,6 +146,8 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     nav_profile_or_login.setTitle("Login/Register");
                     nav_dynamic_profile_action.setVisible(false);
+                    nav_dynamic_listing_action.setTitle("Find a Place");
+                    nav_dynamic_listing_action.setIcon(R.drawable.ic_menu_find);
                 }
             }
         };

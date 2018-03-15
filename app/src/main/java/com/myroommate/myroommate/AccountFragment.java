@@ -2,6 +2,7 @@ package com.myroommate.myroommate;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -57,6 +58,7 @@ public class AccountFragment extends Fragment {
     Boolean CheckEditText;
     RequestQueue requestQueue;
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     private FirebaseAuth mAuth;
     GoogleSignInOptions gso;
 
@@ -239,6 +241,11 @@ public class AccountFragment extends Fragment {
                 Snackbar snackbar = Snackbar
                         .make(view, "Successfully Logged Out.", Snackbar.LENGTH_LONG);
                 snackbar.show();
+
+                sharedPreferences = getActivity().getSharedPreferences("userType", MODE_PRIVATE);
+                editor = sharedPreferences.edit();
+
+                editor.putString("userType", null).apply();
 
                 Fragment fragment = new HomeScreenFragment();
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
